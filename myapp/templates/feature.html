@@ -3,32 +3,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>MMU Connect – Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MMU Connect – Feature</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 </head>
 <body>
   <nav class="navbar">
-    <div class="url-bar">MMU Connect</div>
+    <div class="url-bar"> MMU Connect</div>
     <ul class="nav-links">
-        <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'home' %}">Home</a></li>
         <li><a href="{% url 'chat' %}">Chat</a></li>
         <li><a href="{% url 'feature' %}">Feature #1</a></li>
         <li><a href="{% url 'about-us' %}">About Us</a></li>
         <li><a href="{% url 'contact' %}">Contact</a></li>
-      </ul>
-    <!-- Removed nav-links entirely -->
-    <button id="profile-btn" class="profile-icon"></button>
+    </ul>
+    <!-- Profile button -->
+    <button id="profile-btn" class="profile-icon">👤</button>
   </nav>
 
   <div class="main">
-    <h1>John</h1>
-    <p>Loves football</p>
-    <p>FCI</p>
-    <div class="action-buttons">
-      <button class="like-btn">❤</button>
-      <button class="dislike-btn">✖</button>
-    </div>
+    <h1>Feature #1</h1>
+    <p>Here you can describe the feature of the application.</p>
   </div>
 
   <footer class="footer">© MMU Connect</footer>
@@ -38,25 +33,29 @@
       const btn = document.getElementById('profile-btn');
       let loggedIn = localStorage.getItem('loggedIn') === 'true';
 
-      const update = () => {
+      // Update profile button text based on login status
+      const updateProfileButton = () => {
         btn.textContent = loggedIn ? '🔓 Logout' : '👤 Login';
         btn.title = loggedIn ? 'Click to log out' : 'Click to log in';
       };
 
+      // Handle profile button click event
       btn.addEventListener('click', () => {
         if (loggedIn) {
+          // Log out: remove the logged-in status and update UI
           localStorage.removeItem('loggedIn');
           loggedIn = false;
-          update();
+          updateProfileButton();
+          // Redirect to the login page after logging out
           window.location.href = 'login.html';
         } else {
+          // Redirect to the login page if not logged in
           window.location.href = 'login.html';
         }
       });
 
-      update();
+      updateProfileButton(); // Initialize the button state on page load
     });
-    src="{% static 'js/script.js' %}"
   </script>
 </body>
 </html>

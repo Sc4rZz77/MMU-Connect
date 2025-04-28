@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MMU Study Buddy</title>
+  <link rel="stylesheet" href= "{% static 'css/style.css' %}" />
+</head>
+<body>
+  <header>
+    <h1>📚 MMU Connect</h1>
+    <h2>Find your perfect study partner at MMU!</h2>
+  </header>
+  
+  <main style="position: relative;">
+    <div class="card-container" id="cardContainer">
+    </div>
+  
+    <div class="actions">
+      <button onclick="skipProfile()">❌</button>
+      <button onclick="likeProfile()">❤️</button>
+    </div>
+  </main>
+  
+
+  <footer>
+    <p>&copy; 2025 MMU Connect  </p>
+  </footer>
+
+  <script src="{% static 'js/script.js' %}"></script>

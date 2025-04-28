@@ -1,64 +1,35 @@
-// Adjusted profiles array: Static image paths should be passed dynamically via Django
-const profiles = [
-  {
-    name: "M.Muhyideen",
-    course: "Foundation in Information Technology",
-    style: "I speak Java and sarcasm",
-    image: "/static/img/muhyideen.jpg" // Example path (adjust as needed)
-  },
-  {
-    name: "Shaarvin",
-    course: "Foundation in Information Technology",
-    style: "99% sarcasm, 1% human",
-    image: "/static/img/shaarvin.jpg" // Example path (adjust as needed)
-  },
-  {
-    name: "Roshan",
-    course: "Foundation in Engineering",
-    style: "99% of my jokes are dad jokes",
-    image: "/static/img/roshan.jpg" // Example path (adjust as needed)
-  }
-];
+// script.js
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('profile-btn');
+  let loggedIn = localStorage.getItem('loggedIn') === 'true';
 
-let current = 0;
+  const updateProfileButton = () => {
+    btn.textContent = loggedIn ? '🔓 Logout' : '👤 Login';
+    btn.title = loggedIn ? 'Click to log out' : 'Click to log in';
+  };
 
-// Function to load and display a profile
-function loadProfile() {
-  const container = document.getElementById("cardContainer");
-  container.innerHTML = ""; // Clear the container
+  btn.addEventListener('click', () => {
+    if (loggedIn) {
+      localStorage.removeItem('loggedIn');
+      loggedIn = false;
+      updateProfileButton();
+      window.location.href = 'login.html';
+    } else {
+      window.location.href = 'login.html';
+    }
+  });
 
-  if (current < profiles.length) {
-    const profile = profiles[current];
+  document.getElementById('send-btn').addEventListener('click', () => {
+    const message = document.getElementById('chat-input').value;
+    if (message.trim() !== '') {
+      const messagesDiv = document.getElementById('messages');
+      const newMessage = document.createElement('div');
+      newMessage.classList.add('message');
+      newMessage.innerHTML = `<strong>You:</strong> ${message}`;
+      messagesDiv.appendChild(newMessage);
+      document.getElementById('chat-input').value = '';
+    }
+  });
 
-    // Create profile card dynamically
-    const card = document.createElement("div");
-    card.className = "profile-card";
-    card.innerHTML = `
-      <img src="${profile.image}" alt="${profile.name}" />
-      <h3>${profile.name}</h3>
-      <p>${profile.course}</p>
-      <p>Bio: ${profile.style}</p>
-    `;
-    container.appendChild(card);
-  } else {
-    container.innerHTML = `<h2>No more profiles 😢</h2>`;
-  }
-}
-
-// Function for "like" action
-function likeProfile() {
-  if (current < profiles.length) {
-    alert(`❤️ You matched with ${profiles[current].name}!`);
-  }
-  current++;
-  loadProfile();
-}
-
-// Function for "skip" action
-function skipProfile() {
-  current++;
-  loadProfile();
-}
-
-// Load the first profile on page load
-window.onload = loadProfile;
+  updateProfileButton();
+});
