@@ -230,4 +230,10 @@ body {
       width: 100%;
     }
   }
+
+  img {
+    width: 300px;
+    height: 300px;
+}
+
   

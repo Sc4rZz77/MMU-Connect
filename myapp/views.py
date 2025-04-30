@@ -1,8 +1,15 @@
 from django.shortcuts import render, HttpResponse
+from .models import Author
+
 
 # Create your views here.
+def test (request):
+    data = Author.objects.all()  # Fetch all authors
+    return render(request, 'test.html', {'data': data})
+
 def home (request):
-    return render(request, "home.html")
+    data = Author.objects.all()  # Fetch all authors
+    return render(request, 'home.html', {'data': data})
     
 def aboutus(request):
     return render(request, "about-us.html")
