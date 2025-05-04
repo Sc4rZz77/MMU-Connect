@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MMU Connect – Chat</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="url-bar"> MMU Connect</div>
+    <ul class="nav-links">
+      <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'chat' %}">Chat</a></li>
+        <li><a href="{% url 'feature' %}">Feature #1</a></li>
+        <li><a href="{% url 'about-us' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+    </ul>
+    <button id="profile-btn" class="profile-icon">👤</button>
+  </nav>
+
+  <div class="main">
+    <h1>Chat with Friends</h1>
+    <div id="messages"></div>
+    <input id="chat-input" type="text" placeholder="Type a message..." />
+    <button id="send-btn">Send</button>
+  </div>
+
+  <footer class="footer">© MMU Connect</footer>
+  
+
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
