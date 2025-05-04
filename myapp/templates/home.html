@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>MMU Connect – Home</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <style>
+    .author-container {
+      display: none;
+    }
+    .author-container.active {
+      display: block;
+    }
+
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="url-bar">MMU Connect</div>
+    <ul class="nav-links">
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'chat' %}">Chat</a></li>
+        <li><a href="{% url 'feature' %}">Feature #1</a></li>
+        <li><a href="{% url 'about-us' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+        <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
+
+      </ul>
+    <button id="profile-btn" class="profile-icon"></button>
+  </nav>
+
+  <div class="main">
+    <ul id="author-list">
+      {% for author in data %}
+        <div class="author-container">
+          <strong>{{ author.first_name }} {{ author.last_name }}</strong><br>
+          {{ author.self_bio }}<br>
+          {% if author.profile_picture %}
+            <img src="{{ author.profile_picture.url }}" alt="Profile Picture" width="400px" height="400px">
+          {% else %}
+            <p>No profile picture available.</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </ul>
+
+    <div class="action-buttons">
+      <button class="next-btn, like-btn" onclick="sendMatchRequest()">❤</button>
+      <button class="next-btn, dislike-btn" onclick="nextAuthor()">✖</button>
+    </div>
+    
+  </div>
+ 
+
+  <footer class="footer">© MMU Connect</footer>
+
+  <script>
+    let currentIndex = 0;
+    let authors = document.querySelectorAll('.author-container');
+
+    function showAuthor(index) {
+        authors.forEach(author => author.classList.remove('active'));
+        if (index < authors.length) {
+            authors[index].classList.add('active');
+        } else {
+            alert("No more authors to display.");
+        }
+    }
+
+    function nextAuthor() {
+        currentIndex++;
+        showAuthor(currentIndex);
+    }
+
+    function sendMatchRequest() {
+    let author = authors[currentIndex];
+    if (author) {
+        let authorNameElement = author.querySelector("strong");
+        let authorName = authorNameElement ? authorNameElement.innerText.trim() : "Unknown Author";
+
+        alert(`You have sent your match request to ${authorName}`);
+    }
+    nextAuthor();
+}
+    // Show the first author initially
+    showAuthor(currentIndex);
+  </script>
+</body>
+</html>

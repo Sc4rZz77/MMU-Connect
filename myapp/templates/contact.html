@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Contact Us – MMU Connect</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="url-bar"> MMU Connect</div>
+    <ul class="nav-links">
+      <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'chat' %}">Chat</a></li>
+        <li><a href="{% url 'feature' %}">Feature #1</a></li>
+        <li><a href="{% url 'about-us' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+    </ul>
+    <!-- Profile button -->
+    <button id="profile-btn" class="profile-icon">👤</button>
+  </nav>
+
+  <div class="main">
+    <h1>Contact Us</h1>
+    <p>Feel free to reach out to us!</p>
+
+    <div class="contact-form">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" placeholder="Enter your name" required />
+
+      <label for="email">Your Email</label>
+      <input type="email" id="email" placeholder="Enter your email" required />
+
+      <label for="message">Your Message</label>
+      <textarea id="message" placeholder="Type your message here" rows="5" required></textarea>
+
+      <button type="submit">Send Message</button>
+    </div>
+  </div>
+
+  <footer class="footer">© MMU Connect</footer>
+
+  <!-- JavaScript for login/logout functionality -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('profile-btn');
+      let loggedIn = localStorage.getItem('loggedIn') === 'true';
+
+      // Update profile button text based on login status
+      const updateProfileButton = () => {
+        btn.textContent = loggedIn ? '🔓 Logout' : '👤 Login';
+        btn.title = loggedIn ? 'Click to log out' : 'Click to log in';
+      };
+
+      // Handle profile button click event
+      btn.addEventListener('click', () => {
+        if (loggedIn) {
+          // Log out: remove the logged-in status and update UI
+          localStorage.removeItem('loggedIn');
+          loggedIn = false;
+          updateProfileButton();
+          // Optionally redirect to login page after logout
+          window.location.href = 'login.html';
+        } else {
+          // Redirect to the login page if not logged in
+          window.location.href = 'login.html';
+        }
+      });
+
+      updateProfileButton(); // Initialize the button state on page load
+    });
+  </script>
+
+</body>
+</html>
