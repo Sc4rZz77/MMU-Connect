@@ -17,12 +17,7 @@ const profiles = [
     style: "99% of my jokes are dad jokes",
     image: "file:///C:/Users/User/Downloads/WhatsApp%20Image%202025-04-21%20at%2020.01.29_777565ba.jpg"
   },
-  {
-    name: "Afrina Safiya",
-    course: "Vetti officer",
-    style: "I am not a morning person",
-    image: "file:///C:/Users/User/OneDrive/Desktop/study-buddy/WhatsApp%20Image%202025-04-26%20at%2012.53.56_2862d3a7.jpg"
-  }
+  
 ];
 
 let current = 0;
