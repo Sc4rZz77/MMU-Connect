@@ -8,7 +8,10 @@ def test(request):
     return render(request, 'test.html', {'data': data})
 
 def home(request):
-    data = Author.objects.exclude(user=request.user)
+    if request.user.is_authenticated:
+        data = Author.objects.exclude(user=request.user)
+    else:
+        data = Author.objects.all()  
     return render(request, 'home.html', {'data': data})
 
 def aboutus(request):
