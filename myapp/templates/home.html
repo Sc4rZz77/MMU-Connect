@@ -26,7 +26,9 @@
         <li><a href="{% url 'about-us' %}">About Us</a></li>
         <li><a href="{% url 'contact' %}">Contact</a></li>
         <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
-        <li><a href="{% url 'login' %}">Login</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'login' %}">Logout</a></li>
+{% endif %}
 
       </ul>
     <button id="profile-btn" class="profile-icon"></button>
@@ -87,6 +89,8 @@
 }
     // Show the first author initially
     showAuthor(currentIndex);
+
+    
   </script>
 </body>
 </html>
