@@ -12,24 +12,27 @@
     <div class="url-bar"> MMU Connect</div>
     <ul class="nav-links">
       <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'chat' %}">Chat</a></li>
-        <li><a href="{% url 'feature' %}">Feature #1</a></li>
-        <li><a href="{% url 'about-us' %}">About Us</a></li>
-        <li><a href="{% url 'contact' %}">Contact</a></li>
+      <li><a href="{% url 'chat' %}">Chat</a></li>
+      <li><a href="{% url 'feature' %}">Feature #1</a></li>
+      <li><a href="{% url 'about-us' %}">About Us</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
     </ul>
-    <button id="profile-btn" class="profile-icon">👤</button>
+    <button id="profile-btn" class="profile-icon" aria-label="Profile Button">👤</button>
   </nav>
 
   <div class="main">
     <h1>Chat with Friends</h1>
-    <div id="messages"></div>
-    <input id="chat-input" type="text" placeholder="Type a message..." />
-    <button id="send-btn">Send</button>
+    <div id="messages">
+      <p>Start a conversation! Type a message below.</p>
+    </div>
+    <input id="chat-input" type="text" placeholder="Type a message..." aria-label="Chat Input"/>
+    <button id="send-btn" aria-label="Send Message">Send</button>
   </div>
 
-  <footer class="footer">© MMU Connect</footer>
-  
+  <div class="footer-container">
+    <footer class="footer">© MMU Connect</footer>
+  </div>
 
-<script src="{% static 'js/script.js' %}"></script>
+  <script src="{% static 'js/chat-script.js' %}"></script>
 </body>
 </html>

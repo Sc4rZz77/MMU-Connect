@@ -7,6 +7,8 @@ from .forms import SignupForm
 from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import logout
+from django.http import JsonResponse
+from transformers import pipeline
 
 
 def test(request):
@@ -78,6 +80,17 @@ def logout_view(request):
     response = redirect("login")  # Redirect user to login page
     response.set_cookie("sessionid", "", expires=0)  # Expire session cookie immediately
     return response
+
+generator = pipeline("text-generation", model="gpt2")
+
+def ai_chat(request):
+    user_input = request.GET.get("message", "")
+    if not user_input:
+        return JsonResponse({"error": "No message provided"}, status=400)
+    
+    response = generator(user_input, max_length=50)
+    return JsonResponse({"reply": response[0]["generated_text"]})
+
 
 
 
