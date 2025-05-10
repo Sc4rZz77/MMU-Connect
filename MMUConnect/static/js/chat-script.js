@@ -1,17 +1,27 @@
 document.getElementById("send-btn").addEventListener("click", async () => {
-    const userMessage = document.getElementById("chat-input").value;
-    if (!userMessage.trim()) return;
-
+    const inputField = document.getElementById("chat-input");
+    const userMessage = inputField.value.trim();
     const chatBox = document.getElementById("messages");
+
+    if (!userMessage) return;
+
+    // Add user message
     chatBox.innerHTML += `<p><strong>You:</strong> ${userMessage}</p>`;
+
+    // Optional: Add "typing..." effect
+    chatBox.innerHTML += `<p id="ai-typing"><strong>AI:</strong> Typing...</p>`;
 
     try {
         const response = await fetch(`/api/chat/?message=${encodeURIComponent(userMessage)}`);
         const data = await response.json();
-        chatBox.innerHTML += `<p><strong>AI:</strong> ${data.reply}</p>`;
+
+        // Replace typing text with actual response
+        document.getElementById("ai-typing").outerHTML = `<p><strong>AI:</strong> ${data.reply}</p>`;
     } catch (error) {
-        chatBox.innerHTML += `<p><strong>Error:</strong> Could not fetch AI response.</p>`;
+        document.getElementById("ai-typing").outerHTML = `<p><strong>Error:</strong> Could not fetch AI response.</p>`;
     }
 
-    document.getElementById("chat-input").value = "";
+    // Reset input field
+    inputField.value = "";
+    inputField.focus();  // Better UX
 });
