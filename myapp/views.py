@@ -89,7 +89,7 @@ def logout_view(request):
 
 load_dotenv()
 client = InferenceClient(
-    provider="fireworks-ai",
+    base_url="https://openrouter.ai/api/v1",
     api_key=os.getenv("HF_TOKEN"),  # Replace with your actual API key
 )
 
@@ -129,7 +129,7 @@ def ai_chat(request):
     # If no rule matches, fallback to Qwen AI for a creative response
     try:
         ai_response = client.chat.completions.create(
-            model="Qwen/Qwen3-235B-A22B",
+            model="qwen/qwen3-235b-a22b:free",
             messages=[
                 {"role": "system", "content": "/no_think"},
                 {"role": "user", "content": user_input}
