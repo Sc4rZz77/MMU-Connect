@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -11,6 +12,8 @@ from django.http import JsonResponse
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, set_seed
 import re
 from huggingface_hub import InferenceClient
+from dotenv import load_dotenv
+
 
 
 
@@ -84,10 +87,10 @@ def logout_view(request):
     response.set_cookie("sessionid", "", expires=0)  # Expire session cookie immediately
     return response
 
-
+load_dotenv()
 client = InferenceClient(
     provider="fireworks-ai",
-    api_key="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",  # Replace with your actual API key
+    api_key=os.getenv("HF_TOKEN"),  # Replace with your actual API key
 )
 
 def ai_chat(request):
