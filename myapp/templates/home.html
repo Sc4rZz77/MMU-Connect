@@ -13,11 +13,10 @@
       font-family: 'Jost', sans-serif;
       background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
       color: #ffffff;
-      overflow: hidden;
     }
 
     .navbar {
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: #573b8a;
       padding: 15px 30px;
       display: flex;
       justify-content: space-between;
@@ -103,6 +102,14 @@
       background-color: #6d44b8;
     }
 
+    .like-btn:hover {
+      background-color: #6d44b8;
+    }
+
+    .dislike-btn:hover {
+      background-color: #6d44b8;
+    }
+
     .footer {
       text-align: center;
       padding: 20px;
@@ -140,8 +147,10 @@
     <ul id="author-list">
       {% for author in data %}
         <div class="author-container">
-          <strong>{{ author.first_name }} {{ author.last_name }}</strong><br>
-          <p>{{ author.self_bio }}</p>
+          <strong>{{ author.first_name }} {{ author.last_name }}</strong><br><br>
+          <p>{{ author.self_bio }}</p>          
+          <p>{{ author.faculty }}</p>
+          <p>{{ author.gender }}</p>
           {% if author.profile_picture %}
             <img src="{{ author.profile_picture.url }}" alt="Profile Picture">
           {% else %}

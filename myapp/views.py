@@ -13,6 +13,9 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, set_seed
 import re
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
+import time
+import json
+from django.contrib import messages
 
 
 
@@ -46,7 +49,7 @@ def edit_profile(request):
         form = AuthorForm(request.POST, request.FILES, instance=author)
         if form.is_valid():
             form.save()
-            return redirect("home")  # Redirect after saving
+            messages.success(request, 'Your profile was updated successfully!')
     else:
         form = AuthorForm(instance=author)
 
@@ -95,8 +98,8 @@ def ai_chat(request):
     if not user_input:
         return JsonResponse({"error": "No message provided"}, status=400)
     
-    #insert chat history to be remembered
-    #allow machine learning
+    # Insert chat history to be remembered (omitted for simplicity)
+    # Allow machine learning (omitted for simplicity)
 
     normalized_input = re.sub(r'[^\w\s]', '', user_input.lower())
 
@@ -120,11 +123,21 @@ def ai_chat(request):
 
     for pattern, response in response_map.items():
         if re.search(pattern, normalized_input):
-            return JsonResponse({"reply": response})
+            # Simulate typing animation by sending the full response in chunks
+            def typing_animation(response):
+                sentence_chunks = [response]  # Single chunk for the full response
+                for chunk in sentence_chunks:
+                    time.sleep(0.5)  # Simulate typing delay
+                    yield chunk  # Yield the whole sentence in one go
+
+            return JsonResponse(
+                {"reply": list(typing_animation(response))},
+                content_type="application/json"
+            )
 
     try:
         ai_response = client.chat.completions.create(
-            model="google/gemini-2.0-flash-exp:free",
+            model="qwen/qwen3-1.7b:free",
             messages=[
                 {"role": "system", "content": "/no_think"},
                 {"role": "user", "content": user_input}
@@ -132,13 +145,23 @@ def ai_chat(request):
             temperature=0.7,
             top_p=0.8,
             extra_body={
-                "top_k": 20,   
-                "min_p": 0      
+                "top_k": 20,    # Vendor-specific extension
+                "min_p": 0      # Vendor-specific extension
             }
         )
         generated_text = ai_response['choices'][0]['message']['content'].strip()
-    
-        return JsonResponse({"reply": generated_text})
+
+        # Simulate typing animation for the full AI response
+        def typing_animation(response):
+            sentence_chunks = [response]  # Send the whole response at once
+            for chunk in sentence_chunks:
+                time.sleep(0.5)  # Adjust delay between chunks
+                yield chunk  # Yield the full response at once
+
+        return JsonResponse(
+            {"reply": list(typing_animation(generated_text))},
+            content_type="application/json"
+        )
 
     except Exception as e:
         return JsonResponse({"reply": f"Oops, something went wrong. Error: {str(e)}"})

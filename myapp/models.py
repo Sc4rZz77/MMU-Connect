@@ -6,7 +6,20 @@ class Author(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     self_bio = models.TextField(default="No bio available")
-    profile_picture = models.ImageField(upload_to="author_images/", null=True, blank=True)
+    profile_picture = models.ImageField(upload_to="author_images/", default= 'author_images/default.jpg')
+    gender_choice = [('Unknown Gender', 'Unknown Gender'),
+                    ('Male', 'Male'),
+                    ('Female', 'Female'),
+    ]
+    gender = models.CharField(max_length=20, choices=gender_choice, default='Unknown Gender')
+    faculty_choice  = [ ('Not specified', 'Default'), 
+                        ('FCI', 'Faculty of Computing'),
+                        ('FOE', 'Faculty of Engineering'),
+                        ('FCM', 'Faculty of Creative Multimedia'),
+                        ('FOM', 'Faculty of Management'),
+                        ('FAC', 'Faculty of Applied Comm'),  
+            ]
+    faculty = models.CharField(max_length=20, choices=faculty_choice, default='Not specified')
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name}"
