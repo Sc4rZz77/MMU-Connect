@@ -90,7 +90,7 @@ def logout_view(request):
 load_dotenv()
 client = InferenceClient(
     base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("HF_TOKEN"),  # Replace with your actual API key
+    api_key=os.getenv("HF_TOKEN"),  
 )
 
 def ai_chat(request):
@@ -98,11 +98,12 @@ def ai_chat(request):
 
     if not user_input:
         return JsonResponse({"error": "No message provided"}, status=400)
+    
+    #insert chat history to be remembered
+    #allow machine learning
 
-    # Normalize user input for rule-based matching
     normalized_input = re.sub(r'[^\w\s]', '', user_input.lower())
 
-    # Rule-based responses
     response_map = {
         r"\bhello\b|\bhi+\b|\bhey+\b|\bhelo+\b|\bhola\b|\bhii\b|\bhelloo+\b": "Hey there! How can I brighten your day?",
         r"\bhow (are|r) (you|u)\b|\bhow do you feel\b|\bhow’s it going\b": "I'm doing fantastic! What about you?",
@@ -118,18 +119,16 @@ def ai_chat(request):
         r"\bi love you\b": "That's so sweet of you! I love chatting with you too! ❤️",
         r"\bhelp\b|\bi need help\b|\bcan you help me\b": "Absolutely! Just tell me what's troubling you.",
         r"\bi will see you\b|\bsee you later\b": "See you soon! I'll be right here when you return.",
-        r"\byour favorite color\b": "I’d say electric blue—it’s the color of data, connection, and creativity!"
+        r"\byour favorite color\b": "I’d say electric blue—it’s the color of data, connection, and creativity!",
     }
 
-    # Check if user input matches a rule-based response
     for pattern, response in response_map.items():
         if re.search(pattern, normalized_input):
             return JsonResponse({"reply": response})
 
-    # If no rule matches, fallback to Qwen AI for a creative response
     try:
         ai_response = client.chat.completions.create(
-            model="qwen/qwen3-235b-a22b:free",
+            model="google/gemini-2.0-flash-exp:free",
             messages=[
                 {"role": "system", "content": "/no_think"},
                 {"role": "user", "content": user_input}
@@ -137,14 +136,12 @@ def ai_chat(request):
             temperature=0.7,
             top_p=0.8,
             extra_body={
-                "top_k": 20,    # Vendor-specific extension
-                "min_p": 0      # Vendor-specific extension
+                "top_k": 20,   
+                "min_p": 0      
             }
         )
         generated_text = ai_response['choices'][0]['message']['content'].strip()
     
-
-        # Just return the full response without limiting words
         return JsonResponse({"reply": generated_text})
 
     except Exception as e:
