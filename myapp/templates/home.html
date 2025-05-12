@@ -7,13 +7,117 @@
   <title>MMU Connect – Home</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Jost', sans-serif;
+      background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    .navbar {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+    }
+
+    .url-bar {
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-links li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links li a:hover {
+      color: #a78bfa;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      min-height: 80vh;
+      overflow-y: auto;
+    }
+
     .author-container {
       display: none;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      animation: fadeInUp 1s ease-out forwards;
     }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .author-container.active {
       display: block;
     }
 
+    .author-container strong {
+      font-size: 24px;
+      color: #a78bfa;
+    }
+
+    .action-buttons {
+      margin-top: 30px;
+    }
+
+    .next-btn, .like-btn, .dislike-btn {
+      font-size: 30px;
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: #573b8a;
+      color: #fff;
+      transition: background-color 0.3s ease;
+    }
+
+    .next-btn:hover {
+      background-color: #6d44b8;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: #ccc;
+    }
+
+    img {
+      margin-top: 20px;
+      border-radius: 10px;
+      max-width: 100%;
+      height: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    }
   </style>
 </head>
 <body>
@@ -28,10 +132,8 @@
         <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
         {% if user.is_authenticated %}
         <li><a href="{% url 'login' %}">Logout</a></li>
-{% endif %}
-
-      </ul>
-    <button id="profile-btn" class="profile-icon"></button>
+        {% endif %}
+    </ul>
   </nav>
 
   <div class="main">
@@ -39,9 +141,9 @@
       {% for author in data %}
         <div class="author-container">
           <strong>{{ author.first_name }} {{ author.last_name }}</strong><br>
-          {{ author.self_bio }}<br>
+          <p>{{ author.self_bio }}</p>
           {% if author.profile_picture %}
-            <img src="{{ author.profile_picture.url }}" alt="Profile Picture" width="400px" height="400px">
+            <img src="{{ author.profile_picture.url }}" alt="Profile Picture">
           {% else %}
             <p>No profile picture available.</p>
           {% endif %}
@@ -50,47 +152,47 @@
     </ul>
 
     <div class="action-buttons">
-      <button class="next-btn, like-btn" onclick="sendMatchRequest()">❤</button>
-      <button class="next-btn, dislike-btn" onclick="nextAuthor()">✖</button>
+      <button class="like-btn" onclick="sendMatchRequest()">❤</button>
+      <button class="dislike-btn" onclick="nextAuthor()">✖</button>
     </div>
-    
   </div>
- 
 
   <footer class="footer">© MMU Connect</footer>
 
   <script>
-    let currentIndex = 0;
-    let authors = document.querySelectorAll('.author-container');
+    document.addEventListener("DOMContentLoaded", function () {
+      let currentIndex = 0;
+      let authors = document.querySelectorAll('.author-container');
 
-    function showAuthor(index) {
+      function showAuthor(index) {
         authors.forEach(author => author.classList.remove('active'));
         if (index < authors.length) {
-            authors[index].classList.add('active');
+          authors[index].classList.add('active');
         } else {
-            alert("No more authors to display.");
+          alert("No more authors to display.");
         }
-    }
+      }
 
-    function nextAuthor() {
+      function nextAuthor() {
         currentIndex++;
         showAuthor(currentIndex);
-    }
+      }
 
-    function sendMatchRequest() {
-    let author = authors[currentIndex];
-    if (author) {
-        let authorNameElement = author.querySelector("strong");
-        let authorName = authorNameElement ? authorNameElement.innerText.trim() : "Unknown Author";
+      function sendMatchRequest() {
+        let author = authors[currentIndex];
+        if (author) {
+          let authorNameElement = author.querySelector("strong");
+          let authorName = authorNameElement ? authorNameElement.innerText.trim() : "Unknown Author";
+          alert(`You have sent your match request to ${authorName}`);
+        }
+        nextAuthor();
+      }
 
-        alert(`You have sent your match request to ${authorName}`);
-    }
-    nextAuthor();
-}
-    // Show the first author initially
-    showAuthor(currentIndex);
+      window.nextAuthor = nextAuthor;
+      window.sendMatchRequest = sendMatchRequest;
 
-    
+      showAuthor(currentIndex);
+    });
   </script>
 </body>
 </html>
