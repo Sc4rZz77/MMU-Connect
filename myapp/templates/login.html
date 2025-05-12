@@ -1,79 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
 
   <title>Login</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
     body {
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
-      background: #f0f2f5;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #8e2de2, #4a00e0);
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      overflow: hidden;
     }
+
     .login-container {
       background: white;
-      padding: 30px 40px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 40px 35px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
       width: 100%;
-      max-width: 320px;
+      max-width: 360px;
       text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s ease-out forwards;
     }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     h2 {
-      color: #333;
+      color: #4a00e0;
+      margin-bottom: 20px;
     }
+
     input {
       width: 100%;
       padding: 12px;
-      margin: 8px 0;
+      margin: 10px 0;
       border: 1px solid #ccc;
-      border-radius: 4px;
+      border-radius: 8px;
       box-sizing: border-box;
+      transition: 0.3s;
     }
+
+    input:focus {
+      border-color: #8e2de2;
+      outline: none;
+      box-shadow: 0 0 5px #a370f0;
+    }
+
     .remember-me {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin: 10px 0 20px;
+      font-size: 14px;
     }
+
     button {
       width: 100%;
       padding: 12px;
-      background-color: #4CAF50;
+      background: linear-gradient(135deg, #8e2de2, #4a00e0);
       border: none;
-      border-radius: 4px;
-      color: white;
-      font-weight: bold;
+      border-radius: 8px;
+      color: rgb(0, 0, 0);
+      font-weight: 600;
+      font-size: 16px;
       cursor: pointer;
+      transition: 0.3s;
     }
+
     button:hover {
-      background-color: #45a049;
+      transform: scale(1.03);
+      box-shadow: 0 8px 16px rgba(74, 0, 224, 0.3);
     }
+
     .signup-link {
-      margin-top: 15px;
+      margin-top: 20px;
       display: block;
       text-align: center;
       font-size: 14px;
+      color: #4a00e0;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .signup-link:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <h2>Login</h2>
+    <h2>Welcome Back</h2>
     <form method="POST">
       {% csrf_token %}
       {{ form.as_p }}
       <div class="remember-me">
         <label>
-          <input type="checkbox" name="remember_me"> Remember me
+          <input type="checkbox" name="remember_me" /> Remember me
         </label>
       </div>
       <button type="submit">Login</button>

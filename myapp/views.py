@@ -53,18 +53,14 @@ def edit_profile(request):
     return render(request, "edit_profile.html", {"form": form})  # Allow users to edit their profile
 
 def signup(request):
-    if request.method == "POST":
-        form = SignupForm(request.POST)
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data["password"])  # Secure password handling
-            user.save()
-            login(request, user)  # Log in the user immediately after signup
-            return redirect("home")  # Redirect to homepage
+            form.save()
+            return redirect('login')  # or wherever you want to go
     else:
-        form = SignupForm()
-    
-    return render(request, "signup.html", {"form": form})
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
 class CustomLoginView(auth_views.LoginView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:  
