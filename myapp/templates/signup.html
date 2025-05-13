@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" >
+  <meta http-equiv="Pragma" content="no-cache" >
+  <meta http-equiv="Expires" content="0" >
 
   <title>Signup</title>
   <style>
@@ -19,8 +19,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      overflow: hidden;
+      height: auto;
     }
 
     .signup-container {
@@ -102,9 +101,7 @@
     <h2>Let’s Get Started</h2>
     <form method="POST">
       {% csrf_token %}
-      <input type="text" name="username" placeholder="Username" required />
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="password" name="password" placeholder="Password" required />
+      {{ form.as_p }}
       <button type="submit">Sign Up</button>
     </form>
     <a class="login-link" href="{% url 'login' %}">Already have an account? Log in</a>
