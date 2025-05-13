@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 import time
 import json
 from django.contrib import messages
+from myapp.forms import SignupForm
 
 
 
@@ -57,13 +58,14 @@ def edit_profile(request):
 
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = SignupForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('login')  # or wherever you want to go
+            return redirect('login')
     else:
-        form = UserCreationForm()
+        form = SignupForm()
     return render(request, 'signup.html', {'form': form})
+
 class CustomLoginView(auth_views.LoginView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:  

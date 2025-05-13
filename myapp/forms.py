@@ -1,6 +1,8 @@
 from django import forms
 from .models import Author
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
 
 
 class AuthorForm(forms.ModelForm):
@@ -8,9 +10,15 @@ class AuthorForm(forms.ModelForm):
         model = Author
         fields = ['first_name', 'last_name','self_bio', 'profile_picture', 'faculty','gender']
 
-class SignupForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput)
-    
+class SignupForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ('username', 'email', 'password1', 'password2')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Disable help texts
+        for fieldname in ['username', 'password1', 'password2']:
+            self.fields[fieldname].help_text = ''
