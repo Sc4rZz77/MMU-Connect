@@ -169,20 +169,17 @@
 
       if (!userMessage) return;
 
-      // Add user message
       const userBubble = document.createElement("div");
       userBubble.className = "message user";
       userBubble.textContent = userMessage;
       chatArea.appendChild(userBubble);
 
-      // Add bot typing animation
       const typingBubble = document.createElement("div");
       typingBubble.className = "message bot";
       typingBubble.textContent = "Typing...";
       chatArea.appendChild(typingBubble);
       chatArea.scrollTop = chatArea.scrollHeight;
 
-      // Clear input
       inputField.value = "";
       inputField.focus();
 
@@ -202,7 +199,6 @@
       }
     });
 
-    // Press Enter to send
     document.getElementById("chat-input").addEventListener("keydown", function (e) {
       if (e.key === "Enter") {
         document.getElementById("send-btn").click();
