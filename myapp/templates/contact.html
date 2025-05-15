@@ -6,18 +6,150 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Contact Us – MMU Connect</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Jost', sans-serif;
+      background: linear-gradient(135deg, #4a00e0, #8e2de2, #a770ef);
+      color: #ffffff;
+    }
+
+    .navbar {
+      background-color: #4a00e0;
+      padding: 21px 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .url-bar {
+      position: absolute;
+      top: 15px;
+      left: 30px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      padding: 0;
+    }
+
+    .nav-links li a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .nav-links li a:hover {
+      color: #000000;
+    }
+
+    .profile-icon {
+      position: absolute;
+      right: 30px;
+      top: 15px;
+      font-size: 24px;
+      background: none;
+      border: none;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    .main {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .main h1 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .main p {
+      font-size: 18px;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      text-align: left;
+    }
+
+    .contact-form label {
+      font-weight: 600;
+      font-size: 16px;
+      color: #000000;
+    }
+
+    .contact-form input[type="text"],
+    .contact-form input[type="email"],
+    .contact-form textarea {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+      outline: none;
+      resize: vertical;
+    }
+
+    .contact-form input[type="text"]:focus,
+    .contact-form input[type="email"]:focus,
+    .contact-form textarea:focus {
+      box-shadow: 0 0 5px #000000;
+      background-color: #333;
+      color: #fff;
+    }
+
+    .contact-form button {
+      background-color: #4a00e0;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .contact-form button:hover {
+      background-color: #000000;
+      color: #000;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      background-color: #222222;
+      color: #ffffff;
+      margin-top: 40px;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
-    <div class="url-bar"> MMU Connect</div>
+    <div class="url-bar">MMU Connect</div>
     <ul class="nav-links">
       <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'chat' %}">Chat</a></li>
-        <li><a href="{% url 'feature' %}">Feature #1</a></li>
-        <li><a href="{% url 'about-us' %}">About Us</a></li>
-        <li><a href="{% url 'contact' %}">Contact</a></li>
+      <li><a href="{% url 'chat' %}">Chat</a></li>
+      <li><a href="{% url 'feature' %}">Feature #1</a></li>
+      <li><a href="{% url 'about-us' %}">About Us</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
     </ul>
-    <!-- Profile button -->
     <button id="profile-btn" class="profile-icon">👤</button>
   </nav>
 
@@ -25,52 +157,46 @@
     <h1>Contact Us</h1>
     <p>Feel free to reach out to us!</p>
 
-    <div class="contact-form">
+    <form class="contact-form" method="post" action="">
+      {% csrf_token %}
       <label for="name">Your Name</label>
-      <input type="text" id="name" placeholder="Enter your name" required />
+      <input type="text" id="name" name="name" placeholder="Enter your name" required />
 
       <label for="email">Your Email</label>
-      <input type="email" id="email" placeholder="Enter your email" required />
+      <input type="email" id="email" name="email" placeholder="Enter your email" required />
 
       <label for="message">Your Message</label>
-      <textarea id="message" placeholder="Type your message here" rows="5" required></textarea>
+      <textarea id="message" name="message" placeholder="Type your message here" rows="5" required></textarea>
 
       <button type="submit">Send Message</button>
-    </div>
+    </form>
   </div>
 
   <footer class="footer">© MMU Connect</footer>
 
-  <!-- JavaScript for login/logout functionality -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const btn = document.getElementById('profile-btn');
       let loggedIn = localStorage.getItem('loggedIn') === 'true';
 
-      // Update profile button text based on login status
       const updateProfileButton = () => {
         btn.textContent = loggedIn ? '🔓 Logout' : '👤 Login';
         btn.title = loggedIn ? 'Click to log out' : 'Click to log in';
       };
 
-      // Handle profile button click event
       btn.addEventListener('click', () => {
         if (loggedIn) {
-          // Log out: remove the logged-in status and update UI
           localStorage.removeItem('loggedIn');
           loggedIn = false;
           updateProfileButton();
-          // Optionally redirect to login page after logout
           window.location.href = 'login.html';
         } else {
-          // Redirect to the login page if not logged in
           window.location.href = 'login.html';
         }
       });
 
-      updateProfileButton(); // Initialize the button state on page load
+      updateProfileButton();
     });
   </script>
-
 </body>
 </html>
