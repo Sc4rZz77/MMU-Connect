@@ -12,22 +12,22 @@
       padding: 0;
       font-family: 'Jost', sans-serif;
       background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
-      color: #ffffff;
+      color: #000000;
     }
 
     .navbar {
-      background-color: #573b8a;
+      background-color: #812f92;
       padding: 15px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
     }
 
     .url-bar {
       font-size: 24px;
       font-weight: bold;
-      color: #fff;
+      color: #ffffff;
     }
 
     .nav-links {
@@ -37,14 +37,14 @@
     }
 
     .nav-links li a {
-      color: #fff;
+      color: #ffffff;
       text-decoration: none;
       font-weight: bold;
       transition: color 0.3s ease;
     }
 
     .nav-links li a:hover {
-      color: #a78bfa;
+      color: #ffffff;
     }
 
     .main {
@@ -54,16 +54,24 @@
       padding: 40px 20px;
       min-height: 80vh;
       overflow-y: auto;
+      text-align: center;
     }
 
     .author-container {
       display: none;
       text-align: center;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 30px;
+      background: rgba(115, 151, 250, 0.7); /* Dark background to blend with page */
+      padding: 20px 30px;
       border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 15px rgba(115, 151, 250, 0.7);
       animation: fadeInUp 1s ease-out forwards;
+      max-width: 400px; /* Reduced size */
+      margin: 20px auto;
+      transition: transform 0.3s ease-in-out; /* Added subtle animation */
+    }
+
+    .author-container:hover {
+      transform: scale(1.05); /* Subtle hover effect */
     }
 
     @keyframes fadeInUp {
@@ -79,7 +87,22 @@
 
     .author-container strong {
       font-size: 24px;
-      color: #a78bfa;
+      color: #000000;
+    }
+
+    .author-container p {
+      font-size: 18px;
+      color: #000000; /* Lighter text color */
+      line-height: 1.5;
+    }
+
+    .author-container img {
+      margin-top: 20px;
+      border-radius: 10px;
+      max-width: 100%;
+      height: auto;
+      width: 250px; /* Reduced image size */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
     }
 
     .action-buttons {
@@ -87,45 +110,29 @@
     }
 
     .next-btn, .like-btn, .dislike-btn {
-      font-size: 30px;
-      padding: 10px 20px;
-      margin: 0 10px;
+      font-size: 70px;
+      padding: 10px 10px;
+      margin: 0 70px;
       border: none;
-      border-radius: 10px;
+      border-radius: 100px;
       cursor: pointer;
-      background-color: #573b8a;
-      color: #fff;
+      background-color: #ff0303;
+      color: #000000;
       transition: background-color 0.3s ease;
     }
 
-    .next-btn:hover {
-      background-color: #6d44b8;
-    }
-
-    .like-btn:hover {
-      background-color: #6d44b8;
-    }
-
-    .dislike-btn:hover {
-      background-color: #6d44b8;
+    .next-btn:hover, .like-btn:hover, .dislike-btn:hover {
+      background-color: #000000;
     }
 
     .footer {
       text-align: center;
       padding: 20px;
       font-size: 14px;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: #ccc;
+      background-color: rgba(164, 0, 246, 0.5);
+      color: #ffffff;
     }
-
-    img {
-      margin-top: 20px;
-      border-radius: 10px;
-      max-width: 100%;
-      height: 300px;
-      width: 300px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
+    
   </style>
 </head>
 <body>
@@ -160,6 +167,7 @@
         </div>
       {% endfor %}
     </ul>
+
 
     <div class="action-buttons">
       <button class="like-btn" onclick="sendMatchRequest()">❤</button>
