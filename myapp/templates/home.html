@@ -11,24 +11,34 @@
       margin: 0;
       padding: 0;
       font-family: 'Jost', sans-serif;
-      background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+      background: linear-gradient(to bottom, #8e2de2, #4a00e0);
       color: #000000;
     }
 
-    .navbar {
-      background-color: #812f92;
-      padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
-    }
+  .navbar {
+  background-color: #4a00e0;
+  padding: 21px 30px;
+  display: flex;
+  justify-content: center; /* center the items */
+  align-items: center;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+}
 
-    .url-bar {
-      font-size: 24px;
-      font-weight: bold;
-      color: #ffffff;
-    }
+.nav-items {
+  display: flex;
+  gap: 30px; /* space between navbar items */
+  align-items: center;
+}
+
+   .url-bar {
+  position: absolute;
+  top: 15px;
+  left: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
 
     .nav-links {
       list-style: none;
@@ -60,10 +70,10 @@
     .author-container {
       display: none;
       text-align: center;
-      background: rgba(115, 151, 250, 0.7); /* Dark background to blend with page */
+      background: #b497f7; /* Dark background to blend with page */
       padding: 20px 30px;
       border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(115, 151, 250, 0.7);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
       animation: fadeInUp 1s ease-out forwards;
       max-width: 400px; /* Reduced size */
       margin: 20px auto;
@@ -129,7 +139,7 @@
       text-align: center;
       padding: 20px;
       font-size: 14px;
-      background-color: rgba(164, 0, 246, 0.5);
+      background-color: #222222;
       color: #ffffff;
     }
     
@@ -151,7 +161,7 @@
     </ul>
   </nav>
 
-  <div class="main">
+ <div class="main">
     <ul id="author-list">
       {% for author in data %}
         <div class="author-container">

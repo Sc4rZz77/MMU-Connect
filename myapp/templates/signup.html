@@ -12,15 +12,18 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
     body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #8e2de2, #4a00e0);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: auto;
-    }
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #8e2de2, #4a00e0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+    
+    html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
     .signup-container {
       background: white;
@@ -31,7 +34,7 @@
       max-width: 370px;
       text-align: center;
       opacity: 0;
-      margin-top: 70px;
+      margin-top: 10px;
       transform: translateY(30px);
       animation: fadeInUp 1s ease-out forwards;
     }
