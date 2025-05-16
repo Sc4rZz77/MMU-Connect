@@ -101,34 +101,40 @@
     }
 
     .navbar {
+      background-color: #6d44b8;
+      padding: 21px 30px;
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
-      background: #6d44b8;
-      padding: 10px 20px;
-      color: #fff;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+      position: relative;
     }
 
-    .url-bar {
-      font-size: 20px;
+     .url-bar {
+      position: absolute;
+      top: 15px;
+      left: 30px;
+      font-size: 24px;
       font-weight: bold;
+      color: #ffffff;
     }
 
-    .nav-links {
+   .nav-links {
       list-style: none;
       display: flex;
       gap: 20px;
+      padding: 0;
     }
 
     .nav-links li a {
-      color: #fff;
+      color: #ffffff;
       text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
+      font-weight: bold;
+      transition: color 0.3s ease;
     }
 
     .nav-links li a:hover {
-      color: #c4b5fd;
+      color: #ffcc00;
     }
 
     .profile-icon {
@@ -160,13 +166,16 @@
   <nav class="navbar">
     <div class="url-bar">MMU Connect</div>
     <ul class="nav-links">
-      <li><a href="{% url 'home' %}">Home</a></li>
-      <li><a href="{% url 'chat' %}">Chat</a></li>
-      <li><a href="{% url 'feature' %}">Features</a></li>
-      <li><a href="{% url 'about-us' %}">About Us</a></li>
-      <li><a href="{% url 'contact' %}">Contact</a></li>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'chat' %}">Chat</a></li>
+        <li><a href="{% url 'feature' %}">Feature </a></li>
+        <li><a href="{% url 'about-us' %}">About Us</a></li>
+        <li><a href="{% url 'contact' %}">Contact</a></li>
+        <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'login' %}">Logout</a></li>
+        {% endif %}
     </ul>
-    <button id="profile-btn" class="profile-icon">👤</button>
   </nav>
 
   <div class="hero">
