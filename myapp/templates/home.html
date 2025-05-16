@@ -3,42 +3,116 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MMU Connect – Home</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <style>
     body {
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 0;
-      font-family: 'Jost', sans-serif;
-      background: linear-gradient(to bottom, #8e2de2, #4a00e0);
-      color: #000000;
+      background: #f9f7ff;
+      color: #333;
     }
 
-  .navbar {
-  background-color: #4a00e0;
-  padding: 21px 30px;
-  display: flex;
-  justify-content: center; /* center the items */
-  align-items: center;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
-}
+    .hero {
+      background: linear-gradient(to right, #6d44b8, #8e60ff);
+      color: #fff;
+      padding: 80px 20px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
 
-.nav-items {
-  display: flex;
-  gap: 30px; /* space between navbar items */
-  align-items: center;
-}
+    .hero h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
 
-   .url-bar {
-  position: absolute;
-  top: 15px;
-  left: 30px;
-  font-size: 24px;
-  font-weight: bold;
-  color: #ffffff;
-}
+    .hero p {
+      font-size: 20px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
 
+    .hero a {
+      padding: 14px 28px;
+      background: #fff;
+      color: #6d44b8;
+      border-radius: 8px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 16px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .hero a:hover {
+      background: #f1e8ff;
+      color: #573b8a;
+    }
+
+    .section {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .section h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      color: #573b8a;
+    }
+
+    .features-summary {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 30px;
+    }
+
+    .feature-card {
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      width: 280px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+    }
+
+    .feature-card h3 {
+      margin-top: 12px;
+      color: #6d44b8;
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: #444;
+      margin-top: 8px;
+    }
+
+    .footer {
+      background: #573b8a;
+      text-align: center;
+      padding: 14px;
+      color: #e0dfff;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #6d44b8;
+      padding: 10px 20px;
+      color: #fff;
+    }
+
+    .url-bar {
+      font-size: 20px;
+      font-weight: bold;
+    }
 
     .nav-links {
       list-style: none;
@@ -47,179 +121,104 @@
     }
 
     .nav-links li a {
-      color: #ffffff;
+      color: #fff;
       text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s ease;
+      font-weight: 500;
+      transition: color 0.3s;
     }
 
     .nav-links li a:hover {
-      color: #ffffff;
+      color: #c4b5fd;
     }
 
-    .main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      min-height: 80vh;
-      overflow-y: auto;
-      text-align: center;
+    .profile-icon {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
     }
 
-    .author-container {
-      display: none;
-      text-align: center;
-      background: #b497f7; /* Dark background to blend with page */
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
-      animation: fadeInUp 1s ease-out forwards;
-      max-width: 400px; /* Reduced size */
-      margin: 20px auto;
-      transition: transform 0.3s ease-in-out; /* Added subtle animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .author-container:hover {
-      transform: scale(1.05); /* Subtle hover effect */
-    }
+    @media (max-width: 768px) {
+      .features-summary {
+        flex-direction: column;
+        align-items: center;
+      }
 
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
+      .feature-card {
+        width: 90%;
       }
     }
-
-    .author-container.active {
-      display: block;
-    }
-
-    .author-container strong {
-      font-size: 24px;
-      color: #000000;
-    }
-
-    .author-container p {
-      font-size: 18px;
-      color: #000000; /* Lighter text color */
-      line-height: 1.5;
-    }
-
-    .author-container img {
-      margin-top: 20px;
-      border-radius: 10px;
-      max-width: 100%;
-      height: auto;
-      width: 250px; /* Reduced image size */
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
-    }
-
-    .action-buttons {
-      margin-top: 30px;
-    }
-
-    .next-btn, .like-btn, .dislike-btn {
-      font-size: 70px;
-      padding: 10px 10px;
-      margin: 0 70px;
-      border: none;
-      border-radius: 100px;
-      cursor: pointer;
-      background-color: #ff0303;
-      color: #000000;
-      transition: background-color 0.3s ease;
-    }
-
-    .next-btn:hover, .like-btn:hover, .dislike-btn:hover {
-      background-color: #000000;
-    }
-
-    .footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      background-color: #222222;
-      color: #ffffff;
-    }
-    
   </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="url-bar">MMU Connect</div>
     <ul class="nav-links">
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'chat' %}">Chat</a></li>
-        <li><a href="{% url 'feature' %}">Feature #1</a></li>
-        <li><a href="{% url 'about-us' %}">About Us</a></li>
-        <li><a href="{% url 'contact' %}">Contact</a></li>
-        <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
-        {% if user.is_authenticated %}
-        <li><a href="{% url 'login' %}">Logout</a></li>
-        {% endif %}
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'chat' %}">Chat</a></li>
+      <li><a href="{% url 'feature' %}">Features</a></li>
+      <li><a href="{% url 'about-us' %}">About Us</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
     </ul>
+    <button id="profile-btn" class="profile-icon">👤</button>
   </nav>
 
- <div class="main">
-    <ul id="author-list">
-      {% for author in data %}
-        <div class="author-container">
-          <strong>{{ author.first_name }} {{ author.last_name }}</strong><br><br>
-          <p>{{ author.self_bio }}</p>          
-          <p>{{ author.faculty }}</p>
-          <p>{{ author.gender }}</p>
-          {% if author.profile_picture %}
-            <img src="{{ author.profile_picture.url }}" alt="Profile Picture">
-          {% else %}
-            <p>No profile picture available.</p>
-          {% endif %}
-        </div>
-      {% endfor %}
-    </ul>
+  <div class="hero">
+    <h1>Welcome to MMU Connect</h1>
+    <p>Find your perfect study partner. Chat. Learn. Grow together at MMU.</p>
+    <a href="{% url 'feature' %}">Explore Features</a>
+  </div>
 
-
-    <div class="action-buttons">
-      <button class="like-btn" onclick="sendMatchRequest()">❤</button>
-      <button class="dislike-btn" onclick="nextAuthor()">✖</button>
+  <div class="section">
+    <h2>Why Choose MMU Connect?</h2>
+    <div class="features-summary">
+      <div class="feature-card">
+        <h3>🎯 Smart Matchmaking</h3>
+        <p>Our algorithm pairs you with the best match based on your courses and interests.</p>
+      </div>
+      <div class="feature-card">
+        <h3>💬 Seamless Chat</h3>
+        <p>Engage with study buddies or form groups with ease using our built-in chat system.</p>
+      </div>
+      <div class="feature-card">
+        <h3>📈 Personal Progress</h3>
+        <p>Visual stats to monitor your collaboration frequency and productivity.</p>
+      </div>
     </div>
   </div>
 
-  <footer class="footer">© MMU Connect</footer>
+  <footer class="footer">
+    © MMU Connect
+  </footer>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      let currentIndex = 0;
-      let authors = document.querySelectorAll('.author-container');
+    document.addEventListener('DOMContentLoaded', () => {
+      const btn = document.getElementById('profile-btn');
+      let loggedIn = localStorage.getItem('loggedIn') === 'true';
 
-      function showAuthor(index) {
-        authors.forEach(author => author.classList.remove('active'));
-        if (index < authors.length) {
-          authors[index].classList.add('active');
+      const updateProfileButton = () => {
+        btn.textContent = loggedIn ? '🔓 Logout' : '👤 Login';
+        btn.title = loggedIn ? 'Click to log out' : 'Click to log in';
+      };
+
+      btn.addEventListener('click', () => {
+        if (loggedIn) {
+          localStorage.removeItem('loggedIn');
+          loggedIn = false;
+          updateProfileButton();
+          window.location.href = '{% url "login" %}';
         } else {
-          alert("No more authors to display.");
+          window.location.href = '{% url "login" %}';
         }
-      }
+      });
 
-      function nextAuthor() {
-        currentIndex++;
-        showAuthor(currentIndex);
-      }
-
-      function sendMatchRequest() {
-        let author = authors[currentIndex];
-        if (author) {
-          let authorNameElement = author.querySelector("strong");
-          let authorName = authorNameElement ? authorNameElement.innerText.trim() : "Unknown Author";
-          alert(`You have sent your match request to ${authorName}`);
-        }
-        nextAuthor();
-      }
-
-      window.nextAuthor = nextAuthor;
-      window.sendMatchRequest = sendMatchRequest;
-
-      showAuthor(currentIndex);
+      updateProfileButton();
     });
   </script>
 </body>

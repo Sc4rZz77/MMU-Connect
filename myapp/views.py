@@ -27,8 +27,11 @@ def test(request):
 
 @login_required
 def home(request):
+    return render(request, "home.html")
+
+def feature(request):
     data = Author.objects.exclude(user=request.user)
-    return render(request, "home.html", {"data": data})
+    return render(request, "feature.html", {"data": data})
 
 def aboutus(request):
     return render(request, "about-us.html")
@@ -38,9 +41,6 @@ def chat(request):
 
 def contact(request):
     return render(request, "contact.html")
-
-def feature(request):
-    return render(request, "feature.html")
 
 @login_required
 def edit_profile(request):
