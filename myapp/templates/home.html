@@ -205,30 +205,5 @@
   <footer class="footer">
     © MMU Connect
   </footer>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.getElementById('profile-btn');
-      let loggedIn = localStorage.getItem('loggedIn') === 'true';
-
-      const updateProfileButton = () => {
-        btn.textContent = loggedIn ? '🔓 Logout' : '👤 Login';
-        btn.title = loggedIn ? 'Click to log out' : 'Click to log in';
-      };
-
-      btn.addEventListener('click', () => {
-        if (loggedIn) {
-          localStorage.removeItem('loggedIn');
-          loggedIn = false;
-          updateProfileButton();
-          window.location.href = '{% url "login" %}';
-        } else {
-          window.location.href = '{% url "login" %}';
-        }
-      });
-
-      updateProfileButton();
-    });
-  </script>
 </body>
 </html>

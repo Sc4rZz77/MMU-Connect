@@ -6,20 +6,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Edit Profile – MMU Connect</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
   <style>
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Jost', sans-serif;
-     background: linear-gradient(to bottom, #8e2de2, #4a00e0);
-      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f7ff;
+      color: #333;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
     .navbar {
-      background-color: #4a00e0;
+      background-color: #6d44b8;
       padding: 21px 30px;
       display: flex;
       justify-content: center;
@@ -59,22 +60,24 @@
     .main-container {
       max-width: 700px;
       margin: 60px auto 40px;
-      padding: 0 20px;
-      background-color: rgba(255 255 255 / 0.1);
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+      padding: 40px 30px;
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
       text-align: center;
+      animation: fadeIn 0.8s ease-in-out;
+      word-wrap: break-word;
     }
 
     h1 {
       margin-bottom: 25px;
       font-weight: 700;
       font-size: 32px;
-      color: #ffcc00;
+      color: #6d44b8;
     }
 
     .message {
-      background-color: #d4edda;
+      background-color: #e9fce9;
       color: #155724;
       padding: 12px;
       border-radius: 6px;
@@ -92,10 +95,10 @@
       height: 150px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #ffcc00;
+      border: 3px solid #6d44b8;
       margin: 20px auto;
       display: block;
-      box-shadow: 0 0 10px #ffcc00;
+      box-shadow: 0 0 10px rgba(109, 68, 184, 0.4);
     }
 
     form {
@@ -104,7 +107,7 @@
       gap: 15px;
       text-align: left;
       max-width: 600px;
-      margin: 0 auto 40px;
+      margin: 0 auto;
     }
 
     input[type="text"],
@@ -113,12 +116,12 @@
     textarea,
     input[type="file"] {
       padding: 12px;
-      border-radius: 6px;
-      border: none;
+      border-radius: 8px;
+      border: 1px solid #ccc;
       font-size: 16px;
       outline: none;
-      background-color: #333;
-      color: #fff;
+      background-color: #f5f5f5;
+      color: #333;
       box-sizing: border-box;
       transition: box-shadow 0.3s ease;
       width: 100%;
@@ -129,12 +132,12 @@
     select:focus,
     textarea:focus,
     input[type="file"]:focus {
-      box-shadow: 0 0 8px #ffcc00;
-      background-color: #444;
+      box-shadow: 0 0 8px #8e60ff;
+      background-color: #fff;
     }
 
     button {
-      background-color: #4a00e0;
+      background-color: #6d44b8;
       color: white;
       padding: 14px;
       border: none;
@@ -156,9 +159,15 @@
       text-align: center;
       padding: 20px;
       font-size: 14px;
-      background-color: #222222;
+      background-color: #573b8a;
       color: #ffffff;
       margin-top: auto;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+
     }
   </style>
 </head>
@@ -190,7 +199,7 @@
 
     {% if user.profile.profile_picture.url %}
       <img id="preview" src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" />
-    {% else %}
+    {% else %} 
       <img id="preview" src="{% static 'images/default.jpg' %}" alt="Profile Picture" />
     {% endif %}
 
@@ -206,21 +215,28 @@
   </footer>
 
   <script>
-    const fileInput = document.querySelector('input[type="file"]');
-    const preview = document.getElementById('preview');
+  const fileInput = document.querySelector('input[type="file"]');
+  const preview = document.getElementById('preview');
 
-    if (fileInput) {
-      fileInput.addEventListener('change', function () {
-        const file = this.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            preview.src = e.target.result;
-          }
-          reader.readAsDataURL(file);
-        }
-      });
-    }
+  const savedImage = localStorage.getItem('savedImage');
+  if (savedImage) {
+    preview.src = savedImage;
+  }
+
+  if (fileInput) {
+    fileInput.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const dataURL = e.target.result;
+          preview.src = dataURL;
+          localStorage.setItem('savedImage', dataURL);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
   </script>
 
 </body>
