@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MMU Connect</title>
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <!-- Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+  <h1>MMU Connect</h1>
+
+  <script>
+    // Your Firebase config object
+    const firebaseConfig = {
+      apiKey: "AIzaSyAPc3JeNHvr2MwPI1NCsZyUCSNdnoISSyY",
+      authDomain: "mmu-connect-8b8bd.firebaseapp.com",
+      projectId: "mmu-connect-8b8bd",
+      storageBucket: "mmu-connect-8b8bd.firebasestorage.app",
+      messagingSenderId: "146259258589",
+      appId: "1:146259258589:web:ceb98ebcf93171da913f34",
+      measurementId: "G-4FQNZQJMBZ"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Initialize Firestore
+    const db = firebase.firestore();
+
+    // Function to add a like document
+    function addLike(userId, postId) {
+      db.collection("likes").add({
+        userId: userId,
+        postId: postId,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
+      .then((docRef) => {
+        console.log("Like added with ID: ", docRef.id);
+      })
+      .catch((error) => {
+        console.error("Error adding like: ", error);
+      });
+    }
+
+    // Example usage
+    addLike("user123", "post456");
+  </script>
+
+</body>
+</html>
