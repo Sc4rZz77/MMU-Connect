@@ -3,26 +3,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Contact Us – MMU Connect</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <style>
     body {
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      padding: 0;
-      font-family: 'Jost', sans-serif;
-      background: linear-gradient(135deg, #4a00e0, #8e2de2, #a770ef);
-      color: #ffffff;
+      background: #f9f7ff;
+      color: #333;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .navbar {
-      background-color: #4a00e0;
+      background-color: #6d44b8;
       padding: 21px 30px;
       display: flex;
       justify-content: center;
       align-items: center;
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
       position: relative;
+      animation: fadeIn 1s ease forwards;
     }
 
     .url-bar {
@@ -49,94 +54,112 @@
     }
 
     .nav-links li a:hover {
-      color: #000000;
+      color: #ffcc00;
     }
 
     .profile-icon {
-      position: absolute;
-      right: 30px;
-      top: 15px;
-      font-size: 24px;
-      background: none;
+      background: transparent;
       border: none;
-      color: #ffffff;
+      color: #fff;
+      font-size: 20px;
       cursor: pointer;
     }
 
     .main {
       max-width: 700px;
-      margin: 40px auto;
+      margin: 60px auto 40px auto;
       padding: 0 20px;
       text-align: center;
+      animation: fadeIn 1.2s ease forwards;
     }
 
     .main h1 {
       font-size: 36px;
       margin-bottom: 20px;
+      color: #573b8a;
     }
 
     .main p {
       font-size: 18px;
       margin-bottom: 30px;
-      line-height: 1.6;
+      color: #6d44b8;
+      opacity: 0.9;
     }
 
-    .contact-form {
+    form.contact-form {
+      background: #fff;
+      padding: 30px 25px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      text-align: left;
+      animation: fadeIn 1.4s ease forwards;
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      text-align: left;
+      gap: 18px;
     }
 
     .contact-form label {
       font-weight: 600;
       font-size: 16px;
-      color: #000000;
+      color: #6d44b8;
     }
 
     .contact-form input[type="text"],
     .contact-form input[type="email"],
     .contact-form textarea {
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1.5px solid #ddd;
       font-size: 16px;
       outline: none;
       resize: vertical;
+      color: #333;
+      transition: border-color 0.3s ease;
     }
 
     .contact-form input[type="text"]:focus,
     .contact-form input[type="email"]:focus,
     .contact-form textarea:focus {
-      box-shadow: 0 0 5px #000000;
-      background-color: #333;
-      color: #fff;
+      border-color: #6d44b8;
+      box-shadow: 0 0 8px #8e60ff;
     }
 
     .contact-form button {
-      background-color: #4a00e0;
-      color: white;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
+      background: #fff;
+      color: #6d44b8;
+      border: 2px solid #6d44b8;
+      padding: 14px;
       font-size: 18px;
-      cursor: pointer;
+      border-radius: 8px;
       font-weight: bold;
-      transition: background-color 0.3s ease;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      box-shadow: 0 4px 12px rgba(109, 68, 184, 0.2);
+      align-self: center;
+      width: 180px;
     }
 
     .contact-form button:hover {
-      background-color: #000000;
-      color: #000;
+      background-color: #6d44b8;
+      color: #ffcc00;
+      box-shadow: 0 6px 14px rgba(141, 96, 255, 0.7);
+      border-color: #ffcc00;
     }
 
     .footer {
+      background: #573b8a;
       text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      background-color: #222222;
-      color: #ffffff;
+      padding: 14px;
+      color: #e0dfff;
+      animation: fadeIn 1.6s ease forwards;
       margin-top: 40px;
+    }
+
+    @media (max-width: 768px) {
+      form.contact-form {
+        width: 90%;
+        margin: 0 auto;
+      }
     }
   </style>
 </head>
@@ -144,17 +167,18 @@
   <nav class="navbar">
     <div class="url-bar">MMU Connect</div>
     <ul class="nav-links">
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'chat' %}">Chat</a></li>
-        <li><a href="{% url 'feature' %}">Feature </a></li>
-        <li><a href="{% url 'about-us' %}">About Us</a></li>
-        <li><a href="{% url 'contact' %}">Contact</a></li>
-        <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
-        {% if user.is_authenticated %}
-        <li><a href="{% url 'login' %}">Logout</a></li>
-        {% endif %}
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'chat' %}">Chat</a></li>
+      <li><a href="{% url 'feature' %}">Feature</a></li>
+      <li><a href="{% url 'about-us' %}">About Us</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
+      <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
+      {% if user.is_authenticated %}
+      <li><a href="{% url 'login' %}">Logout</a></li>
+      {% endif %}
     </ul>
   </nav>
+
   <div class="main">
     <h1>Contact Us</h1>
     <p>Feel free to reach out to us!</p>
@@ -175,30 +199,5 @@
   </div>
 
   <footer class="footer">© MMU Connect</footer>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.getElementById('profile-btn');
-      let loggedIn = localStorage.getItem('loggedIn') === 'true';
-
-      const updateProfileButton = () => {
-        btn.textContent = loggedIn ? '🔓 Logout' : '👤 Login';
-        btn.title = loggedIn ? 'Click to log out' : 'Click to log in';
-      };
-
-      btn.addEventListener('click', () => {
-        if (loggedIn) {
-          localStorage.removeItem('loggedIn');
-          loggedIn = false;
-          updateProfileButton();
-          window.location.href = 'login.html';
-        } else {
-          window.location.href = 'login.html';
-        }
-      });
-
-      updateProfileButton();
-    });
-  </script>
 </body>
 </html>
