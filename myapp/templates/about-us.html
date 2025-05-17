@@ -10,13 +10,14 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Jost', sans-serif;
-     background: linear-gradient(135deg, #4a00e0, #8e2de2, #a770ef);
-      color: #ffffff;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f7ff;
+      color: #333;
+      animation: fadeIn 1s ease-in-out;
     }
 
     .navbar {
-      background-color: #4a00e0;
+      background-color: #6d44b8;
       padding: 21px 30px;
       display: flex;
       justify-content: center;
@@ -52,44 +53,64 @@
       color: #ffcc00;
     }
 
-    .profile-icon {
-      position: absolute;
-      right: 30px;
-      top: 15px;
-      font-size: 24px;
-      background: none;
-      border: none;
-      color: #ffffff;
-      cursor: pointer;
-    }
-
     .main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-      min-height: 80vh;
+      max-width: 800px;
+      margin: 60px auto 80px;
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(109, 68, 184, 0.2);
       text-align: center;
+      color: #573b8a;
+      animation: fadeIn 1.5s ease forwards;
+      opacity: 0;
+      transform: translateY(20px);
     }
 
     .main h1 {
-      font-size: 36px;
-      margin-bottom: 20px;
+      font-size: 40px;
+      margin-bottom: 24px;
+      font-weight: 700;
     }
 
     .main p {
       font-size: 18px;
-      max-width: 700px;
-      margin-bottom: 20px;
       line-height: 1.6;
+      margin-bottom: 20px;
     }
 
     .footer {
+      background: #573b8a;
       text-align: center;
       padding: 20px;
       font-size: 14px;
-      background-color: #222222;
-      color: #ffffff;
+      color: #e0dfff;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main {
+        margin: 40px 15px 60px;
+        padding: 30px 20px;
+        font-size: 16px;
+      }
+
+      .main h1 {
+        font-size: 32px;
+      }
     }
   </style>
 </head>
@@ -99,7 +120,7 @@
     <ul class="nav-links">
         <li><a href="{% url 'home' %}">Home</a></li>
         <li><a href="{% url 'chat' %}">Chat</a></li>
-        <li><a href="{% url 'feature' %}">Feature </a></li>
+        <li><a href="{% url 'feature' %}">Feature</a></li>
         <li><a href="{% url 'about-us' %}">About Us</a></li>
         <li><a href="{% url 'contact' %}">Contact</a></li>
         <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
@@ -108,6 +129,7 @@
         {% endif %}
     </ul>
   </nav>
+
   <!-- Main Content -->
   <div class="main">
     <h1>About Us</h1>
@@ -128,31 +150,5 @@
   <footer class="footer">
     © MMU Connect
   </footer>
-
-  <!-- JavaScript -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const btn = document.getElementById('profile-btn');
-      let loggedIn = localStorage.getItem('loggedIn') === 'true';
-
-      const updateProfileButton = () => {
-        btn.textContent = loggedIn ? '🔓 Logout' : '👤 Login';
-        btn.title = loggedIn ? 'Click to log out' : 'Click to log in';
-      };
-
-      btn.addEventListener('click', () => {
-        if (loggedIn) {
-          localStorage.removeItem('loggedIn');
-          loggedIn = false;
-          updateProfileButton();
-          window.location.href = 'login.html';
-        } else {
-          window.location.href = 'login.html';
-        }
-      });
-
-      updateProfileButton();
-    });
-  </script>
 </body>
 </html>

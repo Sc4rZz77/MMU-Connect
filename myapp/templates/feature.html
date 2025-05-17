@@ -10,40 +10,36 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Jost', sans-serif;
-      background: linear-gradient(to bottom, #8e2de2, #4a00e0);
-      color: #000000;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f7ff;
+      color: #333;
     }
 
-  .navbar {
-  background-color: #4a00e0;
-  padding: 21px 30px;
-  display: flex;
-  justify-content: center; /* center the items */
-  align-items: center;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
-}
+    .navbar {
+      background-color: #6d44b8;
+      padding: 21px 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
 
-.nav-items {
-  display: flex;
-  gap: 30px; /* space between navbar items */
-  align-items: center;
-}
-
-   .url-bar {
-  position: absolute;
-  top: 15px;
-  left: 30px;
-  font-size: 24px;
-  font-weight: bold;
-  color: #ffffff;
-}
-
+    .url-bar {
+      position: absolute;
+      top: 15px;
+      left: 30px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #ffffff;
+    }
 
     .nav-links {
       list-style: none;
       display: flex;
       gap: 20px;
+      padding: 0;
+      margin: 0;
     }
 
     .nav-links li a {
@@ -54,95 +50,111 @@
     }
 
     .nav-links li a:hover {
-      color: #ffffff;
+      color: #ffcc00;
     }
 
     .main {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       padding: 40px 20px;
-      min-height: 80vh;
-      overflow-y: auto;
+      max-width: 1000px;
+      margin: 0 auto;
       text-align: center;
+    }
+
+    #author-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      padding: 0;
+      list-style: none;
+      margin: 0 auto;
     }
 
     .author-container {
-      display: none;
-      text-align: center;
-      background: #b497f7; /* Dark background to blend with page */
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
-      animation: fadeInUp 1s ease-out forwards;
-      max-width: 400px; /* Reduced size */
-      margin: 20px auto;
-      transition: transform 0.3s ease-in-out; /* Added subtle animation */
+      background: #fff;
+      padding: 24px;
+      border-radius: 16px;
+      width: 280px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-align: left;
     }
 
     .author-container:hover {
-      transform: scale(1.05); /* Subtle hover effect */
-    }
-
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .author-container.active {
-      display: block;
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
     }
 
     .author-container strong {
-      font-size: 24px;
-      color: #000000;
+      display: block;
+      font-size: 20px;
+      color: #6d44b8;
+      margin-bottom: 8px;
     }
 
     .author-container p {
-      font-size: 18px;
-      color: #000000; /* Lighter text color */
-      line-height: 1.5;
+      font-size: 14px;
+      color: #444;
+      margin: 6px 0;
     }
 
     .author-container img {
-      margin-top: 20px;
-      border-radius: 10px;
+      margin-top: 15px;
+      border-radius: 12px;
       max-width: 100%;
       height: auto;
-      width: 250px; /* Reduced image size */
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
     .action-buttons {
-      margin-top: 30px;
+      margin: 40px 0 20px;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
     }
 
-    .next-btn, .like-btn, .dislike-btn {
-      font-size: 70px;
-      padding: 10px 10px;
-      margin: 0 70px;
+    .like-btn, .dislike-btn {
+      font-size: 48px;
+      padding: 10px 20px;
       border: none;
-      border-radius: 100px;
+      border-radius: 50%;
       cursor: pointer;
-      background-color: #ff0303;
-      color: #000000;
+      background-color: #6d44b8;
+      color: #fff;
       transition: background-color 0.3s ease;
+      box-shadow: 0 4px 12px rgba(109, 68, 184, 0.5);
     }
 
-    .next-btn:hover, .like-btn:hover, .dislike-btn:hover {
-      background-color: #000000;
+    .like-btn:hover {
+      background-color: #8e60ff;
+      box-shadow: 0 6px 16px rgba(142, 96, 255, 0.7);
+    }
+
+    .dislike-btn:hover {
+      background-color: #573b8a;
+      box-shadow: 0 6px 16px rgba(87, 59, 138, 0.7);
     }
 
     .footer {
+      background: #573b8a;
       text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      background-color: #222222;
-      color: #ffffff;
+      padding: 14px;
+      color: #e0dfff;
+      margin-top: 60px;
     }
-    
+
+    @media (max-width: 768px) {
+      #author-list {
+        flex-direction: column;
+        align-items: center;
+      }
+      .author-container {
+        width: 90%;
+      }
+      .action-buttons {
+        gap: 40px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -161,20 +173,20 @@
     </ul>
   </nav>
 
- <div class="main">
+  <div class="main">
     <ul id="author-list">
       {% for author in data %}
-        <div class="author-container">
-          <strong>{{ author.first_name }} {{ author.last_name }}</strong><br><br>
+        <li class="author-container">
+          <strong>{{ author.first_name }} {{ author.last_name }}</strong>
           <p>{{ author.self_bio }}</p>          
-          <p>{{ author.faculty }}</p>
-          <p>{{ author.gender }}</p>
+          <p><strong>Faculty:</strong> {{ author.faculty }}</p>
+          <p><strong>Gender:</strong> {{ author.gender }}</p>
           {% if author.profile_picture %}
             <img src="{{ author.profile_picture.url }}" alt="Profile Picture">
           {% else %}
             <p>No profile picture available.</p>
           {% endif %}
-        </div>
+        </li>
       {% endfor %}
     </ul>
 
@@ -192,9 +204,9 @@
       let authors = document.querySelectorAll('.author-container');
 
       function showAuthor(index) {
-        authors.forEach(author => author.classList.remove('active'));
+        authors.forEach(author => author.style.display = 'none');
         if (index < authors.length) {
-          authors[index].classList.add('active');
+          authors[index].style.display = 'block';
         } else {
           alert("No more authors to display.");
         }
