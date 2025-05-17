@@ -1,20 +1,15 @@
 import os
-from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from .models import Author
 from .forms import AuthorForm
 from .forms import SignupForm
-from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import logout
 from django.http import JsonResponse
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, set_seed
 import re
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 import time
-import json
 from django.contrib import messages
 from myapp.forms import SignupForm
 from django.core.mail import send_mail
@@ -183,11 +178,11 @@ def send_email(request):
             subject="New Contact Form Message",
             message=full_message,
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list=['scarmanthegamer@gmail.com', 'MUHAMMAD.MUHYIDEEN.BARAKA@student.mmu.edu.my'],
+            recipient_list=['scarmanthegamer@gmail.com', 'MUHAMMAD.MUHYIDEEN.BARAKA@student.mmu.edu.my', 'NIMALEN.RAMA.KRISHNAN@student.mmu.edu.my'],
             fail_silently=False,
         )
-        return render(request, 'home.html')  # Or redirect to a success page
+        return render(request, 'home.html') 
 
-    return redirect('contact')  # Fallback if not POST
+    return redirect('contact')  
 
 
