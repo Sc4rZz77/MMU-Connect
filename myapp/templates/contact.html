@@ -183,7 +183,7 @@
     <h1>Contact Us</h1>
     <p>Feel free to reach out to us!</p>
 
-    <form class="contact-form" method="post" action="">
+    <form class="contact-form" method="post" action="{% url 'send_email' %}">
       {% csrf_token %}
       <label for="name">Your Name</label>
       <input type="text" id="name" name="name" placeholder="Enter your name" required />
