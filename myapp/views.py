@@ -17,6 +17,9 @@ import time
 import json
 from django.contrib import messages
 from myapp.forms import SignupForm
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.conf import settings
 
 
 
@@ -168,6 +171,23 @@ def ai_chat(request):
     except Exception as e:
         return JsonResponse({"reply": f"Oops, something went wrong. Error: {str(e)}"})
 
+def send_email(request):
+    if request.method == 'POST':
+        name = request.POST['name']
+        email = request.POST['email']
+        message = request.POST['message']
 
+        full_message = f"From: {name} <{email}>\n\nMessage:\n{message}"
+
+        send_mail(
+            subject="New Contact Form Message",
+            message=full_message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=['scarmanthegamer@gmail.com', 'MUHAMMAD.MUHYIDEEN.BARAKA@student.mmu.edu.my'],
+            fail_silently=False,
+        )
+        return render(request, 'home.html')  # Or redirect to a success page
+
+    return redirect('contact')  # Fallback if not POST
 
 
