@@ -194,8 +194,6 @@ def send_email(request):
 
     return redirect('contact')  
 
-<<<<<<< HEAD
-=======
 User = get_user_model()
 
 class ForceOTPLoginView(LoginView):
@@ -226,4 +224,3 @@ def verify_2fa(request):
     user = User.objects.get(id=user_id)
     send_otp_email(user)
     return render(request, 'two_factor/verify.html')
->>>>>>> f1fc5074eecf5e0a1d0a16d33499d07accf7292b
