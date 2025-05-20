@@ -140,6 +140,12 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'scarmanthegamer@gmail.com'
 EMAIL_HOST_PASSWORD = 'nusy mzmw imfg gaod'
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 
 
 
