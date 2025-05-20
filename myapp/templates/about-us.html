@@ -9,11 +9,9 @@
   <style>
     body {
       margin: 0;
-      padding: 0;
       font-family: 'Segoe UI', sans-serif;
       background: #f9f7ff;
       color: #333;
-      animation: fadeIn 1s ease-in-out;
     }
 
     .navbar {
@@ -22,8 +20,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
       position: relative;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
     }
 
     .url-bar {
@@ -32,7 +30,7 @@
       left: 30px;
       font-size: 24px;
       font-weight: bold;
-      color: #ffffff;
+      color: #fff;
     }
 
     .nav-links {
@@ -53,47 +51,49 @@
       color: #ffcc00;
     }
 
-    .main {
-      max-width: 800px;
-      margin: 60px auto 80px;
+    .about-container {
+      max-width: 960px;
+      margin: 80px auto;
       background: #fff;
-      padding: 40px 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 20px rgba(109, 68, 184, 0.2);
+      border-radius: 20px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      padding: 60px 40px;
       text-align: center;
-      color: #573b8a;
-      animation: fadeIn 1.5s ease forwards;
-      opacity: 0;
-      transform: translateY(20px);
+      animation: fadeIn 1.5s ease;
     }
 
-    .main h1 {
-      font-size: 40px;
-      margin-bottom: 24px;
-      font-weight: 700;
-    }
-
-    .main p {
-      font-size: 18px;
-      line-height: 1.6;
+    .about-container h1 {
+      font-size: 42px;
       margin-bottom: 20px;
+      background: linear-gradient(to right, #6d44b8, #8e60ff);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .about-container p {
+      font-size: 18px;
+      line-height: 1.8;
+      margin: 16px 0;
+      color: #555;
+    }
+
+    .about-container strong {
+      color: #6d44b8;
     }
 
     .footer {
       background: #573b8a;
       text-align: center;
-      padding: 20px;
+      padding: 18px;
       font-size: 14px;
       color: #e0dfff;
-      position: relative;
-      bottom: 0;
-      width: 100%;
+      margin-top: 60px;
     }
 
     @keyframes fadeIn {
       from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(20px);
       }
       to {
         opacity: 1;
@@ -102,14 +102,17 @@
     }
 
     @media (max-width: 768px) {
-      .main {
-        margin: 40px 15px 60px;
-        padding: 30px 20px;
-        font-size: 16px;
+      .about-container {
+        margin: 40px 20px;
+        padding: 40px 20px;
       }
 
-      .main h1 {
+      .about-container h1 {
         font-size: 32px;
+      }
+
+      .about-container p {
+        font-size: 16px;
       }
     }
   </style>
@@ -118,35 +121,35 @@
   <nav class="navbar">
     <div class="url-bar">MMU Connect</div>
     <ul class="nav-links">
-        <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'chat' %}">Chat</a></li>
-        <li><a href="{% url 'feature' %}">Feature</a></li>
-        <li><a href="{% url 'about-us' %}">About Us</a></li>
-        <li><a href="{% url 'contact' %}">Contact</a></li>
-        <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
-        {% if user.is_authenticated %}
-        <li><a href="{% url 'login' %}">Logout</a></li>
-        {% endif %}
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'chat' %}">Chat</a></li>
+      <li><a href="{% url 'feature' %}">Feature</a></li>
+      <li><a href="{% url 'about-us' %}">About Us</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
+      <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
+      {% if user.is_authenticated %}
+      <li><a href="{% url 'login' %}">Logout</a></li>
+      {% endif %}
     </ul>
   </nav>
 
-  <!-- Main Content -->
-  <div class="main">
+  <div class="about-container">
     <h1>About Us</h1>
     <p>
-      Welcome to MMU Connect! We’re a student-driven platform designed to help you 
-      find study partners, build new friendships, and collaborate on academic projects.
+      Welcome to <strong>MMU Connect</strong> — your personalized platform for connection, collaboration, and campus success.
     </p>
     <p>
-      Our mission is to create a supportive community where learning together
-      makes the journey more engaging and effective. 
+      Whether you’re finding a study partner, a project buddy, or expanding your network, MMU Connect is your space to build real academic connections.
     </p>
     <p>
-      © 2025 MMU Connect
+      We believe learning is better together. Our platform empowers you to discover like-minded peers and create meaningful learning experiences.
     </p>
+    <p>
+      Ready to level up your university journey? Join us and turn goals into shared victories.
+    </p>
+    <p>© 2025 MMU Connect</p>
   </div>
 
-  <!-- Footer -->
   <footer class="footer">
     © MMU Connect
   </footer>

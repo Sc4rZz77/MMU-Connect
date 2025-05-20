@@ -1,22 +1,20 @@
 import os
-from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
 from .models import Author
 from .forms import AuthorForm
 from .forms import SignupForm
-from django.contrib.auth import login
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import logout
 from django.http import JsonResponse
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, set_seed
 import re
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
 import time
-import json
 from django.contrib import messages
 from myapp.forms import SignupForm
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.conf import settings
 
 
 
@@ -168,5 +166,22 @@ def ai_chat(request):
     except Exception as e:
         return JsonResponse({"reply": f"Oops, something went wrong. Error: {str(e)}"})
 
+def send_email(request):
+    if request.method == 'POST':
+        name = request.POST['name']
+        email = request.POST['email']
+        message = request.POST['message']
 
+        full_message = f"From: {name} <{email}>\n\nMessage:\n{message}"
+
+        send_mail(
+            subject="New Contact Form Message",
+            message=full_message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=['scarmanthegamer@gmail.com', 'MUHAMMAD.MUHYIDEEN.BARAKA@student.mmu.edu.my', 'NIMALEN.RAMA.KRISHNAN@student.mmu.edu.my'],
+            fail_silently=False,
+        )
+        return render(request, 'home.html') 
+
+    return redirect('contact')  
 
