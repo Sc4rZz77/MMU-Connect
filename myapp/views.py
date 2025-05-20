@@ -15,8 +15,14 @@ from myapp.forms import SignupForm
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect
 from django.conf import settings
-
-
+from django.contrib.auth.views import LoginView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login
+from django.contrib import messages
+from django.core.cache import cache
+from .otp_utils import send_otp_email
+from django.contrib.auth import get_user_model
+import random
 
 
 def test(request):
@@ -36,6 +42,9 @@ def aboutus(request):
 
 def chat(request):
     return render(request, "chat.html")
+
+def livechat(request):
+    return render(request, "livechat.html")
 
 def contact(request):
     return render(request, "contact.html")
@@ -185,4 +194,33 @@ def send_email(request):
 
     return redirect('contact')  
 
+User = get_user_model()
 
+class ForceOTPLoginView(LoginView):
+    def form_valid(self, form):
+        user = form.get_user()
+        if user.email.endswith('@student.mmu.edu.my'):
+            self.request.session['2fa_user_id'] = user.id
+            return redirect('verify_2fa')
+        return super().form_valid(form)
+
+def verify_2fa(request):
+    if request.method == 'POST':
+        user_id = request.session.get('2fa_user_id')
+        if not user_id:
+            return redirect('login')
+
+        user = User.objects.get(id=user_id)
+        if cache.get(f'otp_{user.id}') == request.POST.get('otp'):
+            request.session['2fa_verified'] = True
+            login(request, user)
+            return redirect(request.GET.get('next', 'home'))
+        messages.error(request, "Invalid OTP")
+
+    user_id = request.session.get('2fa_user_id')
+    if not user_id:
+        return redirect('login')
+
+    user = User.objects.get(id=user_id)
+    send_otp_email(user)
+    return render(request, 'two_factor/verify.html')
