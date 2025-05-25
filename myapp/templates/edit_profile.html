@@ -197,10 +197,11 @@
       {% endfor %}
     {% endif %}
 
-    {% if user.profile.profile_picture.url %}
+
+    {% if user.profile.profile_picture %}
       <img id="preview" src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" />
-    {% else %} 
-      <img id="preview" src="{% static 'images/default.jpg' %}" alt="Profile Picture" />
+    {% else %}
+      <img id="preview" src="{{ MEDIA_URL }}author_images/default.jpg" alt="Profile Picture" />
     {% endif %}
 
     <form method="post" enctype="multipart/form-data">

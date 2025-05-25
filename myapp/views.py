@@ -51,8 +51,8 @@ def contact(request):
 
 @login_required
 def edit_profile(request):
-    author, created = Author.objects.get_or_create(user=request.user)  # Ensure user has a profile
-    
+    author, created = Author.objects.get_or_create(user=request.user)
+
     if request.method == "POST":
         form = AuthorForm(request.POST, request.FILES, instance=author)
         if form.is_valid():
@@ -61,7 +61,10 @@ def edit_profile(request):
     else:
         form = AuthorForm(instance=author)
 
-    return render(request, "edit_profile.html", {"form": form})  # Allow users to edit their profile
+    return render(request, "edit_profile.html", {
+        "form": form,
+        "MEDIA_URL": settings.MEDIA_URL  # 👈 This enables {{ MEDIA_URL }} in the template
+    })
 
 def signup(request):
     if request.method == 'POST':
