@@ -149,7 +149,7 @@ def ai_chat(request):
 
     try:
         ai_response = client.chat.completions.create(
-            model="qwen/qwen3-1.7b:free",
+            model="meta-llama/llama-3.3-8b-instruct:free",
             messages=[
                 {"role": "system", "content": "/no_think"},
                 {"role": "user", "content": user_input}
@@ -227,7 +227,3 @@ def verify_2fa(request):
     user = User.objects.get(id=user_id)
     send_otp_email(user)
     return render(request, 'two_factor/verify.html')
-<<<<<<< HEAD
-
-=======
->>>>>>> 9aa6b9c088c7cdd3d63ca5d4b26ef82eaf008277
