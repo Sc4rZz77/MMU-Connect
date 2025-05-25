@@ -227,3 +227,7 @@ def verify_2fa(request):
     user = User.objects.get(id=user_id)
     send_otp_email(user)
     return render(request, 'two_factor/verify.html')
+<<<<<<< HEAD
+
+=======
+>>>>>>> 9aa6b9c088c7cdd3d63ca5d4b26ef82eaf008277
