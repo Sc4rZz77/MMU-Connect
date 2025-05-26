@@ -1,24 +1,28 @@
 import os
-import re
-import time
-import random
-from dotenv import load_dotenv
-
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout, login, get_user_model
-from django.contrib.auth.views import LoginView
-from django.contrib import messages
-from django.core.mail import send_mail
-from django.core.cache import cache
-from django.shortcuts import render, redirect, get_object_or_404
-from django.conf import settings
+from .models import Author
+from .forms import AuthorForm
+from .forms import SignupForm
+from django.contrib.auth import views as auth_views
+from django.contrib.auth import logout
 from django.http import JsonResponse
-
+import re
 from huggingface_hub import InferenceClient
-
-from .models import Author, Like
-from .forms import AuthorForm, SignupForm
+from dotenv import load_dotenv
+import time
+from django.contrib import messages
+from myapp.forms import SignupForm
+from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.conf import settings
+from django.contrib.auth.views import LoginView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import login
+from django.contrib import messages
+from django.core.cache import cache
 from .otp_utils import send_otp_email
+from django.contrib.auth import get_user_model
+from django.views.decorators.cache import never_cache
 
 User = get_user_model()
 client = InferenceClient()
@@ -28,27 +32,38 @@ def test(request):
     return render(request, 'test.html', {'data': data})
 
 @login_required
+@never_cache
 def home(request):
     return render(request, "home.html")
 
+@login_required
+@never_cache
 def feature(request):
     data = Author.objects.exclude(user=request.user)
     return render(request, "feature.html", {"data": data})
 
+@login_required
+@never_cache
 def aboutus(request):
     return render(request, "about-us.html")
 
+@login_required
+@never_cache
 def chat(request):
     return render(request, "chat.html")
 
 @login_required
+@never_cache
 def livechat(request):
     return render(request, "livechat.html")
 
+@login_required
+@never_cache
 def contact(request):
     return render(request, "contact.html")
 
 @login_required
+@never_cache
 def edit_profile(request):
     author, created = Author.objects.get_or_create(user=request.user)
 
@@ -93,6 +108,7 @@ def logout_view(request):
     return response
 
 @login_required
+@never_cache
 def ai_chat(request):
     user_input = request.GET.get("message", "").strip()
     if not user_input:
@@ -196,6 +212,8 @@ def verify_2fa(request):
 from django.shortcuts import redirect
 from .models import UserProfile  # or whatever model you're using
 
+@login_required
+@never_cache
 def like_profile(request, liked_user_id):
     # example logic – update to your needs
     if request.user.is_authenticated:
