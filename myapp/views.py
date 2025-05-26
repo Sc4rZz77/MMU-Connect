@@ -22,7 +22,8 @@ from django.contrib import messages
 from django.core.cache import cache
 from .otp_utils import send_otp_email
 from django.contrib.auth import get_user_model
-import random
+from django.views.decorators.cache import never_cache
+
 
 
 def test(request):
@@ -30,29 +31,40 @@ def test(request):
     return render(request, 'test.html', {'data': data})
 
 @login_required
+@never_cache
 def home(request):
     return render(request, "home.html")
 
+@login_required
+@never_cache
 def feature(request):
     data = Author.objects.exclude(user=request.user)
     return render(request, "feature.html", {"data": data})
 
+@login_required
+@never_cache
 def aboutus(request):
     return render(request, "about-us.html")
 
+@login_required
+@never_cache
 def chat(request):
     return render(request, "chat.html")
 
+#still experimental
 def livechat(request):
     return render(request, "livechat.html")
 
+@login_required
+@never_cache
 def contact(request):
     return render(request, "contact.html")
 
 @login_required
+@never_cache
 def edit_profile(request):
-    author, created = Author.objects.get_or_create(user=request.user)  # Ensure user has a profile
-    
+    author, created = Author.objects.get_or_create(user=request.user)
+
     if request.method == "POST":
         form = AuthorForm(request.POST, request.FILES, instance=author)
         if form.is_valid():
@@ -61,7 +73,10 @@ def edit_profile(request):
     else:
         form = AuthorForm(instance=author)
 
-    return render(request, "edit_profile.html", {"form": form})  # Allow users to edit their profile
+    return render(request, "edit_profile.html", {
+        "form": form,
+        "MEDIA_URL": settings.MEDIA_URL  # 👈 This enables {{ MEDIA_URL }} in the template
+    })
 
 def signup(request):
     if request.method == 'POST':
@@ -87,13 +102,10 @@ class CustomLoginView(auth_views.LoginView):
         
         return response
     
+@never_cache
 def logout_view(request):
-    logout(request)  # Clear user session
-    request.session.flush()  # Ensure full session reset
-    
-    response = redirect("login")  # Redirect user to login page
-    response.set_cookie("sessionid", "", expires=0)  # Expire session cookie immediately
-    return response
+    logout(request)  # clears session & logs out user
+    return redirect('login')
 
 load_dotenv()
 client = InferenceClient(
@@ -101,6 +113,8 @@ client = InferenceClient(
     api_key=os.getenv("HF_TOKEN"),  
 )
 
+@login_required
+@never_cache
 def ai_chat(request):
     user_input = request.GET.get("message", "").strip()
 
@@ -146,7 +160,7 @@ def ai_chat(request):
 
     try:
         ai_response = client.chat.completions.create(
-            model="qwen/qwen3-1.7b:free",
+            model="meta-llama/llama-3.3-8b-instruct:free",
             messages=[
                 {"role": "system", "content": "/no_think"},
                 {"role": "user", "content": user_input}
@@ -175,6 +189,8 @@ def ai_chat(request):
     except Exception as e:
         return JsonResponse({"reply": f"Oops, something went wrong. Error: {str(e)}"})
 
+@login_required    
+@never_cache
 def send_email(request):
     if request.method == 'POST':
         name = request.POST['name']
@@ -224,7 +240,3 @@ def verify_2fa(request):
     user = User.objects.get(id=user_id)
     send_otp_email(user)
     return render(request, 'two_factor/verify.html')
-<<<<<<< HEAD
-
-=======
->>>>>>> 9aa6b9c088c7cdd3d63ca5d4b26ef82eaf008277
