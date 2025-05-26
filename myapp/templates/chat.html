@@ -1,390 +1,325 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MMU Connect – Chat</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background: #f4f4f8;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
     }
 
     .navbar {
-      background-color: #7642aa;
-      color: white;
-      padding: 15px 30px;
+      background-color: #6d44b8;
+      padding: 21px 30px;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
       position: relative;
     }
 
-    .navbar .logo {
+    .url-bar {
       position: absolute;
+      top: 15px;
       left: 30px;
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
+      color: #ffffff;
     }
 
     .nav-links {
       list-style: none;
       display: flex;
-      gap: 25px;
-      margin: 0;
+      gap: 20px;
       padding: 0;
+      margin: 0;
     }
 
     .nav-links li a {
-      color: white;
+      color: #ffffff;
       text-decoration: none;
       font-weight: bold;
+      transition: color 0.3s ease;
     }
 
     .nav-links li a:hover {
-      text-decoration: underline;
+      color: #ffcc00;
     }
 
-    .center-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: calc(100vh - 70px);
-      padding: 20px;
-    }
-
-    .chat-container {
-      display: flex;
-      background-color: #fff;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-      width: 900px;
-      max-width: 100%;
-      height: 500px;
-    }
-
-    #sidebar {
-      width: 250px;
-      background: #eee;
-      padding: 20px;
-      overflow-y: auto;
-      border-right: 1px solid #ccc;
-    }
-
-    #recent-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    #recent-list li {
-      padding: 8px 10px;
-      margin-bottom: 5px;
-      background-color: #fff;
-      border-radius: 5px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .notification {
-      background-color: red;
-      color: white;
-      padding: 2px 6px;
-      font-size: 12px;
-      border-radius: 10px;
-    }
-
-    .chat-main {
+    .main {
       flex: 1;
       padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #messages {
-      flex: 1;
-      border: 1px solid #ccc;
-      padding: 10px;
       overflow-y: auto;
-      margin-bottom: 10px;
-      background-color: #fafafa;
       display: flex;
       flex-direction: column;
     }
 
     .message {
+      padding: 14px 18px;
+      border-radius: 16px;
       max-width: 70%;
-      margin-bottom: 10px;
-      padding: 10px;
-      border-radius: 10px;
-      word-wrap: break-word;
+      margin-bottom: 12px;
+      font-size: 15px;
+      line-height: 1.6;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.06);
     }
 
-    .sent {
-      background-color: #d1c4e9;
+    .user {
       align-self: flex-end;
-      text-align: right;
+      background-color: #d6c7f8;
+      border-radius: 16px 16px 0 16px;
+      color: #222;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
 
-    .received {
-      background-color: #e0e0e0;
+    .bot {
       align-self: flex-start;
-      text-align: left;
+      align-content: flex-start;
+      background-color: #ffffff;
+      border-radius: 16px 16px 16px 0;
+      color: #111;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
 
-    .chat-controls {
+    .input-bar {
       display: flex;
-      gap: 10px;
+      padding: 16px;
+      background-color: #ffffff;
+      border-top: 1px solid #ddd;
+      position: sticky;
+      bottom: 0;
     }
 
-    .chat-controls input {
+    #chat-input {
       flex: 1;
-      padding: 10px;
+      padding: 12px 16px;
       font-size: 16px;
-    }
-
-    .chat-controls button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #7642aa;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    .chat-controls button:hover {
-      background-color: #5e3291;
-    }
-
-    .chat-main input[type="text"] {
-      margin-bottom: 10px;
-      padding: 8px;
-      font-size: 16px;
-    }
-
-    #context-menu {
-      position: absolute;
-      display: none;
-      background: white;
       border: 1px solid #ccc;
-      z-index: 1000;
+      border-radius: 8px;
+      outline: none;
+      margin-right: 10px;
     }
 
-    #context-menu div {
-      padding: 8px 12px;
+    #send-btn {
+      background-color: #6d44b8;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
     }
 
-    #context-menu div:hover {
-      background-color: #f0f0f0;
+    #send-btn:hover {
+      background-color: #55369c;
     }
 
-    .message:hover {
-      outline: 1px dashed #bbb;
-      cursor: context-menu;
+    .footer-container {
+      text-align: center;
+      font-size: 13px;
+      color: #ffffff;
+      padding: 10px 0;
+      background: #6d44b8;
+    }
+
+    .typing-dots {
+      width: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .typing-dots span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: #bbb;
+      border-radius: 50%;
+      animation: bounce 1s infinite ease-in-out;
+    }
+
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+        .modal {
+      display: none; 
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px 40px;   
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 450px;        
+      min-width: 350px;    
+      margin: auto;
+      font-size: 1.1rem; 
+      line-height: 1.4;
+    }
+
+    .modal-content button {
+      padding: 10px 20px;
+      margin: 10px 15px 0 15px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+        button {
+      background-color: #6d44b8;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      max-width: 200px;
+      align-self: center;
+    }
+
+    button:hover {
+      background-color: #ffcc00;
+      color: #000;
     }
   </style>
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="logo">MMU Connect</div>
-    <ul class="nav-links">
-      <li><a href="/home/">Home</a></li>
-      <li><a href="/chat/">Chat</a></li>
-      <li><a href="/feature/">Feature</a></li>
-      <li><a href="/about-us/">About Us</a></li>
-      <li><a href="/contact/">Contact</a></li>
-      <li><a href="/edit_profile/">Edit Profile</a></li>
-      <li><a href="/logout/">Logout</a></li>
-    </ul>
-  </nav>
+<nav class="navbar">
+  <div class="url-bar">MMU Connect</div>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="{% url 'chat' %}">Chat</a></li>
+    <li><a href="{% url 'feature' %}">Feature </a></li>
+    <li><a href="{% url 'about-us' %}">About Us</a></li>
+    <li><a href="{% url 'contact' %}">Contact</a></li>
+    <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
 
-  <div class="center-wrapper">
-    <div class="chat-container">
-      <div id="sidebar">
-        <h3>Recent Chats</h3>
-        <ul id="recent-list"></ul>
-      </div>
+    {% if user.is_authenticated %}
+      <li>
+        <form id="logout-form" method="post" action="{% url 'logout' %}" style="display:none;">
+          {% csrf_token %}
+        </form>
 
-      <div class="chat-main">
-        <input id="username" type="text" placeholder="Your username" />
-        <input id="chatWith" type="text" placeholder="Friend's username" />
-        <div id="messages"></div>
-        <div class="chat-controls">
-          <input id="chat-input" type="text" placeholder="Type a message..." />
-          <button id="send-btn">Send</button>
-        </div>
-      </div>
-    </div>
+        <a href="#" onclick="openLogoutModal(event)">Logout</a>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+
+  <div class="main" id="chat-area">
+    <div class="message bot">Hello! I'm VIN AI. How can I help you today?</div>
   </div>
 
-  <!-- Right-click context menu -->
-  <div id="context-menu">
-    <div id="delete-me">Delete for me</div>
-    <div id="delete-everyone">Delete for everyone</div>
+  <div class="input-bar">
+    <input id="chat-input" type="text" placeholder="Type a message..." />
+    <button id="send-btn">Send</button>
   </div>
 
+  <footer class="footer-container">
+    © MMU Connect. VIN AI may make mistakes.
+  </footer>
+
+  <script src="{% static 'js/chat-script.js' %}"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const usernameInput = document.getElementById('username');
-      const chatWithInput = document.getElementById('chatWith');
-      const chatInput = document.getElementById('chat-input');
-      const sendBtn = document.getElementById('send-btn');
-      const messagesDiv = document.getElementById('messages');
-      const recentList = document.getElementById('recent-list');
-      const contextMenu = document.getElementById('context-menu');
-      const deleteMe = document.getElementById('delete-me');
-      const deleteEveryone = document.getElementById('delete-everyone');
+    const chatArea = document.getElementById("chat-area");
 
-      let selectedMessageIndex = null;
-      let selectedChatKey = null;
-      let selectedMessageSender = null;
+    function scrollToBottom() {
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
 
-      const getChatKey = (a, b) => {
-        return `chat_${[a, b].sort().join('_')}`;
-      };
+    document.getElementById("send-btn").addEventListener("click", async () => {
+      const inputField = document.getElementById("chat-input");
+      const userMessage = inputField.value.trim();
 
-      const getRecentKey = user => `recentChats_${user}`;
-      const getNotificationKey = user => `notifications_${user}`;
+      if (!userMessage) return;
 
-      function renderMessages() {
-        const user = usernameInput.value.trim();
-        const friend = chatWithInput.value.trim();
-        if (!user || !friend || user === friend) return;
+      const userBubble = document.createElement("div");
+      userBubble.className = "message user";
+      userBubble.textContent = userMessage;
+      chatArea.appendChild(userBubble);
 
-        const chatKey = getChatKey(user, friend);
-        const history = JSON.parse(localStorage.getItem(chatKey)) || [];
+      const typingBubble = document.createElement("div");
+      typingBubble.className = "message bot";
+      typingBubble.innerHTML = `<div class="typing-dots">
+        <span></span><span></span><span></span>
+      </div>`;
+      chatArea.appendChild(typingBubble);
 
-        messagesDiv.innerHTML = '';
-        history.forEach(({ sender, text }, i) => {
-          const div = document.createElement('div');
-          div.classList.add('message', sender === user ? 'sent' : 'received');
-          div.textContent = (sender === user ? 'You: ' : `${sender}: `) + text;
-          messagesDiv.appendChild(div);
-        });
+      scrollToBottom();
+      inputField.value = "";
+      inputField.focus();
 
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      try {
+        const response = await fetch(`/api/chat/?message=${encodeURIComponent(userMessage)}`);
+        const data = await response.json();
 
-        const notifyKey = getNotificationKey(user);
-        const notis = JSON.parse(localStorage.getItem(notifyKey)) || {};
-        delete notis[friend];
-        localStorage.setItem(notifyKey, JSON.stringify(notis));
-        renderRecentChats();
+        typingBubble.remove();
+
+        const botBubble = document.createElement("div");
+        botBubble.className = "message bot";
+        botBubble.textContent = data.reply;
+        chatArea.appendChild(botBubble);
+        scrollToBottom();
+      } catch (err) {
+        typingBubble.innerHTML = "⚠️ Error: Unable to connect.";
       }
-
-      function sendMessage() {
-        const user = usernameInput.value.trim();
-        const friend = chatWithInput.value.trim();
-        const text = chatInput.value.trim();
-        if (!user || !friend || !text || user === friend) return;
-
-        const chatKey = getChatKey(user, friend);
-        const history = JSON.parse(localStorage.getItem(chatKey)) || [];
-        history.push({ sender: user, text });
-        localStorage.setItem(chatKey, JSON.stringify(history));
-        chatInput.value = '';
-
-        // notify
-        const notifyKey = getNotificationKey(friend);
-        const notis = JSON.parse(localStorage.getItem(notifyKey)) || {};
-        notis[user] = 1;
-        localStorage.setItem(notifyKey, JSON.stringify(notis));
-
-        addToRecent(user, friend);
-        addToRecent(friend, user);
-        renderMessages();
-      }
-
-      function addToRecent(user, friend) {
-        const key = getRecentKey(user);
-        let list = JSON.parse(localStorage.getItem(key)) || [];
-        list = [friend, ...list.filter(f => f !== friend)].slice(0, 10);
-        localStorage.setItem(key, JSON.stringify(list));
-      }
-
-      function renderRecentChats() {
-        const user = usernameInput.value.trim();
-        const list = JSON.parse(localStorage.getItem(getRecentKey(user))) || [];
-        const notis = JSON.parse(localStorage.getItem(getNotificationKey(user))) || {};
-        recentList.innerHTML = '';
-        list.forEach(friend => {
-          const li = document.createElement('li');
-          li.innerHTML = `<span>${friend}</span>`;
-          if (notis[friend]) {
-            const badge = document.createElement('span');
-            badge.className = 'notification';
-            badge.textContent = '1 noti';
-            li.appendChild(badge);
-          }
-          li.addEventListener('click', () => {
-            chatWithInput.value = friend;
-            renderMessages();
-          });
-          recentList.appendChild(li);
-        });
-      }
-
-      // Context menu
-      messagesDiv.addEventListener('contextmenu', e => {
-        e.preventDefault();
-        const message = e.target.closest('.message');
-        if (!message) return;
-        selectedMessageIndex = Array.from(messagesDiv.children).indexOf(message);
-        const user = usernameInput.value.trim();
-        const friend = chatWithInput.value.trim();
-        selectedChatKey = getChatKey(user, friend);
-        const history = JSON.parse(localStorage.getItem(selectedChatKey)) || [];
-        selectedMessageSender = history[selectedMessageIndex]?.sender;
-        contextMenu.style.top = `${e.pageY}px`;
-        contextMenu.style.left = `${e.pageX}px`;
-        contextMenu.style.display = 'block';
-      });
-
-      document.addEventListener('click', () => {
-        contextMenu.style.display = 'none';
-      });
-
-      deleteMe.addEventListener('click', () => {
-        const history = JSON.parse(localStorage.getItem(selectedChatKey)) || [];
-        history.splice(selectedMessageIndex, 1);
-        localStorage.setItem(selectedChatKey, JSON.stringify(history));
-        renderMessages();
-      });
-
-      deleteEveryone.addEventListener('click', () => {
-        const user = usernameInput.value.trim();
-        const history = JSON.parse(localStorage.getItem(selectedChatKey)) || [];
-        if (selectedMessageSender !== user) {
-          alert("You can only delete your own message for everyone.");
-          return;
-        }
-        history.splice(selectedMessageIndex, 1);
-        localStorage.setItem(selectedChatKey, JSON.stringify(history));
-        renderMessages();
-      });
-
-      sendBtn.addEventListener('click', sendMessage);
-      chatInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter') sendMessage();
-      });
-
-      usernameInput.addEventListener('change', () => {
-        renderRecentChats();
-        renderMessages();
-      });
-
-      chatWithInput.addEventListener('change', renderMessages);
     });
+
+    document.getElementById("chat-input").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        document.getElementById("send-btn").click();
+      }
+    });
+
+      function openLogoutModal(event) {
+  event.preventDefault();
+  document.getElementById('logout-modal').style.display = 'flex';
+}
+
+function closeLogoutModal() {
+  document.getElementById('logout-modal').style.display = 'none';
+}
+
+function submitLogout() {
+  document.getElementById('logout-form').submit();
+}
   </script>
 </body>
+<div id="logout-modal" class="modal">
+  <div class="modal-content">
+    <p>Are you sure you want to logout?</p>
+    <button onclick="submitLogout()">Yes, Logout</button>
+    <button onclick="closeLogoutModal()">Cancel</button>
+  </div>
+</div>
 </html>

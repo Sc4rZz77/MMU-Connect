@@ -51,7 +51,8 @@ def aboutus(request):
 def chat(request):
     return render(request, "chat.html")
 
-#still experimental
+@login_required
+@never_cache
 def livechat(request):
     return render(request, "livechat.html")
 

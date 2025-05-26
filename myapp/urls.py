@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/chat/', ai_chat, name='ai_chat'),
     path('send-email/', views.send_email, name='send_email'),
     path('test', views.test, name='test'),
+    path('livechat/', views.livechat, name='livechat'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
