@@ -19,48 +19,33 @@ from huggingface_hub import InferenceClient
 from .models import Author, Like
 from .forms import AuthorForm, SignupForm
 from .otp_utils import send_otp_email
-from .two_factor_views import verify_2fa
-
 
 User = get_user_model()
-
-load_dotenv()
-client = InferenceClient(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("HF_TOKEN"),
-)
-
+client = InferenceClient()
 
 def test(request):
     data = Author.objects.all()
     return render(request, 'test.html', {'data': data})
 
-
 @login_required
 def home(request):
     return render(request, "home.html")
-
 
 def feature(request):
     data = Author.objects.exclude(user=request.user)
     return render(request, "feature.html", {"data": data})
 
-
 def aboutus(request):
     return render(request, "about-us.html")
-
 
 def chat(request):
     return render(request, "chat.html")
 
-
 def livechat(request):
     return render(request, "livechat.html")
 
-
 def contact(request):
     return render(request, "contact.html")
-
 
 @login_required
 def edit_profile(request):
@@ -76,7 +61,6 @@ def edit_profile(request):
 
     return render(request, "edit_profile.html", {"form": form})
 
-
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)
@@ -86,7 +70,6 @@ def signup(request):
     else:
         form = SignupForm()
     return render(request, 'signup.html', {'form': form})
-
 
 class CustomLoginView(LoginView):
     def dispatch(self, request, *args, **kwargs):
@@ -101,16 +84,14 @@ class CustomLoginView(LoginView):
 
         return response
 
-
 def logout_view(request):
     logout(request)
     request.session.flush()
-
     response = redirect("login")
     response.set_cookie("sessionid", "", expires=0)
     return response
 
-
+@login_required
 def ai_chat(request):
     user_input = request.GET.get("message", "").strip()
     if not user_input:
@@ -142,7 +123,7 @@ def ai_chat(request):
 
     try:
         ai_response = client.chat.completions.create(
-            model="qwen/qwen3-1.7b:free",
+            model="meta-llama/llama-3.3-8b-instruct:free",
             messages=[
                 {"role": "system", "content": "/no_think"},
                 {"role": "user", "content": user_input}
@@ -158,7 +139,6 @@ def ai_chat(request):
         return JsonResponse({"reply": [generated_text]}, content_type="application/json")
     except Exception as e:
         return JsonResponse({"reply": f"Oops, something went wrong. Error: {str(e)}"})
-
 
 def send_email(request):
     if request.method == 'POST':
@@ -183,7 +163,6 @@ def send_email(request):
 
     return redirect('contact')
 
-
 class ForceOTPLoginView(LoginView):
     def form_valid(self, form):
         user = form.get_user()
@@ -191,7 +170,6 @@ class ForceOTPLoginView(LoginView):
             self.request.session['2fa_user_id'] = user.id
             return redirect('verify_2fa')
         return super().form_valid(form)
-
 
 def verify_2fa(request):
     if request.method == 'POST':
@@ -214,22 +192,13 @@ def verify_2fa(request):
     send_otp_email(user)
     return render(request, 'two_factor/verify.html')
 
+from django.shortcuts import redirect
+from .models import UserProfile  # or whatever model you're using
 
-@login_required
 def like_profile(request, liked_user_id):
-    liker = request.user
-    liked_user = get_object_or_404(User, id=liked_user_id)
-
-    like, created = Like.objects.get_or_create(liker=liker, liked=liked_user)
-
-    if created:
-        print(f"{liker.username} liked {liked_user.username}")  # Debug message
-
-        subject = f"{liker.username} liked your profile!"
-        message = f"Hi {liked_user.username},\n\n{liker.username} just liked your profile!"
-        from_email = settings.EMAIL_HOST_USER
-        recipient_list = [liked_user.email]
-
-        send_mail(subject, message, from_email, recipient_list)
-
-    return redirect('profile', user_id=liked_user.id)  # Adjust redirect as needed
+    # example logic – update to your needs
+    if request.user.is_authenticated:
+        liked_user = UserProfile.objects.get(id=liked_user_id)
+        request.user.profile.likes.add(liked_user)
+        return redirect('homepage')  # change 'homepage' to your redirect target
+    return redirect('login')  # or wherever you want to send unauthenticated users
