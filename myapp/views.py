@@ -106,13 +106,20 @@ def logout_view(request):
     response = redirect("login")
     response.set_cookie("sessionid", "", expires=0)
     return response
+load_dotenv()
+client = InferenceClient(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("HF_TOKEN"),  
+)
 
-@login_required
-@never_cache
 def ai_chat(request):
     user_input = request.GET.get("message", "").strip()
+
     if not user_input:
         return JsonResponse({"error": "No message provided"}, status=400)
+    
+    # Insert chat history to be remembered (omitted for simplicity)
+    # Allow machine learning (omitted for simplicity)
 
     normalized_input = re.sub(r'[^\w\s]', '', user_input.lower())
 
@@ -136,7 +143,17 @@ def ai_chat(request):
 
     for pattern, response in response_map.items():
         if re.search(pattern, normalized_input):
-            return JsonResponse({"reply": [response]}, content_type="application/json")
+            # Simulate typing animation by sending the full response in chunks
+            def typing_animation(response):
+                sentence_chunks = [response]  # Single chunk for the full response
+                for chunk in sentence_chunks:
+                    time.sleep(0.5)  # Simulate typing delay
+                    yield chunk  # Yield the whole sentence in one go
+
+            return JsonResponse(
+                {"reply": list(typing_animation(response))},
+                content_type="application/json"
+            )
 
     try:
         ai_response = client.chat.completions.create(
@@ -148,12 +165,24 @@ def ai_chat(request):
             temperature=0.7,
             top_p=0.8,
             extra_body={
-                "top_k": 20,
-                "min_p": 0
+                "top_k": 20,    # Vendor-specific extension
+                "min_p": 0      # Vendor-specific extension
             }
         )
         generated_text = ai_response['choices'][0]['message']['content'].strip()
-        return JsonResponse({"reply": [generated_text]}, content_type="application/json")
+
+        # Simulate typing animation for the full AI response
+        def typing_animation(response):
+            sentence_chunks = [response]  # Send the whole response at once
+            for chunk in sentence_chunks:
+                time.sleep(0.5)  # Adjust delay between chunks
+                yield chunk  # Yield the full response at once
+
+        return JsonResponse(
+            {"reply": list(typing_animation(generated_text))},
+            content_type="application/json"
+        )
+
     except Exception as e:
         return JsonResponse({"reply": f"Oops, something went wrong. Error: {str(e)}"})
 
