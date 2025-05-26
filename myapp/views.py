@@ -1,68 +1,54 @@
 import os
-from django.contrib.auth.decorators import login_required
-from .models import Author
-from .forms import AuthorForm
-from .forms import SignupForm
-from django.contrib.auth import views as auth_views
-from django.contrib.auth import logout
-from django.http import JsonResponse
 import re
-from huggingface_hub import InferenceClient
-from dotenv import load_dotenv
 import time
-from django.contrib import messages
-from myapp.forms import SignupForm
-from django.core.mail import send_mail
-from django.shortcuts import render, redirect
-from django.conf import settings
+import random
+from dotenv import load_dotenv
+
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout, login, get_user_model
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import login
 from django.contrib import messages
+from django.core.mail import send_mail
 from django.core.cache import cache
+from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
+from django.http import JsonResponse
+
+from huggingface_hub import InferenceClient
+
+from .models import Author, Like
+from .forms import AuthorForm, SignupForm
 from .otp_utils import send_otp_email
-from django.contrib.auth import get_user_model
-from django.views.decorators.cache import never_cache
 
-
+User = get_user_model()
+client = InferenceClient()
 
 def test(request):
     data = Author.objects.all()
     return render(request, 'test.html', {'data': data})
 
 @login_required
-@never_cache
 def home(request):
     return render(request, "home.html")
 
-@login_required
-@never_cache
 def feature(request):
     data = Author.objects.exclude(user=request.user)
     return render(request, "feature.html", {"data": data})
 
-@login_required
-@never_cache
 def aboutus(request):
     return render(request, "about-us.html")
 
-@login_required
-@never_cache
 def chat(request):
     return render(request, "chat.html")
 
 @login_required
-@never_cache
 def livechat(request):
     return render(request, "livechat.html")
 
-@login_required
-@never_cache
 def contact(request):
     return render(request, "contact.html")
 
 @login_required
-@never_cache
 def edit_profile(request):
     author, created = Author.objects.get_or_create(user=request.user)
 
@@ -74,10 +60,7 @@ def edit_profile(request):
     else:
         form = AuthorForm(instance=author)
 
-    return render(request, "edit_profile.html", {
-        "form": form,
-        "MEDIA_URL": settings.MEDIA_URL  # 👈 This enables {{ MEDIA_URL }} in the template
-    })
+    return render(request, "edit_profile.html", {"form": form})
 
 def signup(request):
     if request.method == 'POST':
@@ -89,41 +72,31 @@ def signup(request):
         form = SignupForm()
     return render(request, 'signup.html', {'form': form})
 
-class CustomLoginView(auth_views.LoginView):
+class CustomLoginView(LoginView):
     def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:  
-            return redirect("home")  # Redirect to homepage if logged in
+        if request.user.is_authenticated:
+            return redirect("home")
         response = super().dispatch(request, *args, **kwargs)
 
-        # Set session expiry to 7 days (604800 seconds)
-        if request.POST.get("remember_me"):  
-            request.session.set_expiry(604800)  
+        if request.POST.get("remember_me"):
+            request.session.set_expiry(604800)  # 7 days
         else:
-            request.session.set_expiry(0)  # Session ends when the user closes the browser
-        
-        return response
-    
-@never_cache
-def logout_view(request):
-    logout(request)  # clears session & logs out user
-    return redirect('login')
+            request.session.set_expiry(0)  # Close browser ends session
 
-load_dotenv()
-client = InferenceClient(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("HF_TOKEN"),  
-)
+        return response
+
+def logout_view(request):
+    logout(request)
+    request.session.flush()
+    response = redirect("login")
+    response.set_cookie("sessionid", "", expires=0)
+    return response
 
 @login_required
-@never_cache
 def ai_chat(request):
     user_input = request.GET.get("message", "").strip()
-
     if not user_input:
         return JsonResponse({"error": "No message provided"}, status=400)
-    
-    # Insert chat history to be remembered (omitted for simplicity)
-    # Allow machine learning (omitted for simplicity)
 
     normalized_input = re.sub(r'[^\w\s]', '', user_input.lower())
 
@@ -147,17 +120,7 @@ def ai_chat(request):
 
     for pattern, response in response_map.items():
         if re.search(pattern, normalized_input):
-            # Simulate typing animation by sending the full response in chunks
-            def typing_animation(response):
-                sentence_chunks = [response]  # Single chunk for the full response
-                for chunk in sentence_chunks:
-                    time.sleep(0.5)  # Simulate typing delay
-                    yield chunk  # Yield the whole sentence in one go
-
-            return JsonResponse(
-                {"reply": list(typing_animation(response))},
-                content_type="application/json"
-            )
+            return JsonResponse({"reply": [response]}, content_type="application/json")
 
     try:
         ai_response = client.chat.completions.create(
@@ -169,34 +132,20 @@ def ai_chat(request):
             temperature=0.7,
             top_p=0.8,
             extra_body={
-                "top_k": 20,    # Vendor-specific extension
-                "min_p": 0      # Vendor-specific extension
+                "top_k": 20,
+                "min_p": 0
             }
         )
         generated_text = ai_response['choices'][0]['message']['content'].strip()
-
-        # Simulate typing animation for the full AI response
-        def typing_animation(response):
-            sentence_chunks = [response]  # Send the whole response at once
-            for chunk in sentence_chunks:
-                time.sleep(0.5)  # Adjust delay between chunks
-                yield chunk  # Yield the full response at once
-
-        return JsonResponse(
-            {"reply": list(typing_animation(generated_text))},
-            content_type="application/json"
-        )
-
+        return JsonResponse({"reply": [generated_text]}, content_type="application/json")
     except Exception as e:
         return JsonResponse({"reply": f"Oops, something went wrong. Error: {str(e)}"})
 
-@login_required    
-@never_cache
 def send_email(request):
     if request.method == 'POST':
-        name = request.POST['name']
-        email = request.POST['email']
-        message = request.POST['message']
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        message = request.POST.get('message')
 
         full_message = f"From: {name} <{email}>\n\nMessage:\n{message}"
 
@@ -204,14 +153,16 @@ def send_email(request):
             subject="New Contact Form Message",
             message=full_message,
             from_email=settings.EMAIL_HOST_USER,
-            recipient_list=['scarmanthegamer@gmail.com', 'MUHAMMAD.MUHYIDEEN.BARAKA@student.mmu.edu.my', 'NIMALEN.RAMA.KRISHNAN@student.mmu.edu.my'],
+            recipient_list=[
+                'scarmanthegamer@gmail.com',
+                'MUHAMMAD.MUHYIDEEN.BARAKA@student.mmu.edu.my',
+                'NIMALEN.RAMA.KRISHNAN@student.mmu.edu.my'
+            ],
             fail_silently=False,
         )
-        return render(request, 'home.html') 
+        return render(request, 'home.html')
 
-    return redirect('contact')  
-
-User = get_user_model()
+    return redirect('contact')
 
 class ForceOTPLoginView(LoginView):
     def form_valid(self, form):
@@ -241,3 +192,14 @@ def verify_2fa(request):
     user = User.objects.get(id=user_id)
     send_otp_email(user)
     return render(request, 'two_factor/verify.html')
+
+from django.shortcuts import redirect
+from .models import UserProfile  # or whatever model you're using
+
+def like_profile(request, liked_user_id):
+    # example logic – update to your needs
+    if request.user.is_authenticated:
+        liked_user = UserProfile.objects.get(id=liked_user_id)
+        request.user.profile.likes.add(liked_user)
+        return redirect('homepage')  # change 'homepage' to your redirect target
+    return redirect('login')  # or wherever you want to send unauthenticated users

@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'MMUConnect.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3', #configure database n learn about it - Shaarvin
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -118,36 +118,35 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS=[os.path.join(BASE_DIR, 'MMUConnect/static')]
-STATIC_ROOT=os.path.join(BASE_DIR, "static")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'MMUConnect/static')]
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = '/login'
 
-LOGOUT_REDIRECT_URL = "/login"
-
+# Email configuration using Gmail SMTP with App Password (recommended)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'scarmanthegamer@gmail.com'
-EMAIL_HOST_PASSWORD = 'nusy mzmw imfg gaod'
+EMAIL_HOST_USER = 'muhammadmuhyideen@gmail.com'  # Your Gmail address
+EMAIL_HOST_PASSWORD = 'dukl lvut juoh ccqi'     # Your App Password (NOT Gmail password)
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+# Cache (optional)
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
-
-
-
-
-
