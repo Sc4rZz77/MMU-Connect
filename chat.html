@@ -10,6 +10,7 @@
       margin: 0;
       background-color: #f4f4f4;
     }
+
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -18,17 +19,22 @@
       color: white;
       padding: 10px 20px;
     }
+
     .nav-links li {
       display: inline;
       margin: 0 10px;
     }
+
     .nav-links a {
       color: white;
       text-decoration: none;
     }
+
     .main {
       padding: 20px;
+      flex: 1;
     }
+
     #messages {
       background: #fff;
       padding: 10px;
@@ -37,13 +43,16 @@
       border: 1px solid #ccc;
       margin-bottom: 10px;
     }
+
     .message {
       margin-bottom: 10px;
     }
+
     input, button {
       padding: 10px;
       font-size: 16px;
     }
+
     .footer {
       text-align: center;
       padding: 15px;
@@ -52,6 +61,35 @@
       position: fixed;
       bottom: 0;
       width: 100%;
+    }
+
+    #sidebar {
+      width: 200px;
+      background: #e1e1e1;
+      padding: 10px;
+      height: calc(100vh - 100px);
+      overflow-y: auto;
+    }
+
+    #recent-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    #recent-list li {
+      cursor: pointer;
+      margin: 5px 0;
+      padding: 5px;
+      background-color: #fff;
+      border-radius: 4px;
+    }
+
+    #recent-list li:hover {
+      background-color: #dcdcdc;
+    }
+
+    .container {
+      display: flex;
     }
   </style>
 </head>
@@ -68,16 +106,24 @@
     <button id="profile-btn" class="profile-icon">👤</button>
   </nav>
 
-  <div class="main">
-    <h1>Chat with Friends</h1>
+  <div class="container">
+    <!-- Sidebar for recent chats -->
+    <div id="sidebar">
+      <h3>Recent Chats</h3>
+      <ul id="recent-list"></ul>
+    </div>
 
-    <label for="chatWith">Chatting with:</label>
-    <input id="chatWith" type="text" placeholder="Enter friend's username" />
-    
-    <div id="messages"></div>
+    <!-- Main chat section -->
+    <div class="main">
+      <h1>Chat with Friends</h1>
+      <label for="chatWith">Chatting with:</label>
+      <input id="chatWith" type="text" placeholder="Enter friend's username" />
 
-    <input id="chat-input" type="text" placeholder="Type a message..." />
-    <button id="send-btn">Send</button>
+      <div id="messages"></div>
+
+      <input id="chat-input" type="text" placeholder="Type a message..." />
+      <button id="send-btn">Send</button>
+    </div>
   </div>
 
   <footer class="footer">© MMU Connect</footer>
@@ -87,6 +133,19 @@
       const btn = document.getElementById('profile-btn');
       let loggedIn = localStorage.getItem('loggedIn') === 'true';
       let currentUser = localStorage.getItem('username') || 'guest';
+
+      const sendBtn = document.getElementById('send-btn');
+      const chatInput = document.getElementById('chat-input');
+      const messagesDiv = document.getElementById('messages');
+      const chatWithInput = document.getElementById('chatWith');
+      const recentList = document.getElementById('recent-list');
+
+      const getChatKey = (userA, userB) => {
+        const sorted = [userA, userB].sort();
+        return `chat_${sorted[0]}_${sorted[1]}`;
+      };
+
+      const getRecentKey = () => `recentChats_${currentUser}`;
 
       const updateProfileButton = () => {
         btn.textContent = loggedIn ? '🔓 Logout' : '👤 Login';
@@ -102,16 +161,6 @@
           window.location.href = 'login.html';
         }
       });
-
-      const sendBtn = document.getElementById('send-btn');
-      const chatInput = document.getElementById('chat-input');
-      const messagesDiv = document.getElementById('messages');
-      const chatWithInput = document.getElementById('chatWith');
-
-      const getChatKey = (userA, userB) => {
-        const sorted = [userA, userB].sort();
-        return `chat_${sorted[0]}_${sorted[1]}`;
-      };
 
       const renderMessages = () => {
         const chatWith = chatWithInput.value.trim();
@@ -131,6 +180,29 @@
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
       };
 
+      const addToRecentChats = (friend) => {
+        const key = getRecentKey();
+        let list = JSON.parse(localStorage.getItem(key)) || [];
+        list = [friend, ...list.filter(u => u !== friend)].slice(0, 10); // Unique & max 10
+        localStorage.setItem(key, JSON.stringify(list));
+        renderRecentChats();
+      };
+
+      const renderRecentChats = () => {
+        const key = getRecentKey();
+        const list = JSON.parse(localStorage.getItem(key)) || [];
+        recentList.innerHTML = '';
+        list.forEach(user => {
+          const li = document.createElement('li');
+          li.textContent = user;
+          li.addEventListener('click', () => {
+            chatWithInput.value = user;
+            renderMessages();
+          });
+          recentList.appendChild(li);
+        });
+      };
+
       const sendMessage = () => {
         const chatWith = chatWithInput.value.trim();
         const text = chatInput.value.trim();
@@ -141,6 +213,7 @@
         chatHistory.push({ sender: currentUser, text });
         localStorage.setItem(chatKey, JSON.stringify(chatHistory));
 
+        addToRecentChats(chatWith);
         chatInput.value = '';
         renderMessages();
       };
@@ -153,8 +226,16 @@
         }
       });
 
-      chatWithInput.addEventListener('change', renderMessages);
+      chatWithInput.addEventListener('change', () => {
+        const friend = chatWithInput.value.trim();
+        if (friend) {
+          addToRecentChats(friend);
+          renderMessages();
+        }
+      });
+
       updateProfileButton();
+      renderRecentChats();
     });
   </script>
 </body>
