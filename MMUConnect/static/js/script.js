@@ -33,3 +33,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateProfileButton();
 });
+
+function showAuthor(index) {
+  authors.forEach(author => {
+    author.style.display = 'none';
+    author.style.opacity = '0';
+  });
+  if (index < authors.length) {
+    let current = authors[index];
+    current.style.display = 'block';
+    // Re-trigger animation
+    void current.offsetWidth; 
+    current.style.animation = 'fadeIn 0.5s ease forwards';
+  } else {
+    alert("No more authors to display.");
+  }
+}
