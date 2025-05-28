@@ -70,7 +70,7 @@ def livechat(request):
         author = authors.filter(user=user).first()
         user_profiles.append({
             'username': user.username,
-            'full_name': author.full_name if author else user.get_full_name(),
+            'full_name': author.name if author and hasattr(author, 'name') else user.get_full_name(),
             'profile_picture': author.profile_picture.url if author and author.profile_picture else '/media/default.jpg',
             # add other fields as needed
         })
@@ -102,7 +102,7 @@ def livechat(request):
         author = authors.filter(user=user).first()
         user_profiles.append({
             'username': user.username,
-            'full_name': author.full_name if author else user.get_full_name(),
+            'full_name': author.name if author and hasattr(author, 'name') else user.get_full_name(),
             'profile_picture': author.profile_picture.url if author and author.profile_picture else '/media/author_images/default.jpg'
         })
 
