@@ -21,6 +21,10 @@ class SignupForm(UserCreationForm):
         email = self.cleaned_data.get('email')
         if not email.endswith('@student.mmu.edu.my'):
             raise forms.ValidationError("Email must be an MMU student email (@student.mmu.edu.my).")
+
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email is already registered. Use a different email.")
+
         return email
 
     def __init__(self, *args, **kwargs):
