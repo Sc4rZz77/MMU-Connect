@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <script src="{% static 'js/scramble-game.js' %}"></script>
 
+  
   <style> 
     .author-container {
     opacity: 0;
@@ -348,6 +349,7 @@ body {
           alert("No more authors to display.");
         }
       }
+      
 
       function nextAuthor() {
         currentIndex++;
@@ -370,6 +372,7 @@ body {
       showAuthor(currentIndex);
     });
 
+    
       function openLogoutModal(event) {
   event.preventDefault();
   document.getElementById('logout-modal').style.display = 'flex';
@@ -382,6 +385,7 @@ function closeLogoutModal() {
 function submitLogout() {
   document.getElementById('logout-form').submit();
 }
+
   </script>
 </body>
 <div id="logout-modal" class="modal">
