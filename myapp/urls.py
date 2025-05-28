@@ -23,6 +23,7 @@ urlpatterns = [
     path('test', views.test, name='test'),
     path('livechat/', views.livechat, name='livechat'),
     path('search/', views.search_users, name='search_users'),
+    path('chat/history/', views.chat_history, name='chat_history'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
