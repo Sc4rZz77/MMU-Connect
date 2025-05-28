@@ -1,6 +1,6 @@
 import os
 from django.contrib.auth.decorators import login_required
-from .models import Author, Message
+from .models import Author, Message, Like
 from .forms import AuthorForm
 from .forms import SignupForm
 from django.contrib.auth import views as auth_views
@@ -58,23 +58,54 @@ def chat(request):
 @login_required
 @never_cache
 def livechat(request):
-    from .models import Author, Message
-    users = User.objects.all()
+    # Get matched users (excluding yourself)
+    matches = Like.objects.filter(liker=request.user).filter(
+        liked__likes_given__liked=request.user
+    ).values_list('liked', flat=True)
+    users = User.objects.filter(id__in=matches).exclude(id=request.user.id)
+    authors = Author.objects.filter(user__in=users)
+
+    user_profiles = []
+    for user in users:
+        author = authors.filter(user=user).first()
+        user_profiles.append({
+            'username': user.username,
+            'full_name': author.full_name if author else user.get_full_name(),
+            'profile_picture': author.profile_picture.url if author and author.profile_picture else '/media/default.jpg',
+            # add other fields as needed
+        })
+
+    chat_partner = None
+    chat_history = []
+    chat_partner_username = request.GET.get('user')
+    if chat_partner_username:
+        try:
+            chat_partner = User.objects.get(username=chat_partner_username)
+            if is_match(request.user, chat_partner):
+                if chat_partner not in users:
+                    users.append(chat_partner)
+                users_sorted = sorted([request.user.username, chat_partner.username])
+                room_group_name = f"chat_{users_sorted[0]}_{users_sorted[1]}"
+                chat_history = Message.objects.filter(room=room_group_name).order_by('timestamp')[:50]
+            else:
+                chat_partner = None
+        except User.DoesNotExist:
+            chat_partner = None
+
+    # Always include the chat partner for profile pic lookup (if not already in users)
+    if chat_partner and chat_partner not in users:
+        users.append(chat_partner)
+
     authors = Author.objects.filter(user__in=users)
     user_profiles = []
     for user in users:
         author = authors.filter(user=user).first()
         user_profiles.append({
             'username': user.username,
+            'full_name': author.full_name if author else user.get_full_name(),
             'profile_picture': author.profile_picture.url if author and author.profile_picture else '/media/author_images/default.jpg'
         })
-    # Get chat partner from GET param (for initial load)
-    chat_partner = request.GET.get('user')
-    chat_history = []
-    if chat_partner:
-        users_sorted = sorted([request.user.username, chat_partner])
-        room_group_name = f"chat_{users_sorted[0]}_{users_sorted[1]}"
-        chat_history = Message.objects.filter(room=room_group_name).order_by('timestamp')[:50]
+
     return render(request, "livechat.html", {
         "user_profiles": user_profiles,
         "users": users,
@@ -90,17 +121,15 @@ def contact(request):
 @login_required
 @never_cache
 def edit_profile(request):
-    author, created = Author.objects.get_or_create(user=request.user)
-
-    if request.method == "POST":
-        form = AuthorForm(request.POST, request.FILES, instance=author)
+    if request.method == 'POST':
+        form = AuthorForm(request.POST, request.FILES, instance=request.user.author)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your profile was updated successfully!')
+            return redirect('edit_profile')
     else:
-        form = AuthorForm(instance=author)
-
-    return render(request, "edit_profile.html", {"form": form})
+        form = AuthorForm(instance=request.user.author)
+    return render(request, 'edit_profile.html', {'form': form})
 
 def signup(request):
     if request.method == 'POST':
@@ -301,3 +330,56 @@ def chat_history(request):
         for msg in messages
     ]
     return JsonResponse({'messages': data})
+
+@login_required
+def like_author(request, author_id):
+    author = Author.objects.get(id=author_id)
+    if not author.user or author.user == request.user:
+        return JsonResponse({'error': 'Invalid like.'}, status=400)
+    Like.objects.get_or_create(liker=request.user, liked=author.user)
+    # Check for a match
+    if Like.objects.filter(liker=author.user, liked=request.user).exists():
+        # Send email to both users
+        send_mail(
+            'It\'s a Match!',
+            f'You and {request.user.username} have liked each other!',
+            'from@example.com',
+            [request.user.email, author.user.email],
+            fail_silently=True,
+        )
+        return JsonResponse({'status': 'matched'})
+    return JsonResponse({'status': 'liked'})
+
+@login_required
+def dislike_author(request, author_id):
+    author = Author.objects.get(id=author_id)
+    if not author.user:
+        return JsonResponse({'error': 'This profile is not linked to a user.'}, status=400)
+    Like.objects.filter(liker=request.user, liked=author.user).delete()
+    return JsonResponse({'status': 'disliked'})
+
+@login_required
+def people_i_liked(request):
+    likes = Like.objects.filter(liker=request.user)
+    users = [like.liked for like in likes]
+    return render(request, 'people_i_liked.html', {'users': users})
+
+@login_required
+def people_who_liked_me(request):
+    likes = Like.objects.filter(liked=request.user)
+    users = [like.liker for like in likes]
+    return render(request, 'people_who_liked_me.html', {'users': users})
+
+@login_required
+def matches(request):
+    matches = Like.objects.filter(liker=request.user).filter(
+        liked__likes_given__liked=request.user
+    ).values_list('liked', flat=True)
+    users = User.objects.filter(id__in=matches)
+    return render(request, 'matches.html', {'users': users})
+
+def is_match(user1, user2):
+    return (
+        Like.objects.filter(liker=user1, liked=user2).exists() and
+        Like.objects.filter(liker=user2, liked=user1).exists()
+    )

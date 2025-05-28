@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>People Who Liked Me</h2>
+<ul>
+  {% for user in users %}
+    <li>
+      {{ user.username }}
+      {# If you have a profile page, link to it: #}
+      {# <a href="{% url 'profile' user.id %}">View Profile</a> #}
+    </li>
+  {% empty %}
+    <li>No one has liked you yet.</li>
+  {% endfor %}
+</ul>
+<a href="{% url 'feature' %}">Back to Feature</a>
+{% endblock %} 

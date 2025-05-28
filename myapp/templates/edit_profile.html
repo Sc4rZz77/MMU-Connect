@@ -209,8 +209,7 @@
   <div class="url-bar">MMU Connect</div>
   <ul class="nav-links">
     <li><a href="{% url 'home' %}">Home</a></li>
-    <li><a href="{% url 'chat' %}">Chat</a></li>
-    <li><a href="{% url 'livechat' %}">Friends</a></li>
+    <li><a href="{% url 'chat' %}">Help</a></li>
     <li><a href="{% url 'feature' %}">Feature </a></li>
     <li><a href="{% url 'about-us' %}">About Us</a></li>
     <li><a href="{% url 'contact' %}">Contact</a></li>
@@ -238,11 +237,10 @@
     {% endif %}
 
 
-    {% if user.profile.profile_picture %}
-      <img id="preview" src="{{ user.profile.profile_picture.url }}" alt="Profile Picture" />
-    {% else %}
-      <img id="preview" src="{{ MEDIA_URL }}author_images/default.jpg" alt="Profile Picture" />
-    {% endif %}
+    <img id="preview"
+         src="{% if user.author.profile_picture %}{{ user.author.profile_picture.url }}{% else %}{{ MEDIA_URL }}author_images/default.jpg{% endif %}"
+         alt="Profile Picture"
+         onerror="this.onerror=null;this.src='{{ MEDIA_URL }}author_images/default.jpg';" />
 
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
@@ -259,20 +257,13 @@
   const fileInput = document.querySelector('input[type="file"]');
   const preview = document.getElementById('preview');
 
-  const savedImage = localStorage.getItem('savedImage');
-  if (savedImage) {
-    preview.src = savedImage;
-  }
-
   if (fileInput) {
     fileInput.addEventListener('change', function () {
       const file = this.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function (e) {
-          const dataURL = e.target.result;
-          preview.src = dataURL;
-          localStorage.setItem('savedImage', dataURL);
+          preview.src = e.target.result;
         };
         reader.readAsDataURL(file);
       }

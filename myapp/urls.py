@@ -24,6 +24,11 @@ urlpatterns = [
     path('livechat/', views.livechat, name='livechat'),
     path('search/', views.search_users, name='search_users'),
     path('chat/history/', views.chat_history, name='chat_history'),
+    path('like/<int:author_id>/', views.like_author, name='like_author'),
+    path('dislike/<int:author_id>/', views.dislike_author, name='dislike_author'),
+    path('people-i-liked/', views.people_i_liked, name='people_i_liked'),
+    path('people-who-liked-me/', views.people_who_liked_me, name='people_who_liked_me'),
+    path('matches/', views.matches, name='matches'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
