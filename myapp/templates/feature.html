@@ -6,8 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>MMU Connect – Feature</title>
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
-  <script src="{% static 'yourapp/js/scramble-game.js' %}"></script>
-  <style>
+  <script src="{% static 'js/scramble-game.js' %}"></script>
+
+  <style> 
     .author-container {
     opacity: 0;
     animation: fadeIn 0.5s ease forwards;
@@ -316,7 +317,8 @@ body {
         </li>
       {% endfor %}
     </ul>
-    <div id="scramble-game" class="p-4 rounded shadow-md bg-gray-100">
+    
+<div id="scramble-game" class="p-4 rounded shadow-md bg-gray-100">
   <h3 class="text-lg font-bold mb-2">Word Scramble</h3>
   <p id="scrambled-word" class="text-xl font-mono mb-2"></p>
   <input id="user-guess" type="text" placeholder="Your guess..." class="border p-2 w-full mb-2" />

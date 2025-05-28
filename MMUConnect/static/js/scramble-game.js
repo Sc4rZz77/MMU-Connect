@@ -10,7 +10,6 @@
   function newScramble() {
     currentWord = words[Math.floor(Math.random() * words.length)];
     scrambled = shuffle(currentWord);
-    // prevent scrambled = actual word
     while (scrambled === currentWord) {
       scrambled = shuffle(currentWord);
     }
@@ -33,5 +32,6 @@
     }
   }
 
-  document.addEventListener("DOMContentLoaded", newScramble);
+  // 👇 Make sure this is correct!
+  window.addEventListener("DOMContentLoaded", newScramble);
 
