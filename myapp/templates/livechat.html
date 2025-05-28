@@ -99,7 +99,7 @@
       width: 92%;
       margin: 8px 4% 0 4%;
       padding: 10px 0 10px 0;
-      background: #f6f6fa;
+      background: #f5f6fa;
       border: none;
       border-radius: 10px;
       color: #6d44b8;
@@ -401,6 +401,7 @@
           <li>
             <button class="user-btn" onclick="openChat('{{ user.username }}', this)">
               <img src="{{ user.profile_picture }}" alt="{{ user.username }}'s profile picture" class="profile-pic">
+              <span style="font-weight: 600; margin-right: 8px;">{{ user.username }}</span>
               {{ user.full_name }}
               <span class="unread-badge" id="unread-{{ user.username }}" style="display:none;">1</span>
             </button>
