@@ -58,6 +58,7 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['timestamp']
+<<<<<<< HEAD
 =======
 from django.db import models
 from django.contrib.auth.models import User
@@ -72,3 +73,6 @@ class StudySession(models.Model):
     def __str__(self):
         return f"{self.title} ({self.start_time} - {self.end_time})"
 >>>>>>> dc48caa (test)
+=======
+
+>>>>>>> 9081d42 (match logic(beta))

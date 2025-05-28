@@ -8,7 +8,7 @@ from django.contrib.auth.forms import UserCreationForm
 class AuthorForm(forms.ModelForm):
     class Meta:
         model = Author
-        fields = ['first_name', 'last_name','self_bio', 'profile_picture', 'faculty','gender']
+        fields = ['first_name', 'last_name', 'self_bio', 'profile_picture', 'faculty', 'gender']
 
 class SignupForm(UserCreationForm):
     email = forms.EmailField(required=True)

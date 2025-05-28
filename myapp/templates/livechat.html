@@ -378,8 +378,7 @@
     <div class="url-bar">MMU Connect</div>
     <ul class="nav-links">
       <li><a href="{% url 'home' %}">Home</a></li>
-      <li><a href="{% url 'chat' %}">Chat</a></li>
-      <li><a href="{% url 'livechat' %}">Friends</a></li>
+      <li><a href="{% url 'chat' %}">Help</a></li>
       <li><a href="{% url 'feature' %}">Feature</a></li>
       <li><a href="{% url 'about-us' %}">About Us</a></li>
       <li><a href="{% url 'contact' %}">Contact</a></li>
@@ -401,8 +400,8 @@
         {% for user in user_profiles %}
           <li>
             <button class="user-btn" onclick="openChat('{{ user.username }}', this)">
-              <img src="{{ user.profile_picture }}" alt="Profile" class="profile-pic">
-              {{ user.username }}
+              <img src="{{ user.profile_picture }}" alt="{{ user.username }}'s profile picture" class="profile-pic">
+              {{ user.full_name }}
               <span class="unread-badge" id="unread-{{ user.username }}" style="display:none;">1</span>
             </button>
             <div class="user-status">
@@ -413,33 +412,40 @@
       </ul>
     </aside>
     <main class="main-chat">
-      <div class="chat-header" id="chat-with">Select a user to chat</div>
-      <div class="status closed" id="status">Not connected</div>
-      <div class="chat-log" id="chat-log">
-        {% if chat_history and chat_partner %}
-          {% for msg in chat_history %}
-            {% with sender=msg.sender.username %}
-              <div class="message-row{% if sender == request.user.username %} from-me{% endif %}">
-                {% if sender == request.user.username %}
-                  <div class="message bubble-me"><span class="msg-text">{{ sender }}: {{ msg.content }}</span><span class="timestamp">{{ msg.timestamp|date:'H:i' }}</span></div>
-                  <img src="{% for u in user_profiles %}{% if u.username == sender %}{{ u.profile_picture }}{% endif %}{% endfor %}" class="profile-pic" style="width:28px;height:28px;">
-                {% else %}
-                  <img src="{% for u in user_profiles %}{% if u.username == sender %}{{ u.profile_picture }}{% endif %}{% endfor %}" class="profile-pic" style="width:28px;height:28px;">
-                  <div class="message bubble-them"><span class="msg-text">{{ sender }}: {{ msg.content }}</span><span class="timestamp">{{ msg.timestamp|date:'H:i' }}</span></div>
-                {% endif %}
-              </div>
-            {% endwith %}
-          {% endfor %}
-        {% endif %}
-      </div>
-      <div class="input-bar" style="position:relative;">
-        <button class="emoji-btn" id="emoji-btn" title="Add emoji">😊</button>
-        <div class="emoji-picker" id="emoji-picker">
-          <span>😀</span><span>😂</span><span>😍</span><span>😎</span><span>😭</span><span>😡</span><span>👍</span><span>🙏</span><span>🎉</span><span>🔥</span><span>🥳</span><span>😅</span><span>😇</span><span>😏</span><span>😬</span>
+      {% if chat_partner %}
+        <div class="chat-header" id="chat-with">Chat with {{ chat_partner.username }}</div>
+        <div class="status closed" id="status">Not connected</div>
+        <div class="chat-log" id="chat-log">
+          {% if chat_history and chat_partner %}
+            {% for msg in chat_history %}
+              {% with sender=msg.sender.username %}
+                <div class="message-row{% if sender == request.user.username %} from-me{% endif %}">
+                  {% if sender == request.user.username %}
+                    <div class="message bubble-me"><span class="msg-text">{{ sender }}: {{ msg.content }}</span><span class="timestamp">{{ msg.timestamp|date:'H:i' }}</span></div>
+                    <img src="{% for u in user_profiles %}{% if u.username == sender %}{{ u.profile_picture }}{% endif %}{% endfor %}" class="profile-pic" style="width:28px;height:28px;">
+                  {% else %}
+                    <img src="{% for u in user_profiles %}{% if u.username == sender %}{{ u.profile_picture }}{% endif %}{% endfor %}" class="profile-pic" style="width:28px;height:28px;">
+                    <div class="message bubble-them"><span class="msg-text">{{ sender }}: {{ msg.content }}</span><span class="timestamp">{{ msg.timestamp|date:'H:i' }}</span></div>
+                  {% endif %}
+                </div>
+              {% endwith %}
+            {% endfor %}
+          {% endif %}
         </div>
-        <input id="chat-message-input" type="text" autocomplete="off" placeholder="Type your message..." />
-        <button id="chat-message-submit">Send</button>
-      </div>
+        <div class="input-bar" style="position:relative;">
+          <button class="emoji-btn" id="emoji-btn" title="Add emoji">😊</button>
+          <div class="emoji-picker" id="emoji-picker">
+            <span>😀</span><span>😂</span><span>😍</span><span>😎</span><span>😭</span><span>😡</span><span>👍</span><span>🙏</span><span>🎉</span><span>🔥</span><span>🥳</span><span>😅</span><span>😇</span><span>😏</span><span>😬</span>
+          </div>
+          <input id="chat-message-input" type="text" autocomplete="off" placeholder="Type your message..." />
+          <button id="chat-message-submit">Send</button>
+        </div>
+      {% else %}
+        <div class="chat-header" id="chat-with">Select a user to chat</div>
+        <div style="padding: 3em; color: #888; text-align: center; font-size: 1.3em;">
+          👈 Choose a friend from the sidebar to start chatting!
+        </div>
+      {% endif %}
     </main>
   </div>
   {{ user_profiles|json_script:"user-profiles-data" }}
@@ -697,16 +703,8 @@
     updateSidebarStatus();
     // --- End dynamic last seen/online ---
   </script>
-  {% if chat_partner %}
-  <script>
-    window.addEventListener('DOMContentLoaded', function() {
-      var btn = Array.from(document.querySelectorAll('.user-btn')).find(b => b.textContent.trim() === '{{ chat_partner }}');
-      if (btn) {
-        window.chatHistoryLoaded = true;
-        openChat('{{ chat_partner }}', btn);
-      }
-    });
-  </script>
+  {% if not user_profiles %}
+    <div style="padding: 2em; color: #888;">No matches yet. Like someone and get liked back to start chatting!</div>
   {% endif %}
 </body>
 </html>
