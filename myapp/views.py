@@ -23,6 +23,9 @@ from django.core.cache import cache
 from .otp_utils import send_otp_email
 from django.contrib.auth import get_user_model
 from django.views.decorators.cache import never_cache
+from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.db.models import Q
 
 User = get_user_model()
 client = InferenceClient()
@@ -250,3 +253,11 @@ def like_profile(request, liked_user_id):
         request.user.profile.likes.add(liked_user)
         return redirect('homepage')  # change 'homepage' to your redirect target
     return redirect('login')  # or wherever you want to send unauthenticated users
+
+def search_users(request):
+    query = request.GET.get('q')
+    users = User.objects.filter(
+        Q(username__icontains=query) |
+        Q(email__icontains=query)
+    ) if query else []
+    return render(request, 'search_results.html', {'users': users})

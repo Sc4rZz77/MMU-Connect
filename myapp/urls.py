@@ -6,6 +6,7 @@ from . import views
 from .views import ai_chat, ForceOTPLoginView
 from .two_factor_views import verify_2fa
 
+
 urlpatterns = [
     path('', views.signup, name='signup'),  # Home route as signup
     path('login/', ForceOTPLoginView.as_view(template_name='login.html'), name='login'),
@@ -21,6 +22,7 @@ urlpatterns = [
     path('send-email/', views.send_email, name='send_email'),
     path('test', views.test, name='test'),
     path('livechat/', views.livechat, name='livechat'),
+    path('search/', views.search_users, name='search_users'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f2f2f2; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background-color: white; padding: 20px; border-radius: 8px; }
+        h2 { color: #333; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 10px; border-bottom: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Search Results</h2>
+        <form method="get" action="{% url 'search_users' %}">
+            <input type="text" name="q" placeholder="Search users...">
+            <button type="submit">Search</button>
+        </form>
+        {% if users %}
+        <ul>
+            {% for user in users %}
+            <li>{{ user.username }} - {{ user.email }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No users found.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

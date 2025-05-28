@@ -235,6 +235,10 @@
       </li>
     {% endif %}
   </ul>
+  <form method="get" action="{% url 'search_users' %}" style="margin-left: 20px;">
+  <input type="text" name="q" placeholder="Search users..." style="padding: 8px; border-radius: 6px; border: none;">
+  <button type="submit" style="padding: 8px 12px; border-radius: 6px; background: #ffcc00; color: black; border: none;">Search</button>
+</form>
 </nav>
 
   <div class="hero">
