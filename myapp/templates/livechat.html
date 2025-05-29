@@ -530,9 +530,8 @@
       if (currentUserBtn) currentUserBtn.classList.remove('active');
       if (btn) btn.classList.add('active');
       currentUserBtn = btn;
-      chatSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/chat/' + username + '/'
-      );
+      let protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+      chatSocket = new WebSocket(protocol + window.location.host + '/ws/chat/' + username + '/');
       chatSocket.onopen = function() {
         isConnected = true;
         setStatus(true);
