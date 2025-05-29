@@ -2,12 +2,64 @@
 {% load static %}
 
 {% block content %}
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to right, #9d00ff, #6200ea);
+        color: #fff;
+        padding: 40px 20px;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #ffffff;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        max-width: 600px;
+        margin: 0 auto 30px;
+    }
+
+    li {
+        background-color: rgba(255, 255, 255, 0.15);
+        padding: 12px 20px;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        font-size: 16px;
+        color: #fff;
+        transition: background-color 0.3s ease;
+    }
+
+    li:hover {
+        background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    a {
+        display: block;
+        width: fit-content;
+        margin: 0 auto;
+        padding: 10px 20px;
+        background-color: #ffffff;
+        color: #6200ea;
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+    }
+
+    a:hover {
+        background-color: #ddd;
+    }
+</style>
+
 <h2>People Who Liked Me</h2>
 <ul>
   {% for user in users %}
     <li>
       {{ user.username }}
-      {# If you have a profile page, link to it: #}
       {# <a href="{% url 'profile' user.id %}">View Profile</a> #}
     </li>
   {% empty %}
@@ -15,4 +67,4 @@
   {% endfor %}
 </ul>
 <a href="{% url 'feature' %}">Back to Feature</a>
-{% endblock %} 
+{% endblock %}
