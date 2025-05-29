@@ -261,3 +261,4 @@ def search_users(request):
         Q(email__icontains=query)
     ) if query else []
     return render(request, 'search_results.html', {'users': users})
+
