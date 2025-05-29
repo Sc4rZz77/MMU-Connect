@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<h2 style="text-align:center; margin-bottom: 2em;">Your Matches</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 2em; justify-content: center;">
+  {% for user in users %}
+    {% with author=user.author %}
+    <div style="background: #fff; border-radius: 18px; box-shadow: 0 4px 16px rgba(109,68,184,0.10); padding: 2em 2.5em; width: 320px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+      <img src="{{ author.profile_picture.url }}" alt="Profile Picture" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid #6d44b8; margin-bottom: 1em; box-shadow: 0 2px 8px #d1c4e9;">
+      <h3 style="margin: 0 0 0.5em 0; color: #6d44b8;">{{ author.first_name }} {{ author.last_name }}</h3>
+      <p style="font-size: 1.05em; color: #555; margin-bottom: 0.7em; font-style: italic;">{{ author.self_bio }}</p>
+      <div style="font-size: 0.98em; color: #888; margin-bottom: 0.5em;">
+        <strong>Faculty:</strong> {{ author.faculty }}<br>
+        <strong>Gender:</strong> {{ author.gender }}
+      </div>
+      <a href="{% url 'livechat' %}?user={{ user.username }}" style="margin-top: 1em; background: #6d44b8; color: #fff; padding: 0.7em 2em; border-radius: 8px; text-decoration: none; font-weight: bold; transition: background 0.2s;">Chat</a>
+    </div>
+    {% endwith %}
+  {% empty %}
+    <div style="color: #888; font-size: 1.2em;">No matches yet. Keep liking!</div>
+  {% endfor %}
+</div>
+<div style="text-align:center; margin-top: 2em;">
+  <a href="{% url 'feature' %}" style="color: #6d44b8; text-decoration: underline;">Back to Feature</a>
+</div>
+{% endblock %} 

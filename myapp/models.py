@@ -60,3 +60,14 @@ class StudySession(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.start_time} - {self.end_time})"
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
+    recipient = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    room = models.CharField(max_length=255)  # e.g., 'chat_admin_shaarvin'
+
+    class Meta:
+        ordering = ['timestamp']
+

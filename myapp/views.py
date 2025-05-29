@@ -1,6 +1,6 @@
 import os
 from django.contrib.auth.decorators import login_required
-from .models import Author
+from .models import Author, Message, Like
 from .forms import AuthorForm
 from .forms import SignupForm
 from django.contrib.auth import views as auth_views
@@ -53,12 +53,65 @@ def aboutus(request):
 @login_required
 @never_cache
 def chat(request):
-    return render(request, "chat.html")
+    return render(request, 'chat.html')
 
 @login_required
 @never_cache
 def livechat(request):
-    return render(request, "livechat.html")
+    # Get matched users (excluding yourself)
+    matches = Like.objects.filter(liker=request.user).filter(
+        liked__likes_given__liked=request.user
+    ).values_list('liked', flat=True)
+    users = User.objects.filter(id__in=matches).exclude(id=request.user.id)
+    authors = Author.objects.filter(user__in=users)
+
+    user_profiles = []
+    for user in users:
+        author = authors.filter(user=user).first()
+        user_profiles.append({
+            'username': user.username,
+            'full_name': author.name if author and hasattr(author, 'name') else user.get_full_name(),
+            'profile_picture': author.profile_picture.url if author and author.profile_picture else '/media/default.jpg',
+            # add other fields as needed
+        })
+
+    chat_partner = None
+    chat_history = []
+    chat_partner_username = request.GET.get('user')
+    if chat_partner_username:
+        try:
+            chat_partner = User.objects.get(username=chat_partner_username)
+            if is_match(request.user, chat_partner):
+                if chat_partner not in users:
+                    users.append(chat_partner)
+                users_sorted = sorted([request.user.username, chat_partner.username])
+                room_group_name = f"chat_{users_sorted[0]}_{users_sorted[1]}"
+                chat_history = Message.objects.filter(room=room_group_name).order_by('timestamp')[:50]
+            else:
+                chat_partner = None
+        except User.DoesNotExist:
+            chat_partner = None
+
+    # Always include the chat partner for profile pic lookup (if not already in users)
+    if chat_partner and chat_partner not in users:
+        users.append(chat_partner)
+
+    authors = Author.objects.filter(user__in=users)
+    user_profiles = []
+    for user in users:
+        author = authors.filter(user=user).first()
+        user_profiles.append({
+            'username': user.username,
+            'full_name': author.name if author and hasattr(author, 'name') else user.get_full_name(),
+            'profile_picture': author.profile_picture.url if author and author.profile_picture else '/media/author_images/default.jpg'
+        })
+
+    return render(request, "livechat.html", {
+        "user_profiles": user_profiles,
+        "users": users,
+        "chat_history": chat_history,
+        "chat_partner": chat_partner
+    })
 
 @login_required
 @never_cache
@@ -68,17 +121,15 @@ def contact(request):
 @login_required
 @never_cache
 def edit_profile(request):
-    author, created = Author.objects.get_or_create(user=request.user)
-
-    if request.method == "POST":
-        form = AuthorForm(request.POST, request.FILES, instance=author)
+    if request.method == 'POST':
+        form = AuthorForm(request.POST, request.FILES, instance=request.user.author)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your profile was updated successfully!')
+            return redirect('edit_profile')
     else:
-        form = AuthorForm(instance=author)
-
-    return render(request, "edit_profile.html", {"form": form})
+        form = AuthorForm(instance=request.user.author)
+    return render(request, 'edit_profile.html', {'form': form})
 
 def signup(request):
     if request.method == 'POST':
@@ -128,7 +179,7 @@ def ai_chat(request):
 
     response_map = {
         r"\bhello\b|\bhi+\b|\bhey+\b|\bhelo+\b|\bhola\b|\bhii\b|\bhelloo+\b": "Hey there! How can I brighten your day?",
-        r"\bhow (are|r) (you|u)\b|\bhow do you feel\b|\bhow’s it going\b": "I'm doing fantastic! What about you?",
+        r"\bhow (are|r) (you|u)\b|\bhow do you feel\b|\bhow's it going\b": "I'm doing fantastic! What about you?",
         r"\bwhat( is|'s)? this app (about|for)\b|\bwhat does this app do\b|\bwhat app is this\b": "It's a social discovery app helping people meet new friends in a modern, fun way!",
         r"\btell me a joke\b|\bjoke please\b|\banother joke\b|\bmake me laugh\b|\bfunny\b": "Why did the computer get cold? Because it forgot to close its Windows!",
         r"\bbye+\b|\bgoodbye\b|\bsee you\b|\bcya\b": "Goodbye! Remember, I'm just a message away whenever you need me!",
@@ -136,12 +187,12 @@ def ai_chat(request):
         r"\bthanks\b|\bthank you\b|\bthx\b|\bty\b": "You're welcome! Always happy to help.",
         r"\bwho (made|built|created) you\b|\bwho are the developers\b": "I was built with care by Shaarvin, Muhyideen, Nimalen, and Sashvin!",
         r"\bcontact (support|developers)\b|\bhow do i contact\b|\bget help\b": "Just head to the About Us page and drop them a message!",
-        r"\bwho is your boss\b|\bwho do you obey\b|\byour master\b": "That’s easy! My one and only boss is Shaarvin, the King!",
+        r"\bwho is your boss\b|\bwho do you obey\b|\byour master\b": "That's easy! My one and only boss is Shaarvin, the King!",
         r"\banother\b|\bmore\b|\bone more\b": "Sure! But let me know what you're looking for :)",
         r"\bi love you\b": "That's so sweet of you! I love chatting with you too! ❤️",
         r"\bhelp\b|\bi need help\b|\bcan you help me\b": "Absolutely! Just tell me what's troubling you.",
         r"\bi will see you\b|\bsee you later\b": "See you soon! I'll be right here when you return.",
-        r"\byour favorite color\b": "I’d say electric blue—it’s the color of data, connection, and creativity!",
+        r"\byour favorite color\b": "I'd say electric blue—it's the color of data, connection, and creativity!",
     }
 
     for pattern, response in response_map.items():
@@ -261,4 +312,76 @@ def search_users(request):
         Q(email__icontains=query)
     ) if query else []
     return render(request, 'search_results.html', {'users': users})
+
+
+@login_required
+def chat_history(request):
+    other_username = request.GET.get('user')
+    if not other_username:
+        return JsonResponse({'error': 'No user specified'}, status=400)
+    users_sorted = sorted([request.user.username, other_username])
+    room = f"chat_{users_sorted[0]}_{users_sorted[1]}"
+    messages = Message.objects.filter(room=room).order_by('-timestamp')[:50][::-1]
+    data = [
+        {
+            'sender': msg.sender.username,
+            'content': msg.content,
+            'timestamp': msg.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+        }
+        for msg in messages
+    ]
+    return JsonResponse({'messages': data})
+
+@login_required
+def like_author(request, author_id):
+    author = Author.objects.get(id=author_id)
+    if not author.user or author.user == request.user:
+        return JsonResponse({'error': 'Invalid like.'}, status=400)
+    Like.objects.get_or_create(liker=request.user, liked=author.user)
+    # Check for a match
+    if Like.objects.filter(liker=author.user, liked=request.user).exists():
+        # Send email to both users
+        send_mail(
+            'It\'s a Match!',
+            f'You and {request.user.username} have liked each other!',
+            'from@example.com',
+            [request.user.email, author.user.email],
+            fail_silently=True,
+        )
+        return JsonResponse({'status': 'matched'})
+    return JsonResponse({'status': 'liked'})
+
+@login_required
+def dislike_author(request, author_id):
+    author = Author.objects.get(id=author_id)
+    if not author.user:
+        return JsonResponse({'error': 'This profile is not linked to a user.'}, status=400)
+    Like.objects.filter(liker=request.user, liked=author.user).delete()
+    return JsonResponse({'status': 'disliked'})
+
+@login_required
+def people_i_liked(request):
+    likes = Like.objects.filter(liker=request.user)
+    users = [like.liked for like in likes]
+    return render(request, 'people_i_liked.html', {'users': users})
+
+@login_required
+def people_who_liked_me(request):
+    likes = Like.objects.filter(liked=request.user)
+    users = [like.liker for like in likes]
+    return render(request, 'people_who_liked_me.html', {'users': users})
+
+@login_required
+def matches(request):
+    matches = Like.objects.filter(liker=request.user).filter(
+        liked__likes_given__liked=request.user
+    ).values_list('liked', flat=True)
+    users = User.objects.filter(id__in=matches)
+    return render(request, 'matches.html', {'users': users})
+
+def is_match(user1, user2):
+    return (
+        Like.objects.filter(liker=user1, liked=user2).exists() and
+        Like.objects.filter(liker=user2, liked=user1).exists()
+    )
 

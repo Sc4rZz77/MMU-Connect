@@ -281,12 +281,16 @@ body {
   <div class="url-bar">MMU Connect</div>
   <ul class="nav-links">
     <li><a href="{% url 'home' %}">Home</a></li>
-    <li><a href="{% url 'chat' %}">Chat</a></li>
-    <li><a href="{% url 'livechat' %}">Friends</a></li>
+    <li><a href="{% url 'chat' %}">Help</a></li>
     <li><a href="{% url 'feature' %}">Feature </a></li>
     <li><a href="{% url 'about-us' %}">About Us</a></li>
     <li><a href="{% url 'contact' %}">Contact</a></li>
     <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
+
+    <!-- <li><a href="{% url 'people_i_liked' %}">People I Liked</a></li>
+    <li><a href="{% url 'people_who_liked_me' %}">People Who Liked Me</a></li> -->
+    
+    <li><a href="{% url 'matches' %}">Matches</a></li> 
 
     {% if user.is_authenticated %}
       <li>
@@ -306,7 +310,7 @@ body {
   <div class="main">
     <ul id="author-list">
       {% for author in data %}
-        <li class="author-container">
+        <li class="author-container" data-id="{{ author.id }}">
           <strong>{{ author.first_name }} {{ author.last_name }}</strong>
           <p>{{ author.self_bio }}</p>          
           <p><strong>Faculty:</strong> {{ author.faculty }}</p>
@@ -330,8 +334,8 @@ body {
 
 
     <div class="action-buttons">
-      <button class="like-btn" onclick="sendMatchRequest()">❤</button>
-      <button class="dislike-btn" onclick="nextAuthor()">✖</button>
+      <button class="like-btn" onclick="likeCurrentAuthor()">❤</button>
+      <button class="dislike-btn" onclick="dislikeCurrentAuthor()">✖</button>
     </div>
   </div>
 
@@ -387,6 +391,52 @@ function submitLogout() {
   document.getElementById('logout-form').submit();
 }
 
+
+function getCurrentAuthorId() {
+  let authors = document.querySelectorAll('.author-container');
+  let current = Array.from(authors).find(a => a.style.display !== 'none');
+  if (!current) return null;
+  // Assuming you have a data-id attribute on each author-container
+  return current.getAttribute('data-id');
+}
+
+function likeCurrentAuthor() {
+  let authorId = getCurrentAuthorId();
+  if (!authorId) return;
+  fetch(`/like/${authorId}/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': '{{ csrf_token }}',
+      'Content-Type': 'application/json'
+    }
+  }).then(response => response.json())
+    .then(data => {
+      if (data.status === 'matched') {
+        alert('You matched!');
+      } else {
+        alert('Liked!');
+      }
+      nextAuthor();
+    });
+}
+
+function dislikeCurrentAuthor() {
+  let authorId = getCurrentAuthorId();
+  if (!authorId) return;
+  fetch(`/dislike/${authorId}/`, {
+    method: 'POST',
+    headers: {
+      'X-CSRFToken': '{{ csrf_token }}',
+      'Content-Type': 'application/json'
+    }
+  }).then(response => response.json())
+    .then(data => {
+      alert('Disliked!');
+      nextAuthor();
+    });
+}
+
+window.CSRF_TOKEN = '{{ csrf_token }}';
   </script>
 </body>
 <div id="logout-modal" class="modal">
