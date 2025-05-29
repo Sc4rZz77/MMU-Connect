@@ -119,9 +119,20 @@ def livechat(request):
             'full_name': author.name if author and hasattr(author, 'name') else user.get_full_name(),
             'profile_picture': author.profile_picture.url if author and author.profile_picture else '/media/author_images/default.jpg'
         })
+    
+    current_author = Author.objects.filter(user=request.user).first()
+    if current_author:
+        user_profiles.append({
+            'username': request.user.username,
+            'full_name': current_author.name if current_author and hasattr(current_author, 'name') else request.user.get_full_name(),
+            'profile_picture': current_author.profile_picture.url if current_author and current_author.profile_picture else '/media/author_images/default.jpg'
+        })
+    
+    sidebar_user_profiles = [profile for profile in user_profiles if profile['username'] != request.user.username]
 
     return render(request, "livechat.html", {
         "user_profiles": user_profiles,
+        "sidebar_user_profiles": sidebar_user_profiles,
         "users": users,
         "chat_history": chat_history,
         "chat_partner": chat_partner
