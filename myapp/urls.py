@@ -29,6 +29,7 @@ urlpatterns = [
     path('people-i-liked/', views.people_i_liked, name='people_i_liked'),
     path('people-who-liked-me/', views.people_who_liked_me, name='people_who_liked_me'),
     path('matches/', views.matches, name='matches'),
+    path('fun/', views.fun, name='fun'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

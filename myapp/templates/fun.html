@@ -1,0 +1,300 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>MMU Connect – Fun</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  <script src="{% static 'js/scramble-game.js' %}"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #ffffff;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .navbar {
+      background-color: #6d44b8;
+      padding: 21px 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+      position: relative;
+      z-index: 10;
+    }
+    .url-bar {
+      position: absolute;
+      top: 15px;
+      left: 30px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      padding: 0;
+      margin: 0;
+    }
+    .nav-links li a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+    .nav-links li a:hover {
+      color: #ffcc00;
+    }
+    .main {
+      max-width: 500px;
+      margin: 40px auto 0 auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1 1 auto;
+      min-height: 0;
+      gap: 32px;
+    }
+    .fun-card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(109,68,184,0.10);
+      padding: 2.2em 1.5em 2em 1.5em;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      position: relative;
+    }
+    .fun-icon {
+      font-size: 2.2em;
+      margin-bottom: 0.2em;
+      color: #6d44b8;
+    }
+    .quote-heading {
+      font-size: 1.3em;
+      font-weight: 700;
+      color: #6d44b8;
+      margin-bottom: 0.7em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      justify-content: center;
+    }
+    .quote-box {
+      background: #6d44b8;
+      color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 8px 24px rgba(109, 68, 184, 0.13);
+      font-size: 1.15rem;
+      font-style: italic;
+      text-align: center;
+      user-select: none;
+      padding: 18px 18px 10px 18px;
+      margin-bottom: 1em;
+      margin-top: 0;
+      width: 100%;
+      max-width: 350px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .quote-btn {
+      background-color: #ffcc00;
+      border: none;
+      color: #000;
+      padding: 12px 25px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+      box-shadow: 0 2px 8px rgba(109,68,184,0.07);
+    }
+    .quote-btn:hover {
+      background-color: #e6b800;
+    }
+    .scramble-heading {
+      font-size: 1.3em;
+      font-weight: 700;
+      color: #6d44b8;
+      margin-bottom: 0.7em;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      justify-content: center;
+    }
+    #scramble-game {
+      margin-top: 0;
+      width: 100%;
+      max-width: 350px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #scrambled-word {
+      font-size: 1.2em;
+      font-weight: 600;
+      color: #55369c;
+      margin-bottom: 0.7em;
+    }
+    #user-guess {
+      padding: 10px 14px;
+      font-size: 1em;
+      border: 1.5px solid #6d44b8;
+      border-radius: 8px;
+      outline: none;
+      margin-right: 8px;
+      background: #f6f6fa;
+      margin-bottom: 8px;
+      width: 60%;
+      max-width: 180px;
+    }
+    #scramble-game button {
+      background-color: #6d44b8;
+      color: white;
+      padding: 10px 22px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 700;
+      transition: background 0.3s;
+      box-shadow: 0 2px 8px rgba(109,68,184,0.07);
+    }
+    #scramble-game button:hover {
+      background-color: #55369c;
+    }
+    #scramble-feedback {
+      margin-top: 10px;
+      font-size: 1em;
+      font-weight: 600;
+      color: #6d44b8;
+    }
+    .footer {
+      background: #573b8a;
+      text-align: center;
+      padding: 14px;
+      color: #e0dfff;
+      margin-top: 60px;
+    }
+    @media (max-width: 600px) {
+      .main { padding: 0 5px; }
+      .fun-card { max-width: 98vw; padding: 1.2em 0.5em; }
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 450px;
+      min-width: 350px;
+      margin: auto;
+      font-size: 1.1rem;
+      line-height: 1.4;
+    }
+    .modal-content button {
+      padding: 10px 20px;
+      margin: 10px 15px 0 15px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #6d44b8;
+      color: white;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+    .modal-content button:hover {
+      background-color: #ffcc00;
+      color: #000;
+    }
+    #back-to-feature {
+      position: absolute;
+      top: 32px;
+      left: 32px;
+      z-index: 1001;
+      background: #6d44b8;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1em;
+      padding: 12px 22px 12px 16px;
+      border-radius: 12px 24px 24px 12px;
+      box-shadow: 0 4px 16px rgba(109,68,184,0.18);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    #back-to-feature:hover {
+      background: #ffcc00;
+      color: #6d44b8;
+      box-shadow: 0 8px 24px rgba(109,68,184,0.25);
+    }
+    @media (max-width: 600px) {
+      #back-to-feature { left: 10px; top: 10px; padding: 10px 14px 10px 10px; font-size: 1em; }
+    }
+  </style>
+</head>
+<body>
+<a href="{% url 'feature' %}" id="back-to-feature" title="Back to Feature">← Back to Feature</a>
+<div class="main">
+  <div class="fun-card">
+    <div class="quote-heading"><span class="fun-icon">💡</span>Quote Generator</div>
+    <div class="quote-box">
+      <p class="quote-text" id="quote-text"></p>
+    </div>
+    <button onclick="showNextQuote()" class="quote-btn">Next Quote</button>
+  </div>
+  <div class="fun-card">
+    <div class="scramble-heading"><span class="fun-icon">🔤</span>Word Scramble</div>
+    <div id="scramble-game" class="p-4 rounded shadow-md bg-gray-100">
+      <p id="scrambled-word"></p>
+      <input id="user-guess" type="text" placeholder="Your guess..." />
+      <button onclick="checkGuess()">Check</button>
+      <p id="scramble-feedback"></p>
+    </div>
+  </div>
+</div>
+<footer class="footer">© MMU Connect</footer>
+<div id="logout-modal" class="modal">
+  <div class="modal-content">
+    <p>Are you sure you want to logout?</p>
+    <button onclick="submitLogout()">Yes, Logout</button>
+    <button onclick="closeLogoutModal()">Cancel</button>
+  </div>
+</div>
+<script src="{% static 'js/quotes.js' %}"></script>
+<script>
+function openLogoutModal(event) {
+  event.preventDefault();
+  document.getElementById('logout-modal').style.display = 'flex';
+}
+function closeLogoutModal() {
+  document.getElementById('logout-modal').style.display = 'none';
+}
+function submitLogout() {
+  document.getElementById('logout-form').submit();
+}
+</script>
+</body>
+</html> 

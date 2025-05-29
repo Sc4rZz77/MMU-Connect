@@ -71,3 +71,14 @@ class Message(models.Model):
     class Meta:
         ordering = ['timestamp']
 
+class Dislike(models.Model):
+    disliker = models.ForeignKey(User, related_name='dislikes_given', on_delete=models.CASCADE)
+    disliked = models.ForeignKey(User, related_name='dislikes_received', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('disliker', 'disliked')
+
+    def __str__(self):
+        return f"{self.disliker.username} disliked {self.disliked.username}"
+
