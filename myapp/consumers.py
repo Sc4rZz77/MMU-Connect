@@ -14,7 +14,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print("Room group name:", self.room_group_name)
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
-        await self.send(text_data=json.dumps({'message': f'Connected to {self.room_group_name}!'}))
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)

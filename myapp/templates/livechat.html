@@ -397,7 +397,7 @@
     <aside class="sidebar">
       <h3>Users</h3>
       <ul class="user-list" id="user-list">
-        {% for user in user_profiles %}
+        {% for user in sidebar_user_profiles %}
           <li>
             <button class="user-btn" onclick="openChat('{{ user.username }}', this)">
               <img src="{{ user.profile_picture }}" alt="{{ user.username }}'s profile picture" class="profile-pic">
@@ -551,13 +551,15 @@
           return;
         }
         const chatLog = document.getElementById('chat-log');
-        let fromMe = false;
-        let sender = data.message.split(':')[0];
-        if (sender === myUsername) fromMe = true;
+        let fromMe = (data.message.split(':')[0] === myUsername);
+        const sender = data.message.split(':')[0];
         const rowDiv = document.createElement('div');
         rowDiv.className = 'message-row' + (fromMe ? ' from-me' : '');
         const pfp = document.createElement('img');
-        pfp.src = userProfilePics[sender] || '';
+        let pfpSrc = fromMe ? (userProfilePics[myUsername] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%236d44b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>') : (userProfilePics[sender] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%236d44b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>');
+        console.log('For sender:', sender, 'Using PFP source:', pfpSrc, 'userProfilePics[myUsername]:', userProfilePics[myUsername]);
+        pfp.src = pfpSrc;
+        pfp.onerror = function() { console.error('Failed to load PFP for', sender); };
         pfp.className = 'profile-pic';
         pfp.style.width = '28px';
         pfp.style.height = '28px';
@@ -578,7 +580,7 @@
           rowDiv.appendChild(pfp);
           rowDiv.appendChild(msgDiv);
         }
-        if (chatPartner !== sender) incrementUnread(sender);
+        if (typingIndicator) typingIndicator.remove();
         chatLog.appendChild(rowDiv);
         chatLog.scrollTop = chatLog.scrollHeight;
       };
@@ -595,11 +597,11 @@
       };
       document.getElementById('chat-message-submit').onclick = function() {
         const input = document.getElementById('chat-message-input');
-        if (input.value.trim() !== "" && isConnected) {
+        if (input.value.trim() !== '' && isConnected) {
           chatSocket.send(JSON.stringify({'message': input.value}));
-          input.value = '';
           if (typingIndicator) typingIndicator.remove();
           if (typingTimeout) clearTimeout(typingTimeout);
+          input.value = '';
         }
       };
       document.getElementById('chat-message-input').onkeyup = function(e) {
@@ -624,7 +626,10 @@
             const rowDiv = document.createElement('div');
             rowDiv.className = 'message-row' + (fromMe ? ' from-me' : '');
             const pfp = document.createElement('img');
-            pfp.src = userProfilePics[msg.sender] || '';
+            let pfpSrc = fromMe ? (userProfilePics[myUsername] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%236d44b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>') : (userProfilePics[msg.sender] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="%236d44b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>');
+            console.log('For history sender:', msg.sender, 'Using PFP source:', pfpSrc, 'userProfilePics[myUsername]:', userProfilePics[myUsername]);
+            pfp.src = pfpSrc;
+            pfp.onerror = function() { console.error('Failed to load PFP for history sender:', msg.sender); };
             pfp.className = 'profile-pic';
             pfp.style.width = '28px';
             pfp.style.height = '28px';
