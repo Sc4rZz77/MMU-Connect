@@ -1,6 +1,6 @@
 import os
 from django.contrib.auth.decorators import login_required
-from .models import Author, Message, Like
+from .models import Author, Message, Like, Dislike
 from .forms import AuthorForm
 from .forms import SignupForm
 from django.contrib.auth import views as auth_views
@@ -25,7 +25,7 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.cache import never_cache
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.db.models import Q, BooleanField, ExpressionWrapper
 
 User = get_user_model()
 client = InferenceClient()
@@ -42,7 +42,18 @@ def home(request):
 @login_required
 @never_cache
 def feature(request):
-    data = Author.objects.exclude(user=request.user)
+    liked_users = Like.objects.filter(liker=request.user).values_list('liked', flat=True)
+    disliked_users = Dislike.objects.filter(disliker=request.user).values_list('disliked', flat=True)
+    my_faculty = getattr(request.user.author, 'faculty', None)
+    authors = Author.objects.exclude(user__in=list(liked_users) + list(disliked_users) + [request.user.id])
+    if my_faculty:
+        authors = authors.annotate(
+            is_same_faculty=ExpressionWrapper(
+                Q(faculty=my_faculty),
+                output_field=BooleanField()
+            )
+        ).order_by('-is_same_faculty', 'id')
+    data = authors
     return render(request, "feature.html", {"data": data})
 
 @login_required
@@ -360,7 +371,10 @@ def dislike_author(request, author_id):
     author = Author.objects.get(id=author_id)
     if not author.user:
         return JsonResponse({'error': 'This profile is not linked to a user.'}, status=400)
+    # Remove like if exists
     Like.objects.filter(liker=request.user, liked=author.user).delete()
+    # Add dislike if not already disliked
+    Dislike.objects.get_or_create(disliker=request.user, disliked=author.user)
     return JsonResponse({'status': 'disliked'})
 
 @login_required
@@ -377,15 +391,35 @@ def people_who_liked_me(request):
 
 @login_required
 def matches(request):
-    matches = Like.objects.filter(liker=request.user).filter(
-        liked__likes_given__liked=request.user
-    ).values_list('liked', flat=True)
-    users = User.objects.filter(id__in=matches)
-    return render(request, 'matches.html', {'users': users})
+    # Users who liked you but you haven't liked them back (pending requests)
+    incoming_likes = Like.objects.filter(
+        liked=request.user
+    ).exclude(
+        liker__in=Like.objects.filter(liker=request.user).values_list('liked', flat=True)
+    )
+    incoming_users = [like.liker for like in incoming_likes]
+
+    # Users you matched with (mutual likes)
+    matches = Like.objects.filter(liker=request.user).filter(liked__likes_given__liked=request.user)
+    matched_users = User.objects.filter(id__in=matches.values_list('liked', flat=True))
+
+    return render(request, 'matches.html', {
+        'incoming_users': incoming_users,
+        'matched_users': matched_users,
+    })
 
 def is_match(user1, user2):
     return (
         Like.objects.filter(liker=user1, liked=user2).exists() and
         Like.objects.filter(liker=user2, liked=user1).exists()
     )
+<<<<<<< HEAD
 >>>>>>> 9081d42 (match logic(beta))
+=======
+
+@login_required
+@never_cache
+def fun(request):
+    return render(request, 'fun.html')
+
+>>>>>>> 188dbb3 (like/dislike logic (beta))

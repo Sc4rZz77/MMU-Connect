@@ -578,8 +578,8 @@
         } else {
           rowDiv.appendChild(pfp);
           rowDiv.appendChild(msgDiv);
-          if (chatPartner !== sender) incrementUnread(sender);
         }
+        if (chatPartner !== sender) incrementUnread(sender);
         chatLog.appendChild(rowDiv);
         chatLog.scrollTop = chatLog.scrollHeight;
       };
@@ -611,7 +611,12 @@
         }
       };
       fetch(`/chat/history/?user=${encodeURIComponent(username)}`)
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to fetch chat history: ' + response.statusText);
+          }
+          return response.json();
+        })
         .then(data => {
           const chatLog = document.getElementById('chat-log');
           chatLog.innerHTML = '';
@@ -644,6 +649,10 @@
             chatLog.appendChild(rowDiv);
           });
           chatLog.scrollTop = chatLog.scrollHeight;
+        })
+        .catch(error => {
+          console.error('Error fetching chat history:', error);  // Log to console for debugging
+          alert('Could not load chat history. Please check the console for details.');
         });
       clearUnread(username);
     }

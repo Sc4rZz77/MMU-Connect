@@ -75,4 +75,28 @@ class StudySession(models.Model):
 >>>>>>> dc48caa (test)
 =======
 
+<<<<<<< HEAD
 >>>>>>> 9081d42 (match logic(beta))
+=======
+class Message(models.Model):
+    sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
+    recipient = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    room = models.CharField(max_length=255)  # e.g., 'chat_admin_shaarvin'
+
+    class Meta:
+        ordering = ['timestamp']
+
+class Dislike(models.Model):
+    disliker = models.ForeignKey(User, related_name='dislikes_given', on_delete=models.CASCADE)
+    disliked = models.ForeignKey(User, related_name='dislikes_received', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('disliker', 'disliked')
+
+    def __str__(self):
+        return f"{self.disliker.username} disliked {self.disliked.username}"
+
+>>>>>>> 188dbb3 (like/dislike logic (beta))
