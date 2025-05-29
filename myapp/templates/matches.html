@@ -116,6 +116,11 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             const card = btn.closest('.match-card');
             const authorId = btn.getAttribute('data-author-id');
+            if (!authorId || authorId.trim() === '') {
+                console.error('Author ID is missing or invalid');
+                alert('Author ID is missing. Please refresh and try again.');
+                return;  // Stop the function if authorId is invalid
+            }
             fetch(`/like/${authorId}/`, {
                 method: 'POST',
                 headers: {
@@ -152,6 +157,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     card.style.transform = 'none';
                     showMatchAnimation(card);
                 });
+            })
+            .catch(error => {
+                console.error('Error accepting request:', error);
+                alert('Failed to accept the request. Please check the console for details.');
             });
         });
     });
@@ -170,6 +179,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 animateOutAndRemove(card);
+            })
+            .catch(error => {
+                console.error('Error declining request:', error);
+                alert('Failed to decline the request. Please check the console for details.');
             });
         });
     });
