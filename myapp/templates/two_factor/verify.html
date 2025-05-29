@@ -2,62 +2,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Verify OTP</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f4f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .verify-box {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            width: 300px;
-            text-align: center;
-        }
-        input[type="text"] {
-            padding: 10px;
-            width: 100%;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            margin-top: 15px;
-            padding: 10px;
-            width: 100%;
-            background: #6d44b8;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        .error {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Verify OTP</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #9d6efb, #a777e3);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .verify-box {
+      background: white;
+      padding: 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+      width: 350px;
+      max-width: 90%;
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    .verify-box h2 {
+      font-size: 1.8rem;
+      color: #333;
+      margin-bottom: 1.5rem;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: #6e8efb;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: linear-gradient(135deg, #9d6efb, #a777e3);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .error {
+      color: #e74c3c;
+      margin-top: 15px;
+      font-size: 0.95rem;
+      animation: shake 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+    }
+
+    @media (max-width: 400px) {
+      .verify-box {
+        padding: 1.5rem;
+      }
+
+      .verify-box h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="verify-box">
-        <h2>Enter OTP</h2>
-        <form method="POST">
-            {% csrf_token %}
-            <input type="text" name="otp" placeholder="6-digit OTP" maxlength="6" required>
-            <button type="submit">Verify</button>
-        </form>
-        {% if messages %}
-            {% for message in messages %}
-                <div class="error">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    </div>
+  <div class="verify-box">
+    <h2>Enter OTP</h2>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="text" name="otp" placeholder="6-digit OTP" maxlength="6" required>
+      <button type="submit">Verify</button>
+    </form>
+    {% if messages %}
+      {% for message in messages %}
+        <div class="error">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  </div>
 </body>
 </html>

@@ -2,24 +2,146 @@
 {% load static %}
 
 {% block content %}
-<h2 style="text-align:center; margin-bottom: 2em;">Your Matches</h2>
-<div id="matches-container" style="display: flex; flex-wrap: wrap; gap: 2em; justify-content: center; align-items: flex-start;">
+<style>
+  body {
+    background-color: #cba5f3;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  #matches-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2em;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2em;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 2em;
+    color: #000000;
+  }
+
+  .match-card, .matched-card {
+    background: #d3cfd8;
+    border-radius: 18px;
+    box-shadow: 0 4px 16px rgb(87, 1, 246);
+    padding: 2em 2.5em;
+    margin-bottom: 1.5em;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.4s ease;
+  }
+
+  .match-card:hover, .matched-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(109, 68, 184, 0.2);
+  }
+
+  .match-card img, .matched-card img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #6d44b8;
+    margin-bottom: 1em;
+    box-shadow: 0 2px 8px #d1c4e9;
+  }
+
+  .accept-btn, .decline-btn {
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .accept-btn {
+    background: #2ecc40;
+    color: #fff;
+  }
+
+  .accept-btn:hover {
+    background: #27ae60;
+  }
+
+  .decline-btn {
+    background: #e74c3c;
+    color: #fff;
+  }
+
+  .decline-btn:hover {
+    background: #c0392b;
+  }
+
+  .chat-btn {
+    margin-top: 1em;
+    background: #6d44b8;
+    color: #fff;
+    padding: 0.7em 2em;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+
+  .chat-btn:hover {
+    background: #502fa5;
+  }
+
+  #incoming-requests h3, #matched-users h3 {
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  #incoming-requests h3 {
+    color: #000000;
+  }
+
+  #matched-users h3 {
+    color: #000000;
+  }
+
+  .back-link {
+    text-align: center;
+    margin-top: 2em;
+  }
+
+  .back-link a {
+    color: #6d44b8;
+    text-decoration: underline;
+    font-weight: bold;
+  }
+
+  @keyframes popIn {
+    0% { transform: scale(0.7); opacity: 0; }
+    80% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+</style>
+
+<h2>Your Matches</h2>
+<div id="matches-container">
   <div id="incoming-requests" style="flex:1; min-width:320px; max-width:400px;">
-    <h3 style="color:#6d44b8; text-align:center;">Incoming Match Requests</h3>
+    <h3>Incoming Match Requests</h3>
     {% if incoming_users %}
       {% for user in incoming_users %}
         {% with author=user.author %}
-        <div class="match-card" data-user-id="{{ user.id }}" data-username="{{ user.username }}" style="background: #fff; border-radius: 18px; box-shadow: 0 4px 16px rgba(109,68,184,0.10); padding: 2em 2.5em; margin-bottom: 1.5em; text-align: center; display: flex; flex-direction: column; align-items: center; transition: opacity 0.4s, transform 0.4s;">
-          <img src="{{ author.profile_picture.url }}" alt="Profile Picture" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #6d44b8; margin-bottom: 1em; box-shadow: 0 2px 8px #d1c4e9;">
-          <h4 style="margin: 0 0 0.5em 0; color: #6d44b8;">{{ author.first_name }} {{ author.last_name }}</h4>
-          <p style="font-size: 1em; color: #555; margin-bottom: 0.7em; font-style: italic;">{{ author.self_bio }}</p>
-          <div style="font-size: 0.98em; color: #888; margin-bottom: 0.5em;">
+        <div class="match-card" data-user-id="{{ user.id }}" data-username="{{ user.username }}">
+          <img src="{{ author.profile_picture.url }}" alt="Profile Picture">
+          <h4>{{ author.first_name }} {{ author.last_name }}</h4>
+          <p><em>{{ author.self_bio }}</em></p>
+          <div>
             <strong>Faculty:</strong> {{ author.faculty }}<br>
             <strong>Gender:</strong> {{ author.gender }}
           </div>
           <div style="display:flex; gap:1em; margin-top:1em;">
-            <button class="accept-btn" data-author-id="{{ author.id }}" style="background:#2ecc40; color:#fff; border:none; border-radius:6px; padding:8px 18px; font-weight:700; cursor:pointer;">Accept</button>
-            <button class="decline-btn" data-author-id="{{ author.id }}" style="background:#e74c3c; color:#fff; border:none; border-radius:6px; padding:8px 18px; font-weight:700; cursor:pointer;">Decline</button>
+            <button class="accept-btn" data-author-id="{{ author.id }}">Accept</button>
+            <button class="decline-btn" data-author-id="{{ author.id }}">Decline</button>
           </div>
         </div>
         {% endwith %}
@@ -28,20 +150,21 @@
       <div style="color: #888; font-size: 1.1em; text-align:center;">No new match requests.</div>
     {% endif %}
   </div>
+
   <div id="matched-users" style="flex:1; min-width:320px; max-width:400px;">
-    <h3 style="color:#6d44b8; text-align:center;">Matched Users</h3>
+    <h3>Matched Users</h3>
     {% if matched_users %}
       {% for user in matched_users %}
         {% with author=user.author %}
-        <div class="matched-card" data-user-id="{{ user.id }}" data-username="{{ user.username }}" style="background: #fff; border-radius: 18px; box-shadow: 0 4px 16px rgba(109,68,184,0.10); padding: 2em 2.5em; margin-bottom: 1.5em; text-align: center; display: flex; flex-direction: column; align-items: center;">
-          <img src="{{ author.profile_picture.url }}" alt="Profile Picture" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #6d44b8; margin-bottom: 1em; box-shadow: 0 2px 8px #d1c4e9;">
-          <h4 style="margin: 0 0 0.5em 0; color: #6d44b8;">{{ author.first_name }} {{ author.last_name }}</h4>
-          <p style="font-size: 1em; color: #555; margin-bottom: 0.7em; font-style: italic;">{{ author.self_bio }}</p>
-          <div style="font-size: 0.98em; color: #888; margin-bottom: 0.5em;">
+        <div class="matched-card" data-user-id="{{ user.id }}" data-username="{{ user.username }}">
+          <img src="{{ author.profile_picture.url }}" alt="Profile Picture">
+          <h4 style="color: #6d44b8;">{{ author.first_name }} {{ author.last_name }}</h4>
+          <p><em>{{ author.self_bio }}</em></p>
+          <div>
             <strong>Faculty:</strong> {{ author.faculty }}<br>
             <strong>Gender:</strong> {{ author.gender }}
           </div>
-          <a href="{% url 'livechat' %}?user={{ user.username }}" style="margin-top: 1em; background: #6d44b8; color: #fff; padding: 0.7em 2em; border-radius: 8px; text-decoration: none; font-weight: bold; transition: background 0.2s;">Chat</a>
+          <a class="chat-btn" href="{% url 'livechat' %}?user={{ user.username }}">Chat</a>
         </div>
         {% endwith %}
       {% endfor %}
@@ -50,9 +173,11 @@
     {% endif %}
   </div>
 </div>
-<div style="text-align:center; margin-top: 2em;">
-  <a href="{% url 'feature' %}" style="color: #6d44b8; text-decoration: underline;">Back to Feature</a>
+
+<div class="back-link">
+  <a href="{% url 'feature' %}">Back to Feature</a>
 </div>
+
 <script>
 // CSRF helper
 function getCookie(name) {
@@ -70,7 +195,6 @@ function getCookie(name) {
     return cookieValue;
 }
 
-// Accept/Decline AJAX
 function animateOutAndRemove(card, callback) {
     card.style.opacity = '0';
     card.style.transform = 'translateX(60px)';
@@ -79,7 +203,8 @@ function animateOutAndRemove(card, callback) {
         if (callback) callback();
     }, 400);
 }
-function showMatchAnimation(targetDiv) {
+
+function showMatchAnimation() {
     let matchDiv = document.createElement('div');
     matchDiv.style.position = 'fixed';
     matchDiv.style.top = '0';
@@ -97,19 +222,13 @@ function showMatchAnimation(targetDiv) {
         <div style="font-size:2em; color:#6d44b8; font-weight:700; margin-top:0.3em;">It's a Match!</div>
         <div style="color:#444; margin-top:0.5em;">You and this user have liked each other.</div>
       </div>
-      <style>
-        @keyframes popIn {
-          0% { transform: scale(0.7); opacity: 0; }
-          80% { transform: scale(1.1); opacity: 1; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-      </style>
     `;
     document.body.appendChild(matchDiv);
     setTimeout(() => {
       matchDiv.remove();
     }, 1800);
 }
+
 document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.accept-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
@@ -131,31 +250,21 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 animateOutAndRemove(card, function() {
-                    // Move card to matched users
                     const matchedDiv = document.getElementById('matched-users');
                     card.classList.remove('match-card');
                     card.classList.add('matched-card');
-                    // Remove Accept/Decline buttons
                     const btns = card.querySelector('div[style*="display:flex"]');
                     if (btns) btns.remove();
-                    // Add Chat button
                     const username = card.getAttribute('data-username');
                     const chatBtn = document.createElement('a');
                     chatBtn.href = `/livechat/?user=${username}`;
                     chatBtn.textContent = 'Chat';
-                    chatBtn.style.marginTop = '1em';
-                    chatBtn.style.background = '#6d44b8';
-                    chatBtn.style.color = '#fff';
-                    chatBtn.style.padding = '0.7em 2em';
-                    chatBtn.style.borderRadius = '8px';
-                    chatBtn.style.textDecoration = 'none';
-                    chatBtn.style.fontWeight = 'bold';
-                    chatBtn.style.transition = 'background 0.2s';
+                    chatBtn.className = 'chat-btn';
                     card.appendChild(chatBtn);
                     matchedDiv.appendChild(card);
                     card.style.opacity = '1';
                     card.style.transform = 'none';
-                    showMatchAnimation(card);
+                    showMatchAnimation();
                 });
             })
             .catch(error => {
@@ -164,6 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
     document.querySelectorAll('.decline-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -177,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .then(response => response.json())
-            .then(data => {
+            .then(() => {
                 animateOutAndRemove(card);
             })
             .catch(error => {
@@ -188,4 +298,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-{% endblock %} 
+{% endblock %}
