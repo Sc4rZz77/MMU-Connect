@@ -26,6 +26,7 @@ from django.views.decorators.cache import never_cache
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.db.models import Q, BooleanField, ExpressionWrapper
+import logging
 
 User = get_user_model()
 client = InferenceClient()
@@ -170,6 +171,8 @@ class CustomLoginView(LoginView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect("home")
+        ip_address = request.META.get('REMOTE_ADDR')
+        logging.info(f'Login attempt from IP: {ip_address}')
         response = super().dispatch(request, *args, **kwargs)
 
         if request.POST.get("remember_me"):
