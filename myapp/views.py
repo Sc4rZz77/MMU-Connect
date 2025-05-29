@@ -284,6 +284,7 @@ def search_users(request):
     ) if query else []
     return render(request, 'search_results.html', {'users': users})
 
+<<<<<<< HEAD
 @login_required
 def chat_history(request):
     other_username = request.GET.get('user')
@@ -301,3 +302,5 @@ def chat_history(request):
         for msg in messages
     ]
     return JsonResponse({'messages': data})
+=======
+>>>>>>> dc48caa (test)

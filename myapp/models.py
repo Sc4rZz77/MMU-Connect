@@ -48,6 +48,7 @@ class UserProfile(models.Model):
     bio = models.TextField(blank=True, null=True)
     # add your fields here
 
+<<<<<<< HEAD
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
     recipient = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE)
@@ -57,3 +58,17 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['timestamp']
+=======
+from django.db import models
+from django.contrib.auth.models import User
+
+class StudySession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.title} ({self.start_time} - {self.end_time})"
+>>>>>>> dc48caa (test)
