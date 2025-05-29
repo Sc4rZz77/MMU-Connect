@@ -28,50 +28,12 @@ body {
   background: #ffffff;
   color: #333;
 }
-
-
-.quote-box {
-  background: #6d44b8;       /* Purple background matching navbar */
-  color: #fff;               /* White text */
-  max-width: 350px;
-  margin: 10px 0 20px 10px;
-  padding: 10px 10px;
-  border-radius: 15px;
-  box-shadow: 0 8px 24px rgba(109, 68, 184, 0.6);
-  font-size: 1.3rem;
-  font-style: italic;
-  text-align: center;
-  position: relative;
-  user-select: none;
-}
-
-.quote-text {
-  margin: 0 0 15px 0;
-  line-height: 1.5;
-}
-
-.quote-btn {
-  background-color: #ffcc00;  /* Yellow button */
-  border: none;
-  color: #000;
-  padding: 12px 25px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.quote-btn:hover {
-  background-color: #e6b800;
-}
-
 .navbar {
-  background-color: #6d44b8;
-  padding: 21px 30px;
+  padding: 21px 30px;  /* Uniform padding */
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #6d44b8;  /* Assuming this is standard */
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
   position: relative;
 }
@@ -86,18 +48,19 @@ body {
 }
 
 .nav-links {
-  list-style: none;
   display: flex;
-  gap: 20px;
+  gap: 20px;  /* Uniform gap between links */
+  list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .nav-links li a {
-  color: #fcfcfc;
+  color: #fff;
   text-decoration: none;
   font-weight: bold;
-  transition: color 0.3s ease;
+  font-size: 16px;  /* Uniform font size */
+  transition: color 0.3s ease, background 0.3s ease;  /* Keep existing transition */
 }
 
 .nav-links li a:hover {
@@ -115,7 +78,7 @@ body {
 }
 
 .author-container {
-  background: #ae5ab1;
+  background: #d0b8fd;
   padding: 35px 30px;
   border-radius: 20px;
   width: 360px;
@@ -131,7 +94,7 @@ body {
 
 .author-container:hover {
   transform: translateY(-8px) scale(1.015);
-  box-shadow: 0 20px 48px rgba(166, 1, 255, 0.926);
+  box-shadow: 0 20px 48px #6d44b8;
 }
 
 .author-container strong {
