@@ -44,7 +44,10 @@ def home(request):
 def feature(request):
     liked_users = Like.objects.filter(liker=request.user).values_list('liked', flat=True)
     disliked_users = Dislike.objects.filter(disliker=request.user).values_list('disliked', flat=True)
-    my_faculty = getattr(request.user.author, 'faculty', None)
+    if hasattr(request.user, 'author'):
+        my_faculty = getattr(request.user.author, 'faculty', None)
+    else:
+        my_faculty = None  # Or handle as needed, e.g., redirect or set a default
     authors = Author.objects.exclude(user__in=list(liked_users) + list(disliked_users) + [request.user.id])
     if my_faculty:
         authors = authors.annotate(
@@ -132,14 +135,14 @@ def contact(request):
 @login_required
 @never_cache
 def edit_profile(request):
+    if not hasattr(request.user, 'author'):
+        author = Author.objects.create(user=request.user)  # Create with default values
+    form = AuthorForm(request.POST or None, request.FILES or None, instance=request.user.author)
     if request.method == 'POST':
-        form = AuthorForm(request.POST, request.FILES, instance=request.user.author)
         if form.is_valid():
             form.save()
             messages.success(request, 'Your profile was updated successfully!')
             return redirect('edit_profile')
-    else:
-        form = AuthorForm(instance=request.user.author)
     return render(request, 'edit_profile.html', {'form': form})
 
 def signup(request):
@@ -349,22 +352,25 @@ def chat_history(request):
 
 @login_required
 def like_author(request, author_id):
-    author = Author.objects.get(id=author_id)
-    if not author.user or author.user == request.user:
-        return JsonResponse({'error': 'Invalid like.'}, status=400)
-    Like.objects.get_or_create(liker=request.user, liked=author.user)
-    # Check for a match
-    if Like.objects.filter(liker=author.user, liked=request.user).exists():
-        # Send email to both users
-        send_mail(
-            'It\'s a Match!',
-            f'You and {request.user.username} have liked each other!',
-            'from@example.com',
-            [request.user.email, author.user.email],
-            fail_silently=True,
-        )
-        return JsonResponse({'status': 'matched'})
-    return JsonResponse({'status': 'liked'})
+    try:
+        author = Author.objects.get(id=author_id)
+        if not author.user or author.user == request.user:
+            return JsonResponse({'error': 'Invalid like.'}, status=400)
+        Like.objects.get_or_create(liker=request.user, liked=author.user)
+        if Like.objects.filter(liker=author.user, liked=request.user).exists():
+            send_mail(
+                'It\'s a Match!',
+                f'You and {request.user.username} have liked each other!',
+                'from@example.com',
+                [request.user.email, author.user.email],
+                fail_silently=True,
+            )
+            return JsonResponse({'status': 'matched'})
+        return JsonResponse({'status': 'liked'})
+    except Author.DoesNotExist:
+        return JsonResponse({'error': 'Author not found.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': f'An unexpected error occurred: {str(e)}'}, status=500)
 
 @login_required
 def dislike_author(request, author_id):
