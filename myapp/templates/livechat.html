@@ -18,14 +18,11 @@
       flex-direction: column;
     }
     .navbar {
-      background-color: #6d44b8;
-      padding: 21px 30px;
+      padding: 21px 30px;  /* Uniform padding */
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
-      position: relative;
-      z-index: 10;
+      background-color: #6d44b8;  /* Assuming this is standard */
     }
     .url-bar {
       position: absolute;
@@ -36,9 +33,9 @@
       color: #fff;
     }
     .nav-links {
-      list-style: none;
       display: flex;
-      gap: 20px;
+      gap: 20px;  /* Uniform gap between links */
+      list-style: none;
       padding: 0;
       margin: 0;
     }
@@ -46,7 +43,8 @@
       color: #fff;
       text-decoration: none;
       font-weight: bold;
-      transition: color 0.3s ease;
+      font-size: 16px;  /* Uniform font size */
+      transition: color 0.3s ease, background 0.3s ease;  /* Keep existing transition */
     }
     .nav-links li a:hover {
       color: #ffcc00;

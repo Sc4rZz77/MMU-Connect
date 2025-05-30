@@ -12,7 +12,7 @@
       margin: 0;
       padding: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #b0a5d0;
+      background: #ffffff;
       color: #f8f8f8;
       min-height: 100vh;
       display: flex;
@@ -53,6 +53,7 @@
       color: #ffcc00;
     }
     .main {
+      background: #d0b8fd;
       max-width: 500px;
       margin: 40px auto 0 auto;
       text-align: center;
@@ -91,10 +92,9 @@
       justify-content: center;
     }
     .quote-box {
-      background: #fffeff;
-      color: #fff;
+      background: #ffffff;
+      color: #ffffff;
       border-radius: 15px;
-      box-shadow: 0 8px 24px rgba(109, 68, 184, 0.13);
       font-size: 1.15rem;
       font-style: italic;
       text-align: center;
@@ -106,6 +106,7 @@
       max-width: 350px;
       margin-left: auto;
       margin-right: auto;
+
     }
     .quote-btn {
       background-color: #ffcc00;
@@ -184,7 +185,7 @@
       text-align: center;
       padding: 14px;
       color: #e0dfff;
-      margin-top: 60px;
+      margin-top: auto;
     }
     @media (max-width: 600px) {
       .main { padding: 0 5px; }
@@ -276,13 +277,6 @@
   </div>
 </div>
 <footer class="footer">© MMU Connect</footer>
-<div id="logout-modal" class="modal">
-  <div class="modal-content">
-    <p>Are you sure you want to logout?</p>
-    <button onclick="submitLogout()">Yes, Logout</button>
-    <button onclick="closeLogoutModal()">Cancel</button>
-  </div>
-</div>
 <script src="{% static 'js/quotes.js' %}"></script>
 <script>
 function openLogoutModal(event) {
