@@ -1,0 +1,1 @@
+ALLOWED_HOSTS = [ALLOWED_HOSTS + ['e83d-2001-e68-5455-3514-bd15-ebfa-409a-8bac.ngrok-free.app']] 
