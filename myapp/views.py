@@ -436,3 +436,5 @@ def fun(request):
     return render(request, 'fun.html')
 
 #this is for testing the pushing purpose
+
+#test2
