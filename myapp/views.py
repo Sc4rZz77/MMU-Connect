@@ -341,7 +341,7 @@ def search_users(request):
     ) if query else []
     return render(request, 'search_results.html', {'users': users})
 
-<<<<<<< HEAD
+
 @login_required
 def chat_history(request):
     other_username = request.GET.get('user')
@@ -359,10 +359,6 @@ def chat_history(request):
         for msg in messages
     ]
     return JsonResponse({'messages': data})
-<<<<<<< HEAD
-=======
->>>>>>> dc48caa (test)
-=======
 
 @login_required
 def like_author(request, author_id):
@@ -433,13 +429,9 @@ def is_match(user1, user2):
         Like.objects.filter(liker=user1, liked=user2).exists() and
         Like.objects.filter(liker=user2, liked=user1).exists()
     )
-<<<<<<< HEAD
->>>>>>> 9081d42 (match logic(beta))
-=======
 
 @login_required
 @never_cache
 def fun(request):
     return render(request, 'fun.html')
 
->>>>>>> 188dbb3 (like/dislike logic (beta))

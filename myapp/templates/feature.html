@@ -362,8 +362,7 @@ function submitLogout() {
   document.getElementById('logout-form').submit();
 }
 
-<<<<<<< HEAD
-=======
+
 function getCurrentAuthorId() {
   let authors = document.querySelectorAll('.author-container');
   let current = Array.from(authors).find(a => a.style.display !== 'none');
@@ -440,7 +439,6 @@ function showMatchAnimation() {
 }
 
 window.CSRF_TOKEN = '{{ csrf_token }}';
->>>>>>> 9081d42 (match logic(beta))
   </script>
 </body>
 <div id="logout-modal" class="modal">

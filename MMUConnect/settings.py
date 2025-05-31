@@ -164,11 +164,8 @@ CHANNEL_LAYERS = {
 }
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-<<<<<<< HEAD
-=======
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
 ]
 
->>>>>>> 7156064 (for deploy)

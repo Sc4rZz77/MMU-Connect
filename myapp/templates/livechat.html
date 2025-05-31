@@ -375,12 +375,12 @@
   <nav class="navbar">
     <div class="url-bar">MMU Connect</div>
     <ul class="nav-links">
-    <li><a href="{% url 'home' %}">Home</a></li>
-    <li><a href="{% url 'feature' %}">Feature </a></li>
-    <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
-    <li><a href="{% url 'about-us' %}">About Us</a></li>
-    <li><a href="{% url 'chat' %}">Help</a></li>
-    <li><a href="{% url 'contact' %}">Contact</a></li>
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'chat' %}">Help</a></li>
+      <li><a href="{% url 'feature' %}">Feature</a></li>
+      <li><a href="{% url 'about-us' %}">About Us</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
+      <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
       {% if user.is_authenticated %}
         <li>
           <form id="logout-form" method="post" action="{% url 'logout' %}" style="display:none;">
