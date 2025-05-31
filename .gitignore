@@ -1,1 +1,8 @@
 .env
+
+# Dependencies
+node_modules/
+
+# Ngrok
+.ngrok2/
+ngrok-debug.log
