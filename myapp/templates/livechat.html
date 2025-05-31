@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MMU Connect – Live Chat</title>
+  <link rel="icon" type="image/jpg" href="{% static 'img/logo.jpg' %}">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -375,21 +376,12 @@
   <nav class="navbar">
     <div class="url-bar">MMU Connect</div>
     <ul class="nav-links">
-<<<<<<< HEAD
-      <li><a href="{% url 'home' %}">Home</a></li>
-      <li><a href="{% url 'chat' %}">Help</a></li>
-      <li><a href="{% url 'feature' %}">Feature</a></li>
-      <li><a href="{% url 'about-us' %}">About Us</a></li>
-      <li><a href="{% url 'contact' %}">Contact</a></li>
-      <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
-=======
     <li><a href="{% url 'home' %}">Home</a></li>
     <li><a href="{% url 'feature' %}">Feature </a></li>
     <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
     <li><a href="{% url 'about-us' %}">About Us</a></li>
     <li><a href="{% url 'chat' %}">Help</a></li>
     <li><a href="{% url 'contact' %}">Contact</a></li>
->>>>>>> 9e2edbcd1d5b04f5fcf37e6943f558b17d7c6f51
       {% if user.is_authenticated %}
         <li>
           <form id="logout-form" method="post" action="{% url 'logout' %}" style="display:none;">
