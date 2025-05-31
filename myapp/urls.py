@@ -8,11 +8,11 @@ from .two_factor_views import verify_2fa
 
 
 urlpatterns = [
-    path('', views.signup, name='signup'),  # Home route as signup
+    path('signup/', views.signup, name='signup'),  # Home route as signup
     path('login/', ForceOTPLoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('verify-2fa/', verify_2fa, name='verify_2fa'),
-    path('home/', views.home, name='home'),
+    path('', views.home, name='home'),
     path('about-us/', views.aboutus, name='about-us'),
     path('chat/', views.chat, name='chat'),
     path('contact/', views.contact, name='contact'),
