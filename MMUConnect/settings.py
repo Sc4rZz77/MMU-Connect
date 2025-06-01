@@ -156,11 +156,14 @@ CACHES = {
 
 ASGI_APPLICATION = 'MMUConnect.asgi.application'
 
-# For development, use in-memory channel layer
+# For development, use in-memory channel layer //done
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.environ.get("REDIS_URL")],
+        },
+    },
 }
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -170,9 +173,4 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-
-"BACKEND": "channels_redis.core.RedisChannelLayer",
-"CONFIG": {
-    "hosts": [os.environ.get("REDIS_URL", "redis://localhost:6379")],
-}
+STATIC_URL = '/static/'      
