@@ -169,7 +169,7 @@ CHANNEL_LAYERS = {
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CSRF_TRUSTED_ORIGINS = [
-    "*", "https://mmu-connect.onrender.com", "https://mmuconnect.online"
+    "https://mmu-connect.onrender.com", "https://mmuconnect.online",
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
