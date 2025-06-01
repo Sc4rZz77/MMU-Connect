@@ -9,11 +9,33 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --bg-color: #f4f4f8;
+      --text-color: #333;
+      --bot-msg-bg: #ffffff;
+      --user-msg-bg: #d6c7f8;
+      --navbar-bg: #6d44b8;
+      --footer-bg: #6d44b8;
+      --input-bg: #ffffff;
+      --input-border: #ccc;
+    }
+
+    body.dark-mode {
+      --bg-color: #121212;
+      --text-color: #eeeeee;
+      --bot-msg-bg: #1e1e1e;
+      --user-msg-bg: #3b2b65;
+      --navbar-bg: #2b1a4f;
+      --footer-bg: #2b1a4f;
+      --input-bg: #1e1e1e;
+      --input-border: #444;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background: #f4f4f8;
-      color: #333;
+      background: var(--bg-color);
+      color: var(--text-color);
       display: flex;
       flex-direction: column;
       height: 100vh;
@@ -24,7 +46,8 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #6d44b8;
+      background-color: var(--navbar-bg);
+      position: relative;
     }
 
     .url-bar {
@@ -34,6 +57,27 @@
       font-size: 24px;
       font-weight: bold;
       color: #ffffff;
+    }
+
+    /* Dark mode button styling */
+    #mode-toggle {
+      position: absolute;
+      right: 30px;
+      top: 15px;
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: none;
+      cursor: pointer;
+      background-color: #fff;
+      color: #6d44b8;
+      font-weight: 600;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    #mode-toggle:hover {
+      background-color: #ffcc00;
+      color: #000;
     }
 
     .nav-links {
@@ -62,7 +106,7 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      background: #f4f4f8;
+      background: var(--bg-color);
     }
 
     .message {
@@ -79,17 +123,19 @@
 
     .user {
       align-self: flex-end;
-      background-color: #d6c7f8;
+      background-color: var(--user-msg-bg);
       border-radius: 16px 16px 0 16px;
       color: #222;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
-
+body.dark-mode .user {
+      background-color: #3b2b65;
+      color: #eee;
+    }
     .bot {
       align-self: flex-start;
-      background-color: #ffffff;
-      border-radius: 16px 16px 16px 0;
-      color: #111;
+      background-color: var(--bot-msg-bg);
+      color: var(--text-color);
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       text-align: left;
     }
@@ -97,8 +143,8 @@
     .input-bar {
       display: flex;
       padding: 16px;
-      background-color: #ffffff;
-      border-top: 1px solid #ddd;
+      background-color: var(--input-bg);
+      border-top: 1px solid var(--input-border);
       position: sticky;
       bottom: 0;
     }
@@ -107,14 +153,16 @@
       flex: 1;
       padding: 12px 16px;
       font-size: 16px;
-      border: 1px solid #ccc;
+      border: 1px solid var(--input-border);
       border-radius: 8px;
       outline: none;
       margin-right: 10px;
+      background: var(--input-bg);
+      color: var(--text-color);
     }
 
     #send-btn {
-      background-color: #6d44b8;
+      background-color: #7034a7;
       color: white;
       padding: 12px 20px;
       border: none;
@@ -131,7 +179,7 @@
       font-size: 13px;
       color: #ffffff;
       padding: 10px 0;
-      background: #6d44b8;
+      background: var(--footer-bg);
     }
 
     .typing-dots {
@@ -228,6 +276,7 @@
 
 <nav class="navbar">
   <div class="url-bar">MMU Connect</div>
+  <button id="mode-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
   <ul class="nav-links">
     <li><a href="{% url 'home' %}">Home</a></li>
     <li><a href="{% url 'feature' %}">Feature </a></li>
@@ -248,110 +297,107 @@
 </nav>
 
 <div class="main" id="chat-area">
-  <div class="message bot">Hello! I'm VIN AI. How can I help you today?</div>
+  <div class="message bot">Hello! How can I help you today?</div>
 </div>
 
 <div class="input-bar">
-  <input id="chat-input" type="text" placeholder="Type a message..." autocomplete="off" />
+  <input
+    type="text"
+    id="chat-input"
+    autocomplete="off"
+    placeholder="Type your message..."
+  />
   <button id="send-btn">Send</button>
 </div>
 
 <footer class="footer-container">
-  © MMU Connect. VIN AI may make mistakes.
+  © 2023 MMU Connect
 </footer>
 
-<!-- Logout Modal -->
-<div id="logout-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="logout-modal-title">
+<!-- Logout Confirmation Modal -->
+<div id="logout-modal" class="modal">
   <div class="modal-content">
-    <p id="logout-modal-title">Are you sure you want to logout?</p>
-    <button onclick="submitLogout()">Yes, Logout</button>
-    <button onclick="closeLogoutModal()">Cancel</button>
+    <p>Are you sure you want to logout?</p>
+    <button id="confirm-logout">Yes</button>
+    <button id="cancel-logout">No</button>
   </div>
 </div>
 
-<script src="{% static 'js/chat-script.js' %}"></script>
 <script>
-  const chatArea = document.getElementById("chat-area");
+  // Dark Mode Toggle
+  const toggleBtn = document.getElementById('mode-toggle');
 
-  function scrollToBottom() {
+  function applyMode(mode) {
+    document.body.classList.toggle('dark-mode', mode === 'dark');
+    toggleBtn.textContent = mode === 'dark' ? '☀️ Light' : '🌙 Dark';
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    const isDark = document.body.classList.contains('dark-mode');
+    const newMode = isDark ? 'light' : 'dark';
+    localStorage.setItem('theme', newMode);
+    applyMode(newMode);
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedMode = localStorage.getItem('theme') || 'light';
+    applyMode(savedMode);
+  });
+
+  // Chat functionality
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('send-btn');
+  const chatArea = document.getElementById('chat-area');
+
+  function appendMessage(message, sender) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', sender);
+    messageDiv.textContent = message;
+    chatArea.appendChild(messageDiv);
     chatArea.scrollTop = chatArea.scrollHeight;
   }
 
-  function formatMarkdownToHTML(text) {
-    // Replace **bold** with <strong>
-    return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-  }
+  sendBtn.addEventListener('click', () => {
+    const message = chatInput.value.trim();
+    if (!message) return;
+    appendMessage(message, 'user');
+    chatInput.value = '';
+    setTimeout(() => {
+      // This is a placeholder for chatbot response
+      appendMessage("Sorry, I can't answer that right now.", 'bot');
+    }, 700);
+  });
 
-  document.getElementById("send-btn").addEventListener("click", async () => {
-    const inputField = document.getElementById("chat-input");
-    const userMessage = inputField.value.trim();
-
-    if (!userMessage) return;
-
-    // Add user message bubble
-    const userBubble = document.createElement("div");
-    userBubble.className = "message user";
-    userBubble.textContent = userMessage;
-    chatArea.appendChild(userBubble);
-
-    // Add typing animation bubble
-    const typingBubble = document.createElement("div");
-    typingBubble.className = "message bot";
-    typingBubble.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
-    chatArea.appendChild(typingBubble);
-
-    scrollToBottom();
-    inputField.value = "";
-    inputField.focus();
-
-    try {
-      const response = await fetch(`/api/chat/?message=${encodeURIComponent(userMessage)}`);
-      const data = await response.json();
-
-      typingBubble.remove();
-
-      const botBubble = document.createElement("div");
-      botBubble.className = "message bot";
-      const fullReply = Array.isArray(data.reply) ? data.reply.join(" ") : data.reply;
-
-      let index = 0;
-      function typeWriter() {
-        if (index < fullReply.length) {
-          let current = fullReply.slice(0, index + 1);
-          botBubble.innerHTML = formatMarkdownToHTML(current);
-          index++;
-          scrollToBottom();
-          setTimeout(typeWriter, 15);
-        }
-      }
-      chatArea.appendChild(botBubble);
-      typeWriter();
-
-    } catch (err) {
-      typingBubble.innerHTML = "⚠️ Error: Unable to connect.";
+  chatInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      sendBtn.click();
     }
   });
 
-  document.getElementById("chat-input").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      document.getElementById("send-btn").click();
-    }
-  });
+  // Logout Modal
+  const logoutModal = document.getElementById('logout-modal');
+  const confirmLogout = document.getElementById('confirm-logout');
+  const cancelLogout = document.getElementById('cancel-logout');
 
-  // Logout modal controls
   function openLogoutModal(event) {
     event.preventDefault();
-    document.getElementById('logout-modal').style.display = 'flex';
+    logoutModal.style.display = 'flex';
   }
 
-  function closeLogoutModal() {
-    document.getElementById('logout-modal').style.display = 'none';
-  }
-
-  function submitLogout() {
+  confirmLogout.addEventListener('click', () => {
     document.getElementById('logout-form').submit();
-  }
-</script>
+  });
 
+  cancelLogout.addEventListener('click', () => {
+    logoutModal.style.display = 'none';
+  });
+
+  // Close modal on outside click
+  window.addEventListener('click', (e) => {
+    if (e.target === logoutModal) {
+      logoutModal.style.display = 'none';
+    }
+  });
+</script>
 </body>
 </html>
