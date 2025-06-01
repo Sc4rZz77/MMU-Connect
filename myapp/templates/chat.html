@@ -5,37 +5,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MMU Connect – Chat</title>
-  <link rel="icon" type="image/jpg" href="{% static 'img/logo.jpg' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg-color: #f4f4f8;
-      --text-color: #333;
-      --bot-msg-bg: #ffffff;
-      --user-msg-bg: #d6c7f8;
-      --navbar-bg: #6d44b8;
-      --footer-bg: #6d44b8;
-      --input-bg: #ffffff;
-      --input-border: #ccc;
-    }
-
-    body.dark-mode {
-      --bg-color: #121212;
-      --text-color: #eeeeee;
-      --bot-msg-bg: #1e1e1e;
-      --user-msg-bg: #3b2b65;
-      --navbar-bg: #2b1a4f;
-      --footer-bg: #2b1a4f;
-      --input-bg: #1e1e1e;
-      --input-border: #444;
-    }
-
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      background: var(--bg-color);
-      color: var(--text-color);
+      background: #f4f4f8;
+      color: #333;
       display: flex;
       flex-direction: column;
       height: 100vh;
@@ -46,8 +23,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: var(--navbar-bg);
-      position: relative;
+      background-color: #6d44b8;
     }
 
     .url-bar {
@@ -57,27 +33,6 @@
       font-size: 24px;
       font-weight: bold;
       color: #ffffff;
-    }
-
-    /* Dark mode button styling */
-    #mode-toggle {
-      position: absolute;
-      right: 30px;
-      top: 15px;
-      padding: 6px 12px;
-      font-size: 14px;
-      border-radius: 5px;
-      border: none;
-      cursor: pointer;
-      background-color: #fff;
-      color: #6d44b8;
-      font-weight: 600;
-      transition: background-color 0.3s ease, color 0.3s ease;
-      user-select: none;
-    }
-    #mode-toggle:hover {
-      background-color: #ffcc00;
-      color: #000;
     }
 
     .nav-links {
@@ -106,7 +61,7 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      background: var(--bg-color);
+      background: #f4f4f8;
     }
 
     .message {
@@ -123,19 +78,17 @@
 
     .user {
       align-self: flex-end;
-      background-color: var(--user-msg-bg);
+      background-color: #d6c7f8;
       border-radius: 16px 16px 0 16px;
       color: #222;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
     }
-body.dark-mode .user {
-      background-color: #3b2b65;
-      color: #eee;
-    }
+
     .bot {
       align-self: flex-start;
-      background-color: var(--bot-msg-bg);
-      color: var(--text-color);
+      background-color: #ffffff;
+      border-radius: 16px 16px 16px 0;
+      color: #111;
       box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       text-align: left;
     }
@@ -143,8 +96,8 @@ body.dark-mode .user {
     .input-bar {
       display: flex;
       padding: 16px;
-      background-color: var(--input-bg);
-      border-top: 1px solid var(--input-border);
+      background-color: #ffffff;
+      border-top: 1px solid #ddd;
       position: sticky;
       bottom: 0;
     }
@@ -153,16 +106,14 @@ body.dark-mode .user {
       flex: 1;
       padding: 12px 16px;
       font-size: 16px;
-      border: 1px solid var(--input-border);
+      border: 1px solid #ccc;
       border-radius: 8px;
       outline: none;
       margin-right: 10px;
-      background: var(--input-bg);
-      color: var(--text-color);
     }
 
     #send-btn {
-      background-color: #7034a7;
+      background-color: #6d44b8;
       color: white;
       padding: 12px 20px;
       border: none;
@@ -179,7 +130,7 @@ body.dark-mode .user {
       font-size: 13px;
       color: #ffffff;
       padding: 10px 0;
-      background: var(--footer-bg);
+      background: #6d44b8;
     }
 
     .typing-dots {
@@ -276,7 +227,6 @@ body.dark-mode .user {
 
 <nav class="navbar">
   <div class="url-bar">MMU Connect</div>
-  <button id="mode-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
   <ul class="nav-links">
     <li><a href="{% url 'home' %}">Home</a></li>
     <li><a href="{% url 'feature' %}">Feature </a></li>
@@ -297,107 +247,110 @@ body.dark-mode .user {
 </nav>
 
 <div class="main" id="chat-area">
-  <div class="message bot">Hello! How can I help you today?</div>
+  <div class="message bot">Hello! I'm VIN AI. How can I help you today?</div>
 </div>
 
 <div class="input-bar">
-  <input
-    type="text"
-    id="chat-input"
-    autocomplete="off"
-    placeholder="Type your message..."
-  />
+  <input id="chat-input" type="text" placeholder="Type a message..." autocomplete="off" />
   <button id="send-btn">Send</button>
 </div>
 
 <footer class="footer-container">
-  © 2023 MMU Connect
+  © MMU Connect. VIN AI may make mistakes.
 </footer>
 
-<!-- Logout Confirmation Modal -->
-<div id="logout-modal" class="modal">
+<!-- Logout Modal -->
+<div id="logout-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="logout-modal-title">
   <div class="modal-content">
-    <p>Are you sure you want to logout?</p>
-    <button id="confirm-logout">Yes</button>
-    <button id="cancel-logout">No</button>
+    <p id="logout-modal-title">Are you sure you want to logout?</p>
+    <button onclick="submitLogout()">Yes, Logout</button>
+    <button onclick="closeLogoutModal()">Cancel</button>
   </div>
 </div>
 
+<script src="{% static 'js/chat-script.js' %}"></script>
 <script>
-  // Dark Mode Toggle
-  const toggleBtn = document.getElementById('mode-toggle');
+  const chatArea = document.getElementById("chat-area");
 
-  function applyMode(mode) {
-    document.body.classList.toggle('dark-mode', mode === 'dark');
-    toggleBtn.textContent = mode === 'dark' ? '☀️ Light' : '🌙 Dark';
-  }
-
-  toggleBtn.addEventListener('click', () => {
-    const isDark = document.body.classList.contains('dark-mode');
-    const newMode = isDark ? 'light' : 'dark';
-    localStorage.setItem('theme', newMode);
-    applyMode(newMode);
-  });
-
-  window.addEventListener('DOMContentLoaded', () => {
-    const savedMode = localStorage.getItem('theme') || 'light';
-    applyMode(savedMode);
-  });
-
-  // Chat functionality
-  const chatInput = document.getElementById('chat-input');
-  const sendBtn = document.getElementById('send-btn');
-  const chatArea = document.getElementById('chat-area');
-
-  function appendMessage(message, sender) {
-    const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', sender);
-    messageDiv.textContent = message;
-    chatArea.appendChild(messageDiv);
+  function scrollToBottom() {
     chatArea.scrollTop = chatArea.scrollHeight;
   }
 
-  sendBtn.addEventListener('click', () => {
-    const message = chatInput.value.trim();
-    if (!message) return;
-    appendMessage(message, 'user');
-    chatInput.value = '';
-    setTimeout(() => {
-      // This is a placeholder for chatbot response
-      appendMessage("Sorry, I can't answer that right now.", 'bot');
-    }, 700);
-  });
-
-  chatInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      sendBtn.click();
-    }
-  });
-
-  // Logout Modal
-  const logoutModal = document.getElementById('logout-modal');
-  const confirmLogout = document.getElementById('confirm-logout');
-  const cancelLogout = document.getElementById('cancel-logout');
-
-  function openLogoutModal(event) {
-    event.preventDefault();
-    logoutModal.style.display = 'flex';
+  function formatMarkdownToHTML(text) {
+    // Replace **bold** with <strong>
+    return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
   }
 
-  confirmLogout.addEventListener('click', () => {
-    document.getElementById('logout-form').submit();
-  });
+  document.getElementById("send-btn").addEventListener("click", async () => {
+    const inputField = document.getElementById("chat-input");
+    const userMessage = inputField.value.trim();
 
-  cancelLogout.addEventListener('click', () => {
-    logoutModal.style.display = 'none';
-  });
+    if (!userMessage) return;
 
-  // Close modal on outside click
-  window.addEventListener('click', (e) => {
-    if (e.target === logoutModal) {
-      logoutModal.style.display = 'none';
+    // Add user message bubble
+    const userBubble = document.createElement("div");
+    userBubble.className = "message user";
+    userBubble.textContent = userMessage;
+    chatArea.appendChild(userBubble);
+
+    // Add typing animation bubble
+    const typingBubble = document.createElement("div");
+    typingBubble.className = "message bot";
+    typingBubble.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
+    chatArea.appendChild(typingBubble);
+
+    scrollToBottom();
+    inputField.value = "";
+    inputField.focus();
+
+    try {
+      const response = await fetch(`/api/chat/?message=${encodeURIComponent(userMessage)}`);
+      const data = await response.json();
+
+      typingBubble.remove();
+
+      const botBubble = document.createElement("div");
+      botBubble.className = "message bot";
+      const fullReply = Array.isArray(data.reply) ? data.reply.join(" ") : data.reply;
+
+      let index = 0;
+      function typeWriter() {
+        if (index < fullReply.length) {
+          let current = fullReply.slice(0, index + 1);
+          botBubble.innerHTML = formatMarkdownToHTML(current);
+          index++;
+          scrollToBottom();
+          setTimeout(typeWriter, 15);
+        }
+      }
+      chatArea.appendChild(botBubble);
+      typeWriter();
+
+    } catch (err) {
+      typingBubble.innerHTML = "⚠️ Error: Unable to connect.";
     }
   });
+
+  document.getElementById("chat-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      document.getElementById("send-btn").click();
+    }
+  });
+
+  // Logout modal controls
+  function openLogoutModal(event) {
+    event.preventDefault();
+    document.getElementById('logout-modal').style.display = 'flex';
+  }
+
+  function closeLogoutModal() {
+    document.getElementById('logout-modal').style.display = 'none';
+  }
+
+  function submitLogout() {
+    document.getElementById('logout-form').submit();
+  }
 </script>
+
 </body>
 </html>
