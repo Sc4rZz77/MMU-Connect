@@ -19,4 +19,5 @@ services:
 
 databases:
   - name: mmuconnect-redis
-    type: redis 
+    plan: free
+    type: redis
