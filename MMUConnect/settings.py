@@ -85,7 +85,7 @@ import dj_database_url
 import os
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+    'default': dj_database_url.config(default=os.environ.get('postgresql://mmuconnect_data_user:Zw8ytymqP8QUWfYCk7br5dTQ8sUstqND@dpg-d0unsfripnbc73ekmhhg-a.singapore-postgres.render.com/mmuconnect_data'))
 }
 
 # Password validation
@@ -130,7 +130,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+DEFAULT_FILE_STORAGE = 'db_file_storage.storage.DatabaseFileStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
