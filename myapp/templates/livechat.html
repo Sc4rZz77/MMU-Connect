@@ -529,7 +529,7 @@
       if (btn) btn.classList.add('active');
       currentUserBtn = btn;
       let protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-      chatSocket = new WebSocket(protocol + window.location.hostname + ':10000/ws/chat/' + username + '/');
+      chatSocket = new WebSocket(protocol + window.location.host + '/ws/chat/' + username + '/');
       chatSocket.onopen = function() {
         isConnected = true;
         setStatus(true);
