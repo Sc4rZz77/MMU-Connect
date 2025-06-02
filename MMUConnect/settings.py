@@ -181,9 +181,13 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),      # Load from env
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),            # Load from env
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),      # Load from env
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
 }
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Add a check or fallback if needed
+if not all([os.getenv('CLOUDINARY_CLOUD_NAME'), os.getenv('CLOUDINARY_API_KEY'), os.getenv('CLOUDINARY_API_SECRET')]):
+    raise ValueError('Cloudinary environment variables are not set. Please configure them for production.')
