@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: mmuconnect-backend
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "daphne MMUConnect.asgi:application"
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: MMUConnect.settings
+      - key: SECRET_KEY
+        value: django-insecure--zvx^18#848zxe+8+iqemxf$%y*9n_i#-bseu%-#7t!&@5!-sc  # Replace with your actual secret key
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: mmuconnect-redis
+          property: connectionString
+      - key: DEBUG
+        value: "False"
+
+databases:
+  - name: mmuconnect-redis
+    type: redis 
