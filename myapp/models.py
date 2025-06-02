@@ -1,15 +1,16 @@
 from django.contrib.auth.models import User
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)  # Allow null if needed
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     self_bio = models.TextField(default="No bio available")
-    profile_picture = models.ImageField(
-    upload_to="author_images/",
-    default='https://res.cloudinary.com/your_cloud/image/upload/author_images/default.jpg'
-)
+    profile_picture = CloudinaryField(
+        folder='author_images/',
+        default='author_images/default.jpg'
+    )
 
     GENDER_CHOICES = [
         ('Unknown Gender', 'Unknown Gender'),
