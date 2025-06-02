@@ -3,7 +3,7 @@ services:
     name: mmuconnect-backend
     runtime: python
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "daphne MMUConnect.asgi:application"
+    startCommand: "daphne MMUConnect.asgi:application --bind 0.0.0.0 --port 10000"
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: MMUConnect.settings
