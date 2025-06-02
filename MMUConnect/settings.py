@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure--zvx^18#848zxe+8+iqemxf$%y*9n_i#-bseu%-#7t!&@5!-sc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -37,22 +39,23 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
     "myapp",
     'channels',
+    'cloudinary',
     
 ]
 
 MIDDLEWARE = [
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # <-- after SecurityMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
 ]
 
 ROOT_URLCONF = 'MMUConnect.urls'
@@ -78,13 +81,12 @@ WSGI_APPLICATION = 'MMUConnect.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+import dj_database_url
+import os
 
+DATABASES = {
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -120,12 +122,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'MMUConnect/static')]
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Default primary key field type
@@ -143,8 +150,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'muhammadmuhyideen@gmail.com'  # Your Gmail address
-EMAIL_HOST_PASSWORD = 'dukl lvut juoh ccqi'     # Your App Password (NOT Gmail password)
+EMAIL_HOST_USER = 'muhammadmuhyideen@gmail.com'  #change
+EMAIL_HOST_PASSWORD = 'dukl lvut juoh ccqi'     #Your App Password (NOT Gmail password)
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Cache (optional)
@@ -156,16 +163,30 @@ CACHES = {
 
 ASGI_APPLICATION = 'MMUConnect.asgi.application'
 
-# For development, use in-memory channel layer
+# For development, use in-memory channel layer //done
 CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    }
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+    },
 }
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://*.ngrok-free.app",
+    "https://mmu-connect.onrender.com", "https://mmuconnect.online",
 ]
 
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', ''),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Add a check or fallback if needed
+if not all([os.getenv('CLOUDINARY_CLOUD_NAME'), os.getenv('CLOUDINARY_API_KEY'), os.getenv('CLOUDINARY_API_SECRET')]):
+    raise ValueError('Cloudinary environment variables are not set. Please configure them for production.')

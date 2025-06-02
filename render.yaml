@@ -1,17 +1,33 @@
 services:
   - type: web
-    name: mmuconnect-web
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn MMUConnect.wsgi:application
+    name: mmuconnect-backend
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "daphne MMUConnect.asgi:application --bind 0.0.0.0 --port 10000"
     envVars:
-      - key: DJANGO_SECRET_KEY
-        generateValue: true
-      - key: DJANGO_DEBUG
+      - key: DJANGO_SETTINGS_MODULE
+        value: MMUConnect.settings
+      - key: SECRET_KEY
+        fromSecret: SECRET_KEY  # Securely reference from environment secrets
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: mmuconnect-redis
+          property: connectionString
+      - key: DEBUG
         value: "False"
-    autoDeploy: true
+      - key: CLOUDINARY_CLOUD_NAME
+        fromSecret: CLOUDINARY_CLOUD_NAME  # Add from project settings
+      - key: CLOUDINARY_API_KEY
+        fromSecret: CLOUDINARY_API_KEY  # Add from project settings
+      - key: CLOUDINARY_API_SECRET
+        fromSecret: CLOUDINARY_API_SECRET  # Add from project settings
+      - key: EMAIL_HOST_USER
+        fromSecret: EMAIL_HOST_USER  # Add from project settings for email
+      - key: EMAIL_HOST_PASSWORD
+        fromSecret: EMAIL_HOST_PASSWORD  # Add from project settings for email
 
 databases:
-  - name: mmuconnect-db
-    databaseName: mmuconnect
-    user: mmuconnectuser
+  - name: mmuconnect-redis
+    plan: free
+    type: redis
