@@ -8,7 +8,7 @@ services:
       - key: DJANGO_SETTINGS_MODULE
         value: MMUConnect.settings
       - key: SECRET_KEY
-        value: django-insecure--zvx^18#848zxe+8+iqemxf$%y*9n_i#-bseu%-#7t!&@5!-sc  # Replace with your actual secret key
+        fromSecret: SECRET_KEY  # Securely reference from environment secrets
       - key: REDIS_URL
         fromService:
           type: redis
@@ -16,6 +16,16 @@ services:
           property: connectionString
       - key: DEBUG
         value: "False"
+      - key: CLOUDINARY_CLOUD_NAME
+        fromSecret: CLOUDINARY_CLOUD_NAME  # Add from project settings
+      - key: CLOUDINARY_API_KEY
+        fromSecret: CLOUDINARY_API_KEY  # Add from project settings
+      - key: CLOUDINARY_API_SECRET
+        fromSecret: CLOUDINARY_API_SECRET  # Add from project settings
+      - key: EMAIL_HOST_USER
+        fromSecret: EMAIL_HOST_USER  # Add from project settings for email
+      - key: EMAIL_HOST_PASSWORD
+        fromSecret: EMAIL_HOST_PASSWORD  # Add from project settings for email
 
 databases:
   - name: mmuconnect-redis
