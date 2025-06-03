@@ -239,7 +239,7 @@ def ai_chat(request):
 
     try:
         ai_response = client.chat.completions.create(
-            model="meta-llama/llama-3.3-8b-instruct:free",
+            model="deepseek/deepseek-prover-v2:free",
             messages=[
                 {"role": "system", "content": "/no_think"},
                 {"role": "user", "content": user_input}
@@ -266,7 +266,7 @@ def ai_chat(request):
         )
 
     except Exception as e:
-        return JsonResponse({"reply": f"Oops, something went wrong. Error: {str(e)}"})
+        return JsonResponse({"reply": f"Oops, something went wrong. Please be patient as our developers are working hard to sort the issue."})
 
 def send_email(request):
     if request.method == 'POST':
