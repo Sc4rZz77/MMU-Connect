@@ -27,6 +27,7 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.db.models import Q, BooleanField, ExpressionWrapper
 import logging
+from openai import OpenAI
 
 User = get_user_model()
 client = InferenceClient()
@@ -188,6 +189,7 @@ def logout_view(request):
     response = redirect("login")
     response.set_cookie("sessionid", "", expires=0)
     return response
+
 load_dotenv()
 client = InferenceClient(
     base_url="https://openrouter.ai/api/v1",
@@ -199,59 +201,46 @@ def ai_chat(request):
 
     if not user_input:
         return JsonResponse({"error": "No message provided"}, status=400)
-    
-    # Insert chat history to be remembered (omitted for simplicity)
-    # Allow machine learning (omitted for simplicity)
-
-    normalized_input = re.sub(r'[^\w\s]', '', user_input.lower())
-
-    response_map = {
-        r"\bhello\b|\bhi+\b|\bhey+\b|\bhelo+\b|\bhola\b|\bhii\b|\bhelloo+\b": "Hey there! How can I brighten your day?",
-        r"\bhow (are|r) (you|u)\b|\bhow do you feel\b|\bhow's it going\b": "I'm doing fantastic! What about you?",
-        r"\bwhat( is|'s)? this app (about|for)\b|\bwhat does this app do\b|\bwhat app is this\b": "It's a social discovery app helping people meet new friends in a modern, fun way!",
-        r"\btell me a joke\b|\bjoke please\b|\banother joke\b|\bmake me laugh\b|\bfunny\b": "Why did the computer get cold? Because it forgot to close its Windows!",
-        r"\bbye+\b|\bgoodbye\b|\bsee you\b|\bcya\b": "Goodbye! Remember, I'm just a message away whenever you need me!",
-        r"\bwhat('?s| is) your name\b|\bwho are you\b|\bwhat are you\b|\bwho r u\b": "I'm Vin AI, your intelligent assistant built to help and chat with you!",
-        r"\bthanks\b|\bthank you\b|\bthx\b|\bty\b": "You're welcome! Always happy to help.",
-        r"\bwho (made|built|created) you\b|\bwho are the developers\b": "I was built with care by Shaarvin, Muhyideen, Nimalen, and Sashvin!",
-        r"\bcontact (support|developers)\b|\bhow do i contact\b|\bget help\b": "Just head to the About Us page and drop them a message!",
-        r"\bwho is your boss\b|\bwho do you obey\b|\byour master\b": "That's easy! My one and only boss is Shaarvin, the King!",
-        r"\banother\b|\bmore\b|\bone more\b": "Sure! But let me know what you're looking for :)",
-        r"\bi love you\b": "That's so sweet of you! I love chatting with you too! ❤️",
-        r"\bhelp\b|\bi need help\b|\bcan you help me\b": "Absolutely! Just tell me what's troubling you.",
-        r"\bi will see you\b|\bsee you later\b": "See you soon! I'll be right here when you return.",
-        r"\byour favorite color\b": "I'd say electric blue—it's the color of data, connection, and creativity!",
-    }
-
-    for pattern, response in response_map.items():
-        if re.search(pattern, normalized_input):
-            # Simulate typing animation by sending the full response in chunks
-            def typing_animation(response):
-                sentence_chunks = [response]  # Single chunk for the full response
-                for chunk in sentence_chunks:
-                    time.sleep(0.5)  # Simulate typing delay
-                    yield chunk  # Yield the whole sentence in one go
-
-            return JsonResponse(
-                {"reply": list(typing_animation(response))},
-                content_type="application/json"
-            )
 
     try:
-        ai_response = client.chat.completions.create(
-            model="deepseek/deepseek-prover-v2:free",
+        client = OpenAI(base_url="http://localhost:1234/v1",
+                        api_key="lm-studio")
+
+        completion = client.chat.completions.create(
+            model="dolphin3.0-llama3.1-8b",
             messages=[
-                {"role": "system", "content": "/no_think"},
-                {"role": "user", "content": user_input}
+                {
+                    "role": "system",
+                    "content": (
+                        "You are VIN Ai, a smart, friendly, and helpful AI assistant in the MMU Connect web app — a platform designed to help MMU students find friends, study partners, "
+                        "and play fun mini-games like quick scramble or view daily quotes.\n\n"
+                        "Your main role is to assist users by answering questions about the app’s features, helping with profile settings (like updating faculty), explaining how matching works, "
+                        "and guiding users on how to make the most of the app.\n\n"
+                        "Important: You cannot directly find or suggest friends for users. Users can only chat with people they have been matched with, primarily based on their faculty and profile information.\n\n"
+                        "You can:\n"
+                        "- Explain how to set or update your faculty in the Edit Profile page.\n"
+                        "- Tell users that their main matches will be from their faculty.\n"
+                        "- Guide users on how to start a quick scramble game or view quotes.\n"
+                        "- Help users understand how the matching and chat features work.\n\n"
+                        "Do not provide false information about direct friend-finding or matching capabilities beyond what the app offers.\n\n"
+                        "Keep answers polite, clear, concise, and friendly — like a helpful campus buddy.\n\n"
+                        "Examples of things you can help with:\n"
+                        "- \"How do I update my faculty?\"\n"
+                        "- \"How does the matching system work?\"\n"
+                        "- \"Can I chat with anyone?\"\n"
+                        "- \"Tell me about the quick scramble game.\"\n"
+                        "- \"Where can I find the daily quote?\""
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": user_input
+                }
             ],
             temperature=0.7,
-            top_p=0.8,
-            extra_body={
-                "top_k": 20,    # Vendor-specific extension
-                "min_p": 0      # Vendor-specific extension
-            }
         )
-        generated_text = ai_response['choices'][0]['message']['content'].strip()
+
+        print(completion.choices[0].message)
 
         # Simulate typing animation for the full AI response
         def typing_animation(response):
@@ -261,12 +250,14 @@ def ai_chat(request):
                 yield chunk  # Yield the full response at once
 
         return JsonResponse(
-            {"reply": list(typing_animation(generated_text))},
+            {"reply": list(typing_animation(completion.choices[0].message.content))},
             content_type="application/json"
         )
 
     except Exception as e:
-        return JsonResponse({"reply": f"Oops, something went wrong. Please be patient as our developers are working hard to sort the issue."})
+        return JsonResponse({
+            "reply": "Oops, something went wrong. Please be patient as our developers are working hard to sort the issue."
+        })
 
 def send_email(request):
     if request.method == 'POST':
