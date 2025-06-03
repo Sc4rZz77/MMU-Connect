@@ -28,6 +28,9 @@ from django.contrib.auth.models import User
 from django.db.models import Q, BooleanField, ExpressionWrapper
 import logging
 from openai import OpenAI
+import tenacity
+import requests
+from groq import Groq
 
 User = get_user_model()
 client = InferenceClient()
@@ -191,30 +194,26 @@ def logout_view(request):
     return response
 
 load_dotenv()
-client = InferenceClient(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("HF_TOKEN"),  
-)
-
+@login_required
+@never_cache
 def ai_chat(request):
     user_input = request.GET.get("message", "").strip()
-
     if not user_input:
         return JsonResponse({"error": "No message provided"}, status=400)
-
+    api_key = os.getenv("GROQ_API_KEY")
+    if not api_key:
+        return JsonResponse({"error": "API key is not configured. Please set GROQ_API_KEY in your environment."}, status=500)
     try:
-        client = OpenAI(base_url="http://localhost:1234/v1",
-                        api_key="lm-studio")
-
+        client = OpenAI(base_url="https://api.groq.com/openai/v1", api_key=api_key)
         completion = client.chat.completions.create(
-            model="dolphin3.0-llama3.1-8b",
+            model="meta-llama/llama-4-maverick-17b-128e-instruct",
             messages=[
                 {
                     "role": "system",
                     "content": (
                         "You are VIN Ai, a smart, friendly, and helpful AI assistant in the MMU Connect web app — a platform designed to help MMU students find friends, study partners, "
                         "and play fun mini-games like quick scramble or view daily quotes.\n\n"
-                        "Your main role is to assist users by answering questions about the app’s features, helping with profile settings (like updating faculty), explaining how matching works, "
+                        "Your main role is to assist users by answering questions about the app's features, helping with profile settings (like updating faculty), explaining how matching works, "
                         "and guiding users on how to make the most of the app.\n\n"
                         "Important: You cannot directly find or suggest friends for users. Users can only chat with people they have been matched with, primarily based on their faculty and profile information.\n\n"
                         "You can:\n"
@@ -239,24 +238,20 @@ def ai_chat(request):
             ],
             temperature=0.7,
         )
-
         print(completion.choices[0].message)
-
-        # Simulate typing animation for the full AI response
         def typing_animation(response):
-            sentence_chunks = [response]  # Send the whole response at once
+            sentence_chunks = [response]
             for chunk in sentence_chunks:
-                time.sleep(0.5)  # Adjust delay between chunks
-                yield chunk  # Yield the full response at once
-
+                time.sleep(0.5)
+                yield chunk
         return JsonResponse(
             {"reply": list(typing_animation(completion.choices[0].message.content))},
             content_type="application/json"
         )
-
     except Exception as e:
+        logging.error(f"AI Chat Error: {str(e)}")
         return JsonResponse({
-            "reply": "Oops, something went wrong. Please be patient as our developers are working hard to sort the issue."
+            "reply": f"Oops, something went wrong: {str(e)}. Retrying may help, or check Groq's status."
         })
 
 def send_email(request):
