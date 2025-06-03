@@ -378,9 +378,18 @@ button:focus-visible {
 
   document.getElementById("send-btn").addEventListener("click", async () => {
     const inputField = document.getElementById("chat-input");
+    const sendBtn = document.getElementById("send-btn");
+    inputField.disabled = true;
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Stop';
+    const controller = new AbortController();
     const userMessage = inputField.value.trim();
-
-    if (!userMessage) return;
+    if (!userMessage) {
+        inputField.disabled = false;
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send';
+        return;
+    }
 
     // Add user message bubble
     const userBubble = document.createElement("div");
@@ -399,7 +408,7 @@ button:focus-visible {
     inputField.focus();
 
     try {
-      const response = await fetch(`/api/chat/?message=${encodeURIComponent(userMessage)}`);
+      const response = await fetch(`/api/chat/?message=${encodeURIComponent(userMessage)}`, { signal: controller.signal });
       const data = await response.json();
 
       typingBubble.remove();
@@ -420,10 +429,21 @@ button:focus-visible {
       }
       chatArea.appendChild(botBubble);
       typeWriter();
+      inputField.disabled = false;
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send';
 
     } catch (err) {
-      typingBubble.innerHTML = "⚠️ Error: Unable to connect.";
+      if (err.name === 'AbortError') {
+        typingBubble.innerHTML = 'Request stopped.';
+      } else {
+        typingBubble.innerHTML = '⚠️ Error: Unable to connect.';
+      }
+      inputField.disabled = false;
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send';
     }
+    sendBtn.onclick = null;
   });
 
 
