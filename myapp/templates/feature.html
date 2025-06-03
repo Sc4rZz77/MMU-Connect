@@ -11,6 +11,66 @@
 
   
   <style> 
+
+.navbar {
+  position: sticky;
+  top: 0;
+  background-color: #6d44b8;
+  color: white;
+  padding: 12px 20px;
+  z-index: 100;
+  box-shadow: none;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.navbar.scrolled {
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+  background-color: #593bb2;
+}
+
+.navbar a {
+  color: white;
+  font-weight: 600;
+  margin-right: 15px;
+}
+
+.navbar a:hover, .navbar a:focus {
+  color: #ffcc00;
+}
+
+
+  .nav-links li a {
+  position: relative;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  padding-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.nav-links li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background-color: #ffcc00;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease;
+}
+
+.nav-links li a:hover {
+  color: #ffcc00;
+}
+
+.nav-links li a:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
     .author-container {
     opacity: 0;
     animation: fadeIn 0.5s ease forwards;
@@ -243,6 +303,44 @@ body {
       background-color: #ffcc00;
       color: #000;
     }
+    button, .nav-links li a {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background-color: #6d44b8;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+}
+
+button:hover, button:focus, .nav-links li a:hover, .nav-links li a:focus {
+  background-color: #33004d;
+  color: #fff200;
+  transform: scale(1.05);
+  outline: none;
+}
+
+button:focus-visible {
+  outline: 3px solid #ffff00;
+  outline-offset: 2px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+  border-color: #ffcc00;
+  box-shadow: 0 0 10px #ffcc0055;
+  transform: scale(1.02);
+  outline: none;
+}
+
 
     
   </style>
@@ -445,6 +543,15 @@ function showMatchAnimation() {
     matchDiv.remove();
   }, 2000);
 }
+window.addEventListener('scroll', function() {
+  const navbar = document.querySelector('.navbar');
+  if (window.scrollY > 10) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
+
 
 window.CSRF_TOKEN = '{{ csrf_token }}';
   </script>
@@ -513,3 +620,4 @@ window.CSRF_TOKEN = '{{ csrf_token }}';
     #matches-fab { right: 10px; top: 10px; padding: 12px 18px 12px 14px; font-size: 1em; }
   }
 </style>
+

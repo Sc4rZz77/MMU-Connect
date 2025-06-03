@@ -8,6 +8,87 @@
   <link rel="icon" type="image/jpg" href="{% static 'img/logo.jpg' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <style>
+    .nav-links li a {
+  position: relative;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  padding-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.nav-links li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background-color: #ffcc00;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease;
+}
+
+.nav-links li a:hover {
+  color: #ffcc00;
+}
+
+.nav-links li a:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  background-color: #6d44b8;
+  color: white;
+  padding: 12px 20px;
+  z-index: 100;
+  box-shadow: none;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.navbar.scrolled {
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+  background-color: #593bb2;
+}
+
+.navbar a {
+  color: white;
+  font-weight: 600;
+  margin-right: 15px;
+}
+
+.navbar a:hover, .navbar a:focus {
+  color: #ffcc00;
+}
+
+button, .nav-links li a {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background-color: #6d44b8;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+button:hover, button:focus, .nav-links li a:hover, .nav-links li a:focus {
+  background-color: #33004d;
+  color: #000;
+  transform: scale(1.05);
+  outline: none;
+}
+
+button:focus-visible {
+  outline: 3px solid #ffcc00;
+  outline-offset: 2px;
+}
+
+
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
@@ -211,10 +292,33 @@
       border-radius: 5px;
       cursor: pointer;
     }
+    #back-to-top {
+  position: fixed;
+  bottom: 40px;
+  right: 30px;
+  background: #6d44b8;
+  color: #fff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: none;
+  box-shadow: 0 4px 12px rgba(109, 68, 184, 0.3);
+  transition: background-color 0.3s ease;
+  z-index: 1000;
+}
+
+#back-to-top:hover {
+  background-color: #ffcc00;
+  color: #000;
+}
+
     
   </style>
 </head>
 <body>
+  
 <nav class="navbar">
   <div class="url-bar">MMU Connect</div>
   <ul class="nav-links">
@@ -280,6 +384,7 @@
       </div>
     </div>
   </div>
+<button id="back-to-top" title="Back to top">↑</button>
 
   <footer class="footer">
     © MMU Connect
@@ -297,6 +402,29 @@ function closeLogoutModal() {
 function submitLogout() {
   document.getElementById('logout-form').submit();
 }
+window.addEventListener('scroll', function() {
+  const navbar = document.querySelector('.navbar');
+  if (window.scrollY > 10) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
+
+const backToTopBtn = document.getElementById('back-to-top');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 300) {
+    backToTopBtn.style.display = 'block';
+  } else {
+    backToTopBtn.style.display = 'none';
+  }
+});
+
+backToTopBtn.addEventListener('click', () => {
+  window.scrollTo({top: 0, behavior: 'smooth'});
+});
+
   </script>
 </body>
 <div id="logout-modal" class="modal">

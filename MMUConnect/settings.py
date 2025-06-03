@@ -188,3 +188,4 @@ CLOUDINARY_STORAGE = {
 # Add a check or fallback if needed
 if not all([os.getenv('CLOUDINARY_CLOUD_NAME'), os.getenv('CLOUDINARY_API_KEY'), os.getenv('CLOUDINARY_API_SECRET')]):
     raise ValueError('Cloudinary environment variables are not set. Please configure them for production.')
+

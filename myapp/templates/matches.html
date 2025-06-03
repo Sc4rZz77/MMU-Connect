@@ -8,7 +8,21 @@
   <link rel="icon" type="image/jpg" href="{% static 'img/logo.jpg' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <style>
-    
+    .nav-links li a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  transition: color 0.3s ease, border-bottom 0.3s ease;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
+}
+
+.nav-links li a:hover {
+  color: #ffcc00;
+  border-bottom: 2px solid #ffcc00;
+}
+
     body {
       background-color: #ffffff;
       font-family: 'Segoe UI', sans-serif;
@@ -263,7 +277,7 @@
   </div>
   <footer class="footer">© MMU Connect</footer>
   <script>
-    // CSRF helper
+   
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -322,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!authorId || authorId.trim() === '') {
                 console.error('Author ID is missing or invalid');
                 alert('Author ID is missing. Please refresh and try again.');
-                return;  // Stop the function if authorId is invalid
+                return;  
             }
             fetch(`/like/${authorId}/`, {
                 method: 'POST',

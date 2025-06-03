@@ -8,6 +8,102 @@
   <link rel="icon" type="image/jpg" href="{% static 'img/logo.jpg' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <style>
+    button, .nav-links li a {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background-color: #6d44b8;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+}
+
+button:hover, button:focus, .nav-links li a:hover, .nav-links li a:focus {
+  background-color: #33004d;
+  color: #000;
+  transform: scale(1.05);
+  outline: none;
+}
+
+button:focus-visible {
+  outline: 3px solid #ffcc00;
+  outline-offset: 2px;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+  border-color: #ffcc00;
+  box-shadow: 0 0 10px #ffcc0055;
+  transform: scale(1.02);
+  outline: none;
+}
+
+    .navbar {
+  position: sticky;
+  top: 0;
+  background-color: #6d44b8;
+  color: white;
+  padding: 12px 20px;
+  z-index: 100;
+  box-shadow: none;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.navbar.scrolled {
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+  background-color: #593bb2;
+}
+
+.navbar a {
+  color: white;
+  font-weight: 600;
+  margin-right: 15px;
+}
+
+.navbar a:hover, .navbar a:focus {
+  color: #ffcc00;
+}
+
+    .nav-links li a {
+  position: relative;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+  padding-bottom: 4px;
+  transition: color 0.3s ease;
+}
+
+.nav-links li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+  background-color: #ffcc00;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease;
+}
+
+.nav-links li a:hover {
+  color: #ffcc00;
+}
+
+.nav-links li a:hover::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
@@ -16,11 +112,11 @@
     }
 
     .navbar {
-      padding: 21px 30px;  /* Uniform padding */
+      padding: 21px 30px;  
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #6d44b8;  /* Assuming this is standard */
+      background-color: #6d44b8;  
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
       position: relative;
       animation: fadeIn 1s ease forwards;
@@ -37,7 +133,7 @@
 
     .nav-links {
       display: flex;
-      gap: 20px;  /* Uniform gap between links */
+      gap: 20px;  
       list-style: none;
       padding: 0;
       margin: 0;
@@ -47,8 +143,8 @@
       color: #ffffff;
       text-decoration: none;
       font-weight: bold;
-      font-size: 16px;  /* Uniform font size */
-      transition: color 0.3s ease, background 0.3s ease;  /* Keep existing transition */
+      font-size: 16px;  
+      transition: color 0.3s ease, background 0.3s ease; 
     }
 
     .nav-links li a:hover {
@@ -161,7 +257,7 @@
     }
 
         .modal {
-      display: none; /* Hidden by default */
+      display: none; 
       position: fixed;
       z-index: 1000;
       left: 0; top: 0;
@@ -213,6 +309,7 @@
   </style>
 </head>
 <body>
+  
 <nav class="navbar">
   <div class="url-bar">MMU Connect</div>
   <ul class="nav-links">
@@ -267,6 +364,15 @@ function closeLogoutModal() {
 
 function submitLogout() {
   document.getElementById('logout-form').submit();
+  window.addEventListener('scroll', function() {
+  const navbar = document.querySelector('.navbar');
+  if (window.scrollY > 10) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
+
 }
   </script>
 </body>
