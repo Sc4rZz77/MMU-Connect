@@ -237,6 +237,7 @@ def ai_chat(request):
                 }
             ],
             temperature=0.7,
+            max_completion_tokens=500,
         )
         print(completion.choices[0].message)
         def typing_animation(response):
