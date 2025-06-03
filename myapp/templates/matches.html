@@ -8,11 +8,54 @@
   <link rel="icon" type="image/jpg" href="{% static 'img/logo.jpg' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <style>
+    
     body {
       background-color: #ffffff;
       font-family: 'Segoe UI', sans-serif;
     }
 
+    .match-card, .matched-card {
+  animation: fadeSlideUp 0.6s ease forwards;
+  opacity: 0;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.match-card:hover, .matched-card:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 6px 20px rgba(87, 1, 246, 0.35);
+  transition: all 0.3s ease-in-out;
+}
+
+#back-to-feature {
+  transform: translateY(-10px);
+  animation: slideInLeft 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+#back-to-feature:hover {
+  transform: translateY(-4px) scale(1.02);
+}
     #matches-container {
       display: flex;
       flex-wrap: wrap;
@@ -152,6 +195,12 @@
         box-shadow: 0 8px 24px rgba(109,68,184,0.25);
       }
 
+      body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
       .footer {
         background: #573b8a;
         text-align: center;
@@ -333,5 +382,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
   </script>
+  <script>
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.match-card, .matched-card').forEach((card, i) => {
+      card.style.animationDelay = `${i * 100}ms`;
+    });
+  });
+</script>
+
 </body>
 </html>
