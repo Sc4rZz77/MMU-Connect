@@ -165,13 +165,20 @@ body {
       box-shadow: 0 6px 16px rgba(87, 59, 138, 0.7);
     }
 
-    .footer {
-      background: #573b8a;
-      text-align: center;
-      padding: 14px;
-      color: #e0dfff;
-      margin-top: 60px;
-    }
+    body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.footer {
+  background: #573b8a;
+  text-align: center;
+  padding: 14px;
+  color: #e0dfff;
+  margin-top: auto;
+}
 
     @media (max-width: 768px) {
       #author-list {
