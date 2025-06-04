@@ -201,11 +201,11 @@ button:focus-visible {
     }
 
     .navbar {
-      padding: 21px 30px;  /* Uniform padding */
+      padding: 21px 30px;  
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #6d44b8;  /* Assuming this is standard */
+      background-color: #6d44b8;  
     }
 
      .url-bar {
@@ -219,7 +219,7 @@ button:focus-visible {
 
    .nav-links {
       display: flex;
-      gap: 20px;  /* Uniform gap between links */
+      gap: 20px;  
       list-style: none;
       padding: 0;
       margin: 0;
@@ -229,8 +229,8 @@ button:focus-visible {
       color: #fff;
       text-decoration: none;
       font-weight: bold;
-      font-size: 16px;  /* Uniform font size */
-      transition: color 0.3s ease, background 0.3s ease;  /* Keep existing transition */
+      font-size: 16px;  
+      transition: color 0.3s ease, background 0.3s ease;  
     }
 
     .nav-links li a:hover {
@@ -314,16 +314,73 @@ button:focus-visible {
   color: #000;
 }
 
-    
+.hamburger {
+  display: none; 
+  flex-direction: column;
+  justify-content: space-between;
+  width: 25px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: 10px;
+  margin-top: 30px;
+  padding: 0;
+}
+
+.hamburger-line {
+  width: 100%;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+}
+
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none; 
+    flex-direction: column;
+    width: 100%;
+    background-color: #6d44b8;
+    position: absolute;
+    top: 60px; 
+    left: 0;
+    padding: 10px 0;
+    z-index: 999;
+  }
+
+  .nav-links.active {
+    display: flex; 
+  }
+
+  .hamburger {
+    display: flex; 
+  }
+
+  
+  form {
+    margin-left: 0;
+    margin-top: 30px;
+  }
+}
+
   </style>
 </head>
 <body>
-  
-<nav class="navbar">
+  <nav class="navbar">
   <div class="url-bar">MMU Connect</div>
+
+  
+  <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" type="button">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+
   <ul class="nav-links">
     <li><a href="{% url 'home' %}">Home</a></li>
-    <li><a href="{% url 'feature' %}">Feature </a></li>
+    <li><a href="{% url 'feature' %}">Feature</a></li>
     <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
     <li><a href="{% url 'about-us' %}">About Us</a></li>
     <li><a href="{% url 'chat' %}">Help</a></li>
@@ -334,16 +391,17 @@ button:focus-visible {
         <form id="logout-form" method="post" action="{% url 'logout' %}" style="display:none;">
           {% csrf_token %}
         </form>
-
         <a href="#" onclick="openLogoutModal(event)">Logout</a>
       </li>
     {% endif %}
   </ul>
+
   <form method="get" action="{% url 'search_users' %}" style="margin-left: 20px;">
-  <input type="text" name="q" placeholder="Search users..." style="padding: 8px; border-radius: 6px; border: none;">
-  <button type="submit" style="padding: 8px 12px; border-radius: 6px; background: #ffcc00; color: black; border: none;">Search</button>
-</form>
+    <input type="text" name="q" placeholder="Search users..." style="padding: 8px; border-radius: 6px; border: none;">
+    <button type="submit" style="padding: 8px 12px; border-radius: 6px; background: #ffcc00; color: black; border: none;">Search</button>
+  </form>
 </nav>
+
 
   <div class="hero">
     <h1>Welcome to MMU Connect</h1>
@@ -426,6 +484,19 @@ backToTopBtn.addEventListener('click', () => {
 });
 
   </script>
+  <script>
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks = document.querySelector('.nav-links');
+
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
+
+    // Toggle aria-expanded for accessibility
+    const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+    hamburger.setAttribute('aria-expanded', !expanded);
+  });
+</script>
+
 </body>
 <div id="logout-modal" class="modal">
   <div class="modal-content">
