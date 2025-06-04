@@ -150,8 +150,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'muhammadmuhyideen@gmail.com'  #change
-EMAIL_HOST_PASSWORD = 'dukl lvut juoh ccqi'     #Your App Password (NOT Gmail password)
+EMAIL_HOST_USER = 'mmuconnect.online@gmail.com'
+EMAIL_HOST_PASSWORD = 'edas fmyt awev viit'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Cache (optional)
