@@ -5,7 +5,8 @@ from django.contrib.auth import views as auth_views
 from . import views
 from .views import ai_chat, ForceOTPLoginView
 from .two_factor_views import verify_2fa
-
+from django.urls import path
+from . import views
 
 urlpatterns = [
     path('signup/', views.signup, name='signup'),  # Home route as signup
@@ -30,9 +31,9 @@ urlpatterns = [
     path('people-who-liked-me/', views.people_who_liked_me, name='people_who_liked_me'),
     path('matches/', views.matches, name='matches'),
     path('fun/', views.fun, name='fun'),
+     path('tweet/', views.tweet_board, name='tweet_board'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-

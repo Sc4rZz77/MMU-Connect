@@ -1,0 +1,51 @@
+<form method="POST">
+  {% csrf_token %}
+  {{ form }}
+  <p><span id="char-count">280</span> characters remaining</p>
+  <button type="submit">Post</button>
+</form>
+
+<hr>
+
+{% for post in posts %}
+  <div style="border: 1px solid #ccc; margin: 10px 0; padding: 10px;">
+    <strong>{{ post.user.username }}</strong><br>
+    {{ post.content }}<br>
+    <small>{{ post.created_at }}</small><br>
+
+    <form method="POST" action="{% url 'tweet_board' %}">
+      {% csrf_token %}
+      <input type="hidden" name="post_id" value="{{ post.id }}">
+      {{ reply_form }}
+      <button type="submit">Reply</button>
+    </form>
+
+    {% for reply in post.replies.all %}
+      <div style="margin-left: 20px;">
+        <strong>{{ reply.user.username }}</strong>: {{ reply.content }}
+      </div>
+    {% endfor %}
+  </div>
+{% endfor %}
+
+<script>
+  // Character countdown
+  const textarea = document.querySelector('textarea');
+  const count = document.getElementById('char-count');
+
+  textarea.addEventListener('input', () => {
+    count.textContent = 280 - textarea.value.length;
+  });
+
+  // Like button
+  function likePost(postId) {
+    fetch(`/like/${postId}/`, {
+      method: 'GET',
+    })
+    .then(response => response.json())
+    .then(data => {
+      alert(`Post liked! Total likes: ${data.likes}`);
+      location.reload();
+    });
+  }
+</script>

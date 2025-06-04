@@ -31,6 +31,11 @@ from openai import OpenAI
 import tenacity
 import requests
 from groq import Groq
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Post
+from .forms import PostForm, ReplyForm
+from django.http import JsonResponse
+
 
 User = get_user_model()
 client = InferenceClient()
@@ -425,3 +430,19 @@ def fun(request):
 #this is for testing the pushing purpose
 
 #test2
+
+def tweet_board(request):
+    posts = Post.objects.all().order_by('-created_at')
+    form = PostForm()
+    reply_form = ReplyForm()
+
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.user = request.user
+            post.save()
+            return redirect('tweet_board')
+
+    return render(request, 'tweet_board.html', {'posts': posts, 'form': form, 'reply_form': reply_form})
+

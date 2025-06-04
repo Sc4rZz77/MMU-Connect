@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 from cloudinary.models import CloudinaryField
+from django.db import models
+from django.contrib.auth.models import User
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)  # Allow null if needed
@@ -86,3 +88,19 @@ class Dislike(models.Model):
     def __str__(self):
         return f"{self.disliker.username} disliked {self.disliked.username}"
 
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(max_length=280)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}: {self.content[:30]}"
+
+class Reply(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='replies')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField(max_length=280)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} replied"
