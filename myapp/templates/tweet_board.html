@@ -1,51 +1,232 @@
-<form method="POST">
-  {% csrf_token %}
-  {{ form }}
-  <p><span id="char-count">280</span> characters remaining</p>
-  <button type="submit">Post</button>
-</form>
-
-<hr>
-
-{% for post in posts %}
-  <div style="border: 1px solid #ccc; margin: 10px 0; padding: 10px;">
-    <strong>{{ post.user.username }}</strong><br>
-    {{ post.content }}<br>
-    <small>{{ post.created_at }}</small><br>
-
-    <form method="POST" action="{% url 'tweet_board' %}">
-      {% csrf_token %}
-      <input type="hidden" name="post_id" value="{{ post.id }}">
-      {{ reply_form }}
-      <button type="submit">Reply</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mood Board</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #361e6b;
+      color: white;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    textarea {
+      width: 100%;
+      background: #1e1e1e;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      color: white;
+      resize: vertical;
+    }
+    button {
+      background: #2f89fc;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 10px;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #1a5ed8;
+    }
+    .post {
+      background: #222;
+      padding: 15px;
+      margin-top: 20px;
+      border-radius: 8px;
+    }
+    .post-header {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .post-content {
+      white-space: pre-wrap;
+      margin-bottom: 8px;
+    }
+    .reply-section {
+      margin-top: 10px;
+    }
+    .reply {
+      background: #333;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 8px;
+      font-size: 0.9em;
+      position: relative;
+    }
+    .edit-buttons {
+      margin-top: 8px;
+    }
+    .action-btn {
+      background: #444;
+      border: none;
+      color: white;
+      margin-left: 6px;
+      cursor: pointer;
+      padding: 4px 8px;
+      font-size: 0.8em;
+      border-radius: 4px;
+    }
+    .action-btn:hover {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Mood Board</h1>
+    <form id="tweetForm">
+      <textarea id="tweetContent" rows="4" maxlength="280" placeholder="What's happening?"></textarea>
+      <button type="submit">Tweet</button>
     </form>
-
-    {% for reply in post.replies.all %}
-      <div style="margin-left: 20px;">
-        <strong>{{ reply.user.username }}</strong>: {{ reply.content }}
-      </div>
-    {% endfor %}
+    <div id="postsContainer"></div>
   </div>
-{% endfor %}
 
-<script>
-  // Character countdown
-  const textarea = document.querySelector('textarea');
-  const count = document.getElementById('char-count');
+  <script>
+    const tweetForm = document.getElementById('tweetForm');
+    const tweetContent = document.getElementById('tweetContent');
+    const postsContainer = document.getElementById('postsContainer');
 
-  textarea.addEventListener('input', () => {
-    count.textContent = 280 - textarea.value.length;
-  });
+    function loadTweets() {
+      return JSON.parse(localStorage.getItem('tweets') || '[]');
+    }
 
-  // Like button
-  function likePost(postId) {
-    fetch(`/like/${postId}/`, {
-      method: 'GET',
-    })
-    .then(response => response.json())
-    .then(data => {
-      alert(`Post liked! Total likes: ${data.likes}`);
-      location.reload();
+    function saveTweets(tweets) {
+      localStorage.setItem('tweets', JSON.stringify(tweets));
+    }
+
+    function renderTweets() {
+      postsContainer.innerHTML = '';
+      const tweets = loadTweets();
+      tweets.forEach((tweet, tweetIdx) => {
+        const postDiv = document.createElement('div');
+        postDiv.className = 'post';
+
+        const header = document.createElement('div');
+        header.className = 'post-header';
+        header.textContent = 'You • just now';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'post-content';
+        contentDiv.textContent = tweet.content;
+
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.className = 'edit-buttons';
+        buttonsDiv.innerHTML = `
+          <button class="action-btn edit-btn">Edit</button>
+          <button class="action-btn delete-btn">Delete</button>
+        `;
+
+        // Edit tweet
+        buttonsDiv.querySelector('.edit-btn').onclick = () => {
+          const newText = prompt("Edit your tweet:", tweet.content);
+          if (newText !== null) {
+            tweets[tweetIdx].content = newText.trim();
+            saveTweets(tweets);
+            renderTweets();
+          }
+        };
+
+        // Delete tweet
+        buttonsDiv.querySelector('.delete-btn').onclick = () => {
+          if (confirm("Delete this tweet?")) {
+            tweets.splice(tweetIdx, 1);
+            saveTweets(tweets);
+            renderTweets();
+          }
+        };
+
+        // Replies
+        const replySection = document.createElement('div');
+        replySection.className = 'reply-section';
+
+        const replyForm = document.createElement('form');
+        replyForm.innerHTML = `
+          <textarea rows="2" maxlength="280" placeholder="Write a reply..."></textarea>
+          <button type="submit">Reply</button>
+        `;
+
+        const repliesContainer = document.createElement('div');
+
+        tweet.replies.forEach((reply, replyIdx) => {
+          const replyDiv = document.createElement('div');
+          replyDiv.className = 'reply';
+          replyDiv.textContent = `You replied: ${reply}`;
+
+          const replyActions = document.createElement('div');
+          replyActions.style.marginTop = "6px";
+          replyActions.innerHTML = `
+            <button class="action-btn reply-edit-btn">Edit</button>
+            <button class="action-btn reply-delete-btn">Delete</button>
+          `;
+
+          replyActions.querySelector('.reply-edit-btn').onclick = () => {
+            const newReply = prompt("Edit your reply:", reply);
+            if (newReply !== null) {
+              tweets[tweetIdx].replies[replyIdx] = newReply.trim();
+              saveTweets(tweets);
+              renderTweets();
+            }
+          };
+
+          replyActions.querySelector('.reply-delete-btn').onclick = () => {
+            if (confirm("Delete this reply?")) {
+              tweets[tweetIdx].replies.splice(replyIdx, 1);
+              saveTweets(tweets);
+              renderTweets();
+            }
+          };
+
+          replyDiv.appendChild(replyActions);
+          repliesContainer.appendChild(replyDiv);
+        });
+
+        replyForm.addEventListener('submit', e => {
+          e.preventDefault();
+          const replyText = replyForm.querySelector('textarea').value.trim();
+          if (!replyText) return;
+          tweets[tweetIdx].replies.push(replyText);
+          saveTweets(tweets);
+          renderTweets();
+        });
+
+        replySection.appendChild(replyForm);
+        replySection.appendChild(repliesContainer);
+
+        postDiv.appendChild(header);
+        postDiv.appendChild(contentDiv);
+        postDiv.appendChild(buttonsDiv);
+        postDiv.appendChild(replySection);
+        postsContainer.prepend(postDiv);
+      });
+    }
+
+    tweetForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const content = tweetContent.value.trim();
+      if (!content) return;
+      const tweets = loadTweets();
+      tweets.unshift({ content, replies: [] });
+      saveTweets(tweets);
+      renderTweets();
+      tweetForm.reset();
     });
-  }
-</script>
+
+    window.onload = renderTweets;
+  </script>
+</body>
+</html>
