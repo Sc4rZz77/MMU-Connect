@@ -37,9 +37,10 @@ class SignupForm(UserCreationForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['content']
+        fields = ['content', 'category']  # Add category field here
         widgets = {
-            'content': forms.Textarea(attrs={'rows': 2, 'maxlength': 280, 'placeholder': 'How are you feeling today...'})
+            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': "What's happening?"}),
+            'category': forms.Select(),
         }
 
 class ReplyForm(forms.ModelForm):

@@ -52,6 +52,9 @@
     .post-header {
       font-weight: bold;
       margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9em;
     }
     .post-content {
       white-space: pre-wrap;
@@ -84,6 +87,10 @@
     .action-btn:hover {
       background: #666;
     }
+    .timestamp {
+      color: #aaa;
+      font-size: 0.8em;
+    }
   </style>
 </head>
 <body>
@@ -95,8 +102,12 @@
     </form>
     <div id="postsContainer"></div>
   </div>
+  
 
   <script>
+ 
+
+
     const tweetForm = document.getElementById('tweetForm');
     const tweetContent = document.getElementById('tweetContent');
     const postsContainer = document.getElementById('postsContainer');
@@ -109,6 +120,11 @@
       localStorage.setItem('tweets', JSON.stringify(tweets));
     }
 
+    function formatTimestamp(timestamp) {
+      const date = new Date(timestamp);
+      return date.toLocaleString();
+    }
+
     function renderTweets() {
       postsContainer.innerHTML = '';
       const tweets = loadTweets();
@@ -118,7 +134,10 @@
 
         const header = document.createElement('div');
         header.className = 'post-header';
-        header.textContent = 'You • just now';
+        header.innerHTML = `
+          <span>${tweet.username || 'Unknown'}</span>
+          <span class="timestamp">${formatTimestamp(tweet.timestamp)}</span>
+        `;
 
         const contentDiv = document.createElement('div');
         contentDiv.className = 'post-content';
@@ -150,7 +169,6 @@
           }
         };
 
-        // Replies
         const replySection = document.createElement('div');
         replySection.className = 'reply-section';
 
@@ -165,7 +183,10 @@
         tweet.replies.forEach((reply, replyIdx) => {
           const replyDiv = document.createElement('div');
           replyDiv.className = 'reply';
-          replyDiv.textContent = `You replied: ${reply}`;
+          replyDiv.innerHTML = `
+            <div><strong>${reply.username || 'Unknown'}</strong>: ${reply.text}</div>
+            <div class="timestamp">${formatTimestamp(reply.timestamp)}</div>
+          `;
 
           const replyActions = document.createElement('div');
           replyActions.style.marginTop = "6px";
@@ -175,9 +196,9 @@
           `;
 
           replyActions.querySelector('.reply-edit-btn').onclick = () => {
-            const newReply = prompt("Edit your reply:", reply);
+            const newReply = prompt("Edit your reply:", reply.text);
             if (newReply !== null) {
-              tweets[tweetIdx].replies[replyIdx] = newReply.trim();
+              tweets[tweetIdx].replies[replyIdx].text = newReply.trim();
               saveTweets(tweets);
               renderTweets();
             }
@@ -199,7 +220,11 @@
           e.preventDefault();
           const replyText = replyForm.querySelector('textarea').value.trim();
           if (!replyText) return;
-          tweets[tweetIdx].replies.push(replyText);
+          tweets[tweetIdx].replies.push({
+            text: replyText,
+            username: USERNAME,
+            timestamp: Date.now()
+          });
           saveTweets(tweets);
           renderTweets();
         });
@@ -220,13 +245,23 @@
       const content = tweetContent.value.trim();
       if (!content) return;
       const tweets = loadTweets();
-      tweets.unshift({ content, replies: [] });
+      tweets.unshift({
+        content,
+        username: USERNAME,
+        timestamp: Date.now(),
+        replies: []
+      });
       saveTweets(tweets);
       renderTweets();
       tweetForm.reset();
     });
 
     window.onload = renderTweets;
+    
   </script>
+  <script>
+  const USERNAME = "{{ request.user.username|escapejs }}";
+</script>
+
 </body>
 </html>

@@ -432,17 +432,29 @@ def fun(request):
 #test2
 
 def tweet_board(request):
-    posts = Post.objects.all().order_by('-created_at')
-    form = PostForm()
-    reply_form = ReplyForm()
+    category = request.GET.get('category', 'mood')  # Default to mood
 
+    posts = Post.objects.filter(category=category).order_by('-created_at')
+    form = PostForm()
+
+    context = {
+        'posts': posts,
+        'form': form,
+        'selected_category': category,
+    }
+    return render(request, 'tweet_board.html', context)
+
+from django.shortcuts import render, redirect
+from .forms import PostForm
+
+def post_create_view(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
             post.save()
-            return redirect('tweet_board')
-
-    return render(request, 'tweet_board.html', {'posts': posts, 'form': form, 'reply_form': reply_form})
-
+            return redirect(f'{request.path}?category={post.category}')
+    else:
+        form = PostForm()
+    return render(request, 'myapp/post_form.html', {'form': form})
