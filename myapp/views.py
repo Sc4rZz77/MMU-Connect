@@ -458,3 +458,15 @@ def post_create_view(request):
     else:
         form = PostForm()
     return render(request, 'myapp/post_form.html', {'form': form})
+
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()   
+        return redirect('home')  
+    return redirect('edit_profile') 

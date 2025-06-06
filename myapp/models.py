@@ -94,14 +94,14 @@ class Post(models.Model):
         ('studies', 'Studies'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(max_length=280)
     category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='mood')
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Reply(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='replies')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField(max_length=280)
     created_at = models.DateTimeField(auto_now_add=True)
 
