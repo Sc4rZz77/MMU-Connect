@@ -8,12 +8,15 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 
   <style>
-    /* your existing styles unchanged ... */
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f7ff;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #333;
       min-height: 100vh;
       display: flex;
@@ -21,20 +24,24 @@
     }
 
     .navbar {
+      background: rgba(109, 68, 184, 0.95);
+      backdrop-filter: blur(10px);
+      color: white;
       padding: 21px 30px;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #6d44b8;
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
     .url-bar {
       position: absolute;
-      top: 15px;
       left: 30px;
       font-size: 24px;
       font-weight: bold;
       color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .nav-links {
@@ -50,15 +57,85 @@
       text-decoration: none;
       font-weight: bold;
       font-size: 16px;
-      transition: color 0.3s ease, background 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
     }
 
     .nav-links li a:hover {
       color: #ffcc00;
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 20px;
+    }
+
+    .hamburger-line {
+      width: 100%;
+      height: 3px;
+      background-color: white;
+      border-radius: 2px;
+      margin: 2px 0;
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+        position: relative;
+      }
+
+      .url-bar {
+        position: static;
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: rgba(109, 68, 184, 0.95);
+        backdrop-filter: blur(10px);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        padding: 15px 20px;
+        z-index: 999;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .main-container {
+        margin: 30px auto 40px !important;
+        padding: 30px 20px !important;
+      }
     }
 
     .main-container {
-      max-width: 700px;
+      max-width: 90%;
       margin: 60px auto 40px;
       padding: 40px 30px;
       background-color: #ffffff;
@@ -136,7 +213,13 @@
       background-color: #fff;
     }
 
-    button {
+    .submit-btn:hover {
+      background-color: #ffcc00;
+      color: #000;
+      box-shadow: 0 4px 12px rgba(109, 68, 184, 0.3);
+    }
+
+    .submit-btn {
       background-color: #6d44b8;
       color: white;
       padding: 14px;
@@ -145,24 +228,28 @@
       font-size: 18px;
       font-weight: 700;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
+      max-width: 200px;
+      align-self: center;
+    }
+    .delete-btn {
+      background-color: #dfdddde1;
+      color: #c9302c;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
       max-width: 200px;
       align-self: center;
     }
 
-    button:hover {
-      background-color: #ffcc00;
-      color: #000;
-    }
-
-    .delete-btn {
-      background-color: #d9534f;
-      color: white;
-      margin-top: 20px;
-    }
-
     .delete-btn:hover {
       background-color: #c9302c;
+      box-shadow: 0 4px 12px rgba(109, 68, 184, 0.3);
+      color: #000;
     }
 
     .footer-container {
@@ -209,6 +296,38 @@
       font-size: 1rem;
       border-radius: 5px;
       cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .modal-content button:hover {
+      transform: translateY(-1px);
+    }
+
+    #back-to-top {
+      position: fixed;
+      bottom: 40px;
+      right: 30px;
+      background: #6d44b8;
+      color: #fff;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      display: none;
+      box-shadow: 0 4px 12px rgba(109, 68, 184, 0.3);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    #back-to-top:hover {
+      background-color: #ffcc00;
+      color: #000;
+      transform: translateY(-2px);
+    }
+
+    body.modal-open {
+      overflow: hidden;
     }
   </style>
 </head>
@@ -216,13 +335,19 @@
 
 <nav class="navbar">
   <div class="url-bar">MMU Connect</div>
-  <ul class="nav-links">
+  <button class="hamburger">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+  <ul class="nav-links" id="nav-links">
     <li><a href="{% url 'home' %}">Home</a></li>
     <li><a href="{% url 'feature' %}">Feature</a></li>
     <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
     <li><a href="{% url 'about-us' %}">About Us</a></li>
     <li><a href="{% url 'chat' %}">Help</a></li>
     <li><a href="{% url 'contact' %}">Contact</a></li>
+    <li><a href="{% url 'tweet_board' %}">MoodBoard</a></li>
     {% if user.is_authenticated %}
       <li>
         <form id="logout-form" method="post" action="{% url 'logout' %}" style="display:none;">
@@ -251,12 +376,13 @@
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Save Changes</button>
+    <button class="submit-btn" type="submit">Save Changes</button>
   </form>
-
-  <!-- Trigger delete modal -->
+<br>
   <button type="button" class="delete-btn" onclick="openDeleteModal()">Delete Account</button>
 </div>
+
+<button id="back-to-top" title="Back to top">↑</button>
 
 <footer class="footer-container">
   © MMU Connect.
@@ -314,11 +440,44 @@
   }
 
   function openDeleteModal() {
+    document.body.classList.add('modal-open');
     document.getElementById('delete-modal').style.display = 'flex';
   }
 
   function closeDeleteModal() {
     document.getElementById('delete-modal').style.display = 'none';
+    document.body.classList.remove('modal-open');
+  }
+
+  // Back to top functionality
+  const backToTopBtn = document.getElementById('back-to-top');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      backToTopBtn.style.display = 'block';
+    } else {
+      backToTopBtn.style.display = 'none';
+    }
+  });
+
+  backToTopBtn.addEventListener('click', () => {
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  });
+
+  // Mobile hamburger menu functionality
+  const hamburger = document.querySelector('.hamburger');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (hamburger && navLinks) {
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+    });
+
+    document.addEventListener('click', function(event) {
+      if (!hamburger.contains(event.target) && !navLinks.contains(event.target)) {
+        navLinks.classList.remove('active');
+      }
+    });
   }
 
   window.onclick = function (event) {
@@ -329,6 +488,10 @@
       closeDeleteModal();
     }
   };
+
+  // Make functions globally accessible
+  window.openLogoutModal = openLogoutModal;
+  window.closeLogoutModal = closeLogoutModal;
 </script>
 
 </body>
