@@ -7,6 +7,10 @@
   <title>MMU Connect – Live Chat</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
       margin: 0;
@@ -17,57 +21,99 @@
       display: flex;
       flex-direction: column;
     }
+
+    /* Updated Navbar with Hamburger */
     .navbar {
-      padding: 21px 30px;  /* Uniform padding */
+      background: rgba(109, 68, 184, 0.95);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 21px 30px;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #6d44b8;  /* Assuming this is standard */
+      position: relative;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      z-index: 1000;
     }
+
     .url-bar {
       position: absolute;
-      top: 15px;
       left: 30px;
       font-size: 24px;
       font-weight: bold;
-      color: #fff;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
+
     .nav-links {
       display: flex;
-      gap: 20px;  /* Uniform gap between links */
+      gap: 20px;
       list-style: none;
       padding: 0;
       margin: 0;
     }
+
     .nav-links li a {
-      color: #fff;
+      color: #ffffff;
       text-decoration: none;
       font-weight: bold;
-      font-size: 16px;  /* Uniform font size */
-      transition: color 0.3s ease, background 0.3s ease;  /* Keep existing transition */
+      font-size: 16px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
     }
+
     .nav-links li a:hover {
       color: #ffcc00;
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
     }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .hamburger-line {
+      width: 100%;
+      height: 3px;
+      background-color: white;
+      border-radius: 2px;
+      margin: 2px 0;
+      transition: all 0.3s ease;
+    }
+
     .footer-container {
       text-align: center;
       font-size: 13px;
       color: #fff;
-      padding: 10px 0;
-      background: #6d44b8;
+      padding: 14px 0;
+      background: #573b8a;
       position: relative;
       z-index: 5;
       min-height: 40px;
     }
+
     .container {
       display: flex;
       flex: 1 1 auto;
       min-height: 0;
-      height: calc(100vh - 56px - 40px); /* minus navbar and footer */
+      height: calc(100vh - 86px - 40px); /* minus navbar and footer */
       background: #f6f6fa;
     }
+
     .sidebar {
-      width: 240px;
+      width: 280px;
       background: #fff;
       border-right: 1.5px solid #e0e0e0;
       padding: 0;
@@ -76,74 +122,139 @@
       overflow-y: auto;
       box-shadow: 2px 0 8px rgba(109,68,184,0.03);
     }
-    .sidebar h3 {
-      margin: 24px 0 12px 24px;
+
+    /* Dropdown header styling */
+    .dropdown-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 24px 24px 12px 24px;
+      cursor: pointer;
+      padding: 8px 0;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .dropdown-header:hover {
+      background: rgba(109, 68, 184, 0.05);
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+
+    .dropdown-header h3 {
+      margin: 0;
       font-size: 18px;
       color: #6d44b8;
       font-weight: 700;
     }
+
+    .dropdown-arrow {
+      font-size: 14px;
+      color: #6d44b8;
+      transition: transform 0.3s ease;
+      font-weight: bold;
+    }
+
+    .dropdown-arrow.rotated {
+      transform: rotate(180deg);
+    }
+
     .user-list {
       list-style: none;
       padding: 0 0 24px 0;
       margin: 0;
       flex: 1;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      max-height: 1000px;
+      opacity: 1;
     }
+
+    .user-list.collapsed {
+      max-height: 0;
+      opacity: 0;
+      padding: 0;
+    }
+
     .user-list li {
       margin: 0;
       padding: 0;
       position: relative;
     }
+
     .user-btn {
       width: 92%;
       margin: 8px 4% 0 4%;
-      padding: 10px 0 10px 0;
-      background: #f5f6fa;
+      padding: 12px 16px;
+      background: #f8f9fa;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       color: #6d44b8;
       font-weight: 600;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s;
+      transition: all 0.3s ease;
       text-align: left;
-      padding-left: 16px;
       display: flex;
       align-items: center;
       position: relative;
-      box-shadow: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
+
     .user-btn:hover, .user-btn.active {
       background: #6d44b8;
       color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(109,68,184,0.2);
     }
+
     .user-btn .profile-pic {
       margin-right: 12px;
       border: 2px solid #e0e0e0;
+      flex-shrink: 0;
     }
+
+    .user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .user-name {
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .user-status {
       font-size: 12px;
       color: #888;
-      margin-left: 52px;
       margin-top: 2px;
-      margin-bottom: 2px;
     }
+
+    .user-btn:hover .user-status,
+    .user-btn.active .user-status {
+      color: rgba(255,255,255,0.8);
+    }
+
     .unread-badge {
       background: #ff3b3b;
       color: #fff;
       border-radius: 50%;
       font-size: 11px;
-      width: 18px;
+      min-width: 18px;
       height: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
       position: absolute;
-      right: 18px;
-      top: 10px;
+      right: 12px;
+      top: 12px;
       z-index: 2;
       font-weight: bold;
       box-shadow: 0 2px 6px rgba(0,0,0,0.12);
     }
+
     .main-chat {
       flex: 1 1 auto;
       display: flex;
@@ -153,200 +264,439 @@
       height: 100%;
       position: relative;
     }
+
     .chat-header {
       background: #fff;
       border-bottom: 1.5px solid #e0e0e0;
-      padding: 20px 36px 10px 36px;
-      font-size: 22px;
+      padding: 20px 24px;
+      font-size: 20px;
       font-weight: 700;
       color: #6d44b8;
-      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
       z-index: 2;
     }
+
     .status {
       font-size: 13px;
-      margin-left: 36px;
-      margin-bottom: 5px;
+      margin-left: 24px;
+      margin-bottom: 8px;
       color: #888;
     }
+
     .status.connected { color: #2ecc40; }
     .status.closed { color: #e74c3c; }
+
     .chat-log {
       flex: 1 1 auto;
-      padding: 32px 36px 12px 36px;
+      padding: 24px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
       background: #f6f6fa;
       min-height: 0;
-      max-height: calc(100vh - 56px - 40px - 80px);
     }
+
     .message-row {
       display: flex;
       align-items: flex-end;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
       position: relative;
     }
+
     .from-me {
       flex-direction: row-reverse;
     }
+
     .message {
-      padding: 14px 22px;
+      padding: 12px 18px;
       border-radius: 18px;
-      max-width: 65%;
-      font-size: 16px;
-      line-height: 1.7;
-      box-shadow: 0 2px 8px rgba(109,68,184,0.07);
+      max-width: 70%;
+      font-size: 15px;
+      line-height: 1.5;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
       word-wrap: break-word;
       white-space: pre-wrap;
       margin-bottom: 2px;
       position: relative;
-      transition: box-shadow 0.2s;
-      background: #fff;
-      color: #222;
-      border: 1.5px solid #ece6fa;
+      transition: all 0.2s ease;
     }
+
     .bubble-me {
-      background-color: #e6dbfa;
+      background: linear-gradient(135deg, #e6dbfa, #d6c7f8);
       color: #222;
-      border-radius: 18px 18px 0 18px;
+      border-radius: 18px 18px 4px 18px;
       margin-left: 12px;
-      border: 1.5px solid #d6c7f8;
+      border: 1px solid #d6c7f8;
     }
+
     .bubble-them {
-      background-color: #fff;
+      background: #fff;
       color: #111;
-      border-radius: 18px 18px 18px 0;
+      border-radius: 18px 18px 18px 4px;
       margin-right: 12px;
-      border: 1.5px solid #ece6fa;
+      border: 1px solid #e0e0e0;
     }
+
     .profile-pic {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid #eee;
       margin-bottom: 2px;
+      flex-shrink: 0;
     }
+
     .message .timestamp {
       display: none;
       position: absolute;
-      bottom: -18px;
+      bottom: -22px;
       left: 0;
       font-size: 11px;
       color: #888;
-      background: #fff;
+      background: rgba(255,255,255,0.9);
       padding: 2px 8px;
       border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       z-index: 2;
     }
+
     .message:hover .timestamp {
       display: block;
     }
+
     .typing-indicator {
-      font-size: 15px;
+      font-size: 14px;
       color: #888;
       margin: 8px 0 0 44px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
+
     .typing-dots span {
       display: inline-block;
-      width: 7px;
-      height: 7px;
+      width: 6px;
+      height: 6px;
       background-color: #bbb;
       border-radius: 50%;
       margin-right: 2px;
       animation: bounce 1s infinite ease-in-out;
     }
+
     .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
     .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
+      50% { transform: translateY(-4px); }
     }
+
     .emoji-picker {
       position: absolute;
-      bottom: 60px;
-      left: 36px;
+      bottom: 70px;
+      left: 24px;
       background: #fff;
-      border: 1.5px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 8px;
+      border: 1px solid #e0e0e0;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      padding: 12px;
       display: none;
-      z-index: 10;
+      z-index: 100;
+      backdrop-filter: blur(10px);
     }
+
     .emoji-btn {
       background: none;
       border: none;
-      font-size: 22px;
+      font-size: 20px;
       cursor: pointer;
-      margin-right: 10px;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background 0.2s;
     }
+
+    .emoji-btn:hover {
+      background: #f0f0f0;
+    }
+
     .input-bar {
       display: flex;
       align-items: center;
-      padding: 18px 36px;
-      background-color: #fff;
+      padding: 20px 24px;
+      background: #fff;
       border-top: 1.5px solid #e0e0e0;
       position: sticky;
       bottom: 0;
       z-index: 10;
-      min-height: 64px;
+      min-height: 76px;
+      gap: 12px;
     }
+
     #chat-message-input {
       flex: 1;
       padding: 14px 18px;
-      font-size: 16px;
-      border: 1.5px solid #ccc;
-      border-radius: 10px;
+      font-size: 15px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 24px;
       outline: none;
-      margin-right: 12px;
-      background: #f6f6fa;
+      background: #f8f9fa;
+      transition: all 0.2s ease;
     }
+
+    #chat-message-input:focus {
+      border-color: #6d44b8;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(109, 68, 184, 0.1);
+    }
+
     #chat-message-submit {
-      background-color: #6d44b8;
+      background: linear-gradient(135deg, #6d44b8, #8e60ff);
       color: white;
-      padding: 12px 28px;
+      padding: 14px 24px;
       border: none;
-      border-radius: 10px;
+      border-radius: 24px;
       cursor: pointer;
-      font-size: 16px;
-      font-weight: 700;
-      transition: background 0.3s;
-      box-shadow: 0 2px 8px rgba(109,68,184,0.07);
+      font-size: 15px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(109,68,184,0.3);
     }
+
     #chat-message-submit:hover {
-      background-color: #55369c;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(109,68,184,0.4);
     }
-    @media (max-width: 1000px) {
-      .container { flex-direction: column; }
-      .sidebar { width: 100%; border-right: none; border-bottom: 1.5px solid #e0e0e0; }
-      .main-chat { height: 60vh; }
-      .chat-header, .input-bar, .chat-log { padding-left: 10px; padding-right: 10px; }
-      .emoji-picker { left: 10px; }
-      .input-bar { left: 0; right: 0; }
+
+    #chat-message-submit:active {
+      transform: translateY(0);
     }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+        position: relative;
+      }
+
+      .url-bar {
+        position: static;
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+
+      .hamburger {
+        display: flex;
+        right: 20px;
+        top: 20px;
+        transform: none;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: rgba(109, 68, 184, 0.95);
+        backdrop-filter: blur(10px);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        padding: 15px 20px;
+        z-index: 999;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .container {
+        flex-direction: column;
+        height: calc(100vh - 120px - 40px);
+      }
+
+      .sidebar {
+        width: 100%;
+        height: 40vh;
+        border-right: none;
+        border-bottom: 1.5px solid #e0e0e0;
+        max-height: 300px;
+      }
+
+      .dropdown-header {
+        margin: 16px 16px 8px 16px;
+      }
+
+      .dropdown-header h3 {
+        font-size: 16px;
+      }
+
+      .user-btn {
+        font-size: 14px;
+        padding: 10px 12px;
+        margin: 6px 3% 0 3%;
+        width: 94%;
+      }
+
+      .user-btn .profile-pic {
+        width: 28px;
+        height: 28px;
+        margin-right: 8px;
+      }
+
+      .main-chat {
+        height: 60vh;
+        min-height: 400px;
+      }
+
+      .chat-header {
+        padding: 16px 16px;
+        font-size: 18px;
+      }
+
+      .status {
+        margin-left: 16px;
+        margin-bottom: 4px;
+      }
+
+      .chat-log {
+        padding: 16px;
+        gap: 12px;
+      }
+
+      .message {
+        max-width: 85%;
+        font-size: 14px;
+        padding: 10px 14px;
+      }
+
+      .profile-pic {
+        width: 28px;
+        height: 28px;
+      }
+
+      .input-bar {
+        padding: 16px;
+        gap: 8px;
+      }
+
+      #chat-message-input {
+        font-size: 14px;
+        padding: 12px 16px;
+      }
+
+      #chat-message-submit {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+
+      .emoji-picker {
+        left: 16px;
+        bottom: 80px;
+      }
+
+      .typing-indicator {
+        margin-left: 36px;
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sidebar {
+        height: auto;
+        max-height: 250px;
+      }
+
+      .user-btn {
+        font-size: 13px;
+        padding: 8px 10px;
+      }
+
+      .user-name {
+        font-size: 13px;
+      }
+
+      .user-status {
+        font-size: 11px;
+      }
+
+      .main-chat {
+        height: 65vh;
+      }
+
+      .chat-header {
+        font-size: 16px;
+        padding: 12px 12px;
+      }
+
+      .chat-log {
+        padding: 12px;
+      }
+
+      .message {
+        max-width: 90%;
+        font-size: 13px;
+        padding: 8px 12px;
+      }
+
+      .input-bar {
+        padding: 12px;
+      }
+
+      #chat-message-input {
+        font-size: 13px;
+        padding: 10px 14px;
+      }
+
+      #chat-message-submit {
+        padding: 10px 16px;
+        font-size: 13px;
+      }
+    }
+
+    /* Empty state styling */
+    .empty-state {
+      padding: 3em 2em;
+      color: #888;
+      text-align: center;
+      font-size: 1.1em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+    }
+
+    .empty-state-icon {
+      font-size: 3em;
+      margin-bottom: 1em;
+      opacity: 0.5;
+    }
+
     /* Modal styles */
     .modal {
       display: none;
       position: fixed;
       z-index: 1000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
       background-color: rgba(0,0,0,0.5);
       justify-content: center;
       align-items: center;
     }
+
     .modal-content {
       background: white;
       padding: 30px 40px;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
       text-align: center;
       max-width: 450px;
       min-width: 350px;
@@ -354,35 +704,75 @@
       font-size: 1.1rem;
       line-height: 1.4;
     }
+
     .modal-content button {
-      padding: 10px 20px;
-      margin: 10px 15px 0 15px;
+      padding: 12px 24px;
+      margin: 15px 10px 0 10px;
       font-size: 1rem;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
       background-color: #6d44b8;
       color: white;
       border: none;
-      transition: background-color 0.3s ease;
+      transition: all 0.3s ease;
+      font-weight: 600;
     }
+
     .modal-content button:hover {
       background-color: #ffcc00;
       color: #000;
+      transform: translateY(-2px);
+    }
+
+    .modal-content button:last-child {
+      background-color: #6c757d;
+    }
+
+    .modal-content button:last-child:hover {
+      background-color: #5a6268;
+      color: white;
+    }
+
+    /* Scrollbar styling */
+    .chat-log::-webkit-scrollbar,
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-log::-webkit-scrollbar-track,
+    .sidebar::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+
+    .chat-log::-webkit-scrollbar-thumb,
+    .sidebar::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+    }
+
+    .chat-log::-webkit-scrollbar-thumb:hover,
+    .sidebar::-webkit-scrollbar-thumb:hover {
+      background: #a8a8a8;
     }
   </style>
 </head>
 <body>
   <nav class="navbar">
     <div class="url-bar">MMU Connect</div>
-    <ul class="nav-links">
-    <li><a href="{% url 'home' %}">Home</a></li>
-    <li><a href="{% url 'feature' %}">Feature </a></li>
-    <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
-    <li><a href="{% url 'about-us' %}">About Us</a></li>
-    <li><a href="{% url 'chat' %}">Help</a></li>
-    <li><a href="{% url 'contact' %}">Contact</a></li>
-    <li><a href="{% url 'tweet_board' %}">MoodBoard</a></li>
-
+    <button class="hamburger" id="hamburger">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="{% url 'home' %}">Home</a></li>
+      <li><a href="{% url 'feature' %}">Feature</a></li>
+      <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
+      <li><a href="{% url 'about-us' %}">About Us</a></li>
+      <li><a href="{% url 'chat' %}">Help</a></li>
+      <li><a href="{% url 'contact' %}">Contact</a></li>
+      <li><a href="{% url 'tweet_board' %}">MoodBoard</a></li>
       {% if user.is_authenticated %}
         <li>
           <form id="logout-form" method="post" action="{% url 'logout' %}" style="display:none;">
@@ -393,47 +783,62 @@
       {% endif %}
     </ul>
   </nav>
+
   <div class="container">
     <aside class="sidebar">
-      <h3>Users</h3>
+      <div class="dropdown-header" onclick="toggleActiveChats()">
+        <h3>Active Chats</h3>
+        <span class="dropdown-arrow" id="dropdown-arrow">▼</span>
+      </div>
       <ul class="user-list" id="user-list">
         {% for user in sidebar_user_profiles %}
           <li>
             <button class="user-btn" onclick="openChat('{{ user.username }}', this)">
               <img src="{{ user.profile_picture }}" alt="{{ user.username }}'s profile picture" class="profile-pic">
-              <span style="font-weight: 600; margin-right: 8px;">{{ user.username }}</span>
-              {{ user.full_name }}
+              <div class="user-info">
+                <div class="user-name">{{ user.username }}</div>
+                <div class="user-status">
+                  {% if user.username == request.user.username %}Online{% else %}Last seen: just now{% endif %}
+                </div>
+              </div>
               <span class="unread-badge" id="unread-{{ user.username }}" style="display:none;">1</span>
             </button>
-            <div class="user-status">
-              {% if user.username == request.user.username %}Online{% else %}Last seen: just now{% endif %}
-            </div>
           </li>
         {% endfor %}
       </ul>
     </aside>
+
     <main class="main-chat">
       {% if chat_partner %}
-        <div class="chat-header" id="chat-with">Chat with {{ chat_partner.username }}</div>
-        <div class="status closed" id="status">Not connected</div>
+        <div class="chat-header" id="chat-with">
+          <img src="{{ chat_partner.profile_picture }}" alt="{{ chat_partner.username }}'s profile picture" class="profile-pic" style="margin-right: 12px;">
+          Chat with {{ chat_partner.username }}
+        </div>
+        <div class="status closed" id="status">Connecting...</div>
         <div class="chat-log" id="chat-log">
           {% if chat_history and chat_partner %}
             {% for msg in chat_history %}
               {% with sender=msg.sender.username %}
                 <div class="message-row{% if sender == request.user.username %} from-me{% endif %}">
                   {% if sender == request.user.username %}
-                    <div class="message bubble-me"><span class="msg-text">{{ sender }}: {{ msg.content }}</span><span class="timestamp">{{ msg.timestamp|date:'H:i' }}</span></div>
-                    <img src="{% for u in user_profiles %}{% if u.username == sender %}{{ u.profile_picture }}{% endif %}{% endfor %}" class="profile-pic" style="width:28px;height:28px;">
+                    <div class="message bubble-me">
+                      <span class="msg-text">{{ sender }}: {{ msg.content }}</span>
+                      <span class="timestamp">{{ msg.timestamp|date:'H:i' }}</span>
+                    </div>
+                    <img src="{% for u in user_profiles %}{% if u.username == sender %}{{ u.profile_picture }}{% endif %}{% endfor %}" class="profile-pic">
                   {% else %}
-                    <img src="{% for u in user_profiles %}{% if u.username == sender %}{{ u.profile_picture }}{% endif %}{% endfor %}" class="profile-pic" style="width:28px;height:28px;">
-                    <div class="message bubble-them"><span class="msg-text">{{ sender }}: {{ msg.content }}</span><span class="timestamp">{{ msg.timestamp|date:'H:i' }}</span></div>
+                    <img src="{% for u in user_profiles %}{% if u.username == sender %}{{ u.profile_picture }}{% endif %}{% endfor %}" class="profile-pic">
+                    <div class="message bubble-them">
+                      <span class="msg-text">{{ sender }}: {{ msg.content }}</span>
+                      <span class="timestamp">{{ msg.timestamp|date:'H:i' }}</span>
+                    </div>
                   {% endif %}
                 </div>
               {% endwith %}
             {% endfor %}
           {% endif %}
         </div>
-        <div class="input-bar" style="position:relative;">
+        <div class="input-bar">
           <button class="emoji-btn" id="emoji-btn" title="Add emoji">😊</button>
           <div class="emoji-picker" id="emoji-picker">
             <span>😀</span><span>😂</span><span>😍</span><span>😎</span><span>😭</span><span>😡</span><span>👍</span><span>🙏</span><span>🎉</span><span>🔥</span><span>🥳</span><span>😅</span><span>😇</span><span>😏</span><span>😬</span>
@@ -442,17 +847,21 @@
           <button id="chat-message-submit">Send</button>
         </div>
       {% else %}
-        <div class="chat-header" id="chat-with">Select a user to chat</div>
-        <div style="padding: 3em; color: #888; text-align: center; font-size: 1.3em;">
-          👈 Choose a friend from the sidebar to start chatting!
+        <div class="chat-header" id="chat-with">Select a conversation</div>
+        <div class="empty-state">
+          <div class="empty-state-icon">💬</div>
+          <div>Choose a friend from the sidebar to start chatting!</div>
         </div>
       {% endif %}
     </main>
   </div>
+
   {{ user_profiles|json_script:"user-profiles-data" }}
+
   <footer class="footer-container">
-    © MMU Connect.
+    © MMU Connect
   </footer>
+
   <!-- Logout Modal -->
   <div id="logout-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="logout-modal-title">
     <div class="modal-content">
@@ -461,7 +870,34 @@
       <button onclick="closeLogoutModal()">Cancel</button>
     </div>
   </div>
+
   <script>
+
+    // Hamburger menu functionality
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('nav-links');
+
+    if (hamburger && navLinks) {
+      hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+
+      document.addEventListener('click', function(event) {
+        if (!hamburger.contains(event.target) && !navLinks.contains(event.target)) {
+          navLinks.classList.remove('active');
+        }
+      });
+    }
+
+    // Dropdown functionality for Active Chats
+    function toggleActiveChats() {
+      const userList = document.getElementById('user-list');
+      const arrow = document.getElementById('dropdown-arrow');
+      
+      userList.classList.toggle('collapsed');
+      arrow.classList.toggle('rotated');
+    }
+    
     let chatSocket = null;
     let isConnected = false;
     let currentUserBtn = null;
