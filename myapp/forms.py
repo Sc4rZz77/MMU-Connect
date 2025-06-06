@@ -34,14 +34,11 @@ class SignupForm(UserCreationForm):
         for fieldname in ['username', 'password1', 'password2']:
             self.fields[fieldname].help_text = ''
 
+
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['content', 'category']  # Add category field here
-        widgets = {
-            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': "What's happening?"}),
-            'category': forms.Select(),
-        }
+        fields = ['content']
 
 class ReplyForm(forms.ModelForm):
     class Meta:

@@ -35,7 +35,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post
 from .forms import PostForm, ReplyForm
 from django.http import JsonResponse
-
+from django.shortcuts import render, redirect
+from .models import Post
+from .forms import PostForm
 
 User = get_user_model()
 client = InferenceClient()
@@ -432,32 +434,20 @@ def fun(request):
 #test2
 
 def tweet_board(request):
-    category = request.GET.get('category', 'mood')  # Default to mood
-
-    posts = Post.objects.filter(category=category).order_by('-created_at')
-    form = PostForm()
-
-    context = {
-        'posts': posts,
-        'form': form,
-        'selected_category': category,
-    }
-    return render(request, 'tweet_board.html', context)
-
-from django.shortcuts import render, redirect
-from .forms import PostForm
-
-def post_create_view(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.user = request.user
-            post.save()
-            return redirect(f'{request.path}?category={post.category}')
+            tweet = form.save(commit=False)
+            tweet.user = request.user  # assuming user is logged in
+            tweet.save()
+            return redirect('tweet_board')
     else:
         form = PostForm()
-    return render(request, 'myapp/post_form.html', {'form': form})
+    
+    posts = Post.objects.all().order_by('-created_at')
+    return render(request, 'tweet_board.html', {'form': form, 'posts': posts})
+
+
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
@@ -470,3 +460,4 @@ def delete_account(request):
         user.delete()   
         return redirect('home')  
     return redirect('edit_profile') 
+    
