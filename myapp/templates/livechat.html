@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MMU Connect – Live Chat</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * {
@@ -872,6 +873,25 @@
   </div>
 
   <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+  const chatPartner = "{{ chat_partner.username|default:'' }}";
+  
+  if (chatPartner) {
+    // Find the corresponding user button and simulate click
+    const userButtons = document.querySelectorAll('.user-btn');
+    userButtons.forEach(btn => {
+      const username = btn.querySelector('.user-name').textContent.trim();
+      if (username === chatPartner) {
+        btn.classList.add('active');
+        currentUserBtn = btn;
+        // Automatically establish connection
+        openChat(chatPartner, btn);
+        return;
+      }
+    });
+  }
+});
 
     // Hamburger menu functionality
     const hamburger = document.getElementById('hamburger');

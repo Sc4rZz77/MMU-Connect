@@ -191,6 +191,7 @@
 
     .no-more-cards {
       text-align: center;
+      align-content: center;
       padding: 60px 20px;
       background: rgba(255,255,255,0.1);
       backdrop-filter: blur(20px);
@@ -200,6 +201,9 @@
       display: none;
       margin: 0 auto;
       align-self: center;
+      position: sticky;
+      z-index: -1;
+
     }
 
     .no-more-cards h2 {
@@ -216,13 +220,15 @@
       
     }
 
-    .navigation-links {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-    }
+.navigation-links {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1; /* lower than .navbar */
+}
 
     .nav-link {
       background: rgba(255,255,255,0.2);
@@ -369,6 +375,7 @@
         align-items: flex-start;
         padding: 15px 20px;
         position: relative;
+        z-index: 10;
       }
 
       .url-bar {
@@ -397,6 +404,8 @@
 
       .nav-links.active {
         display: flex;
+        z-index: 10;
+        position: absolute;
       }
 
       .author-card {
@@ -486,18 +495,17 @@
     <button class="action-btn dislike-btn" onclick="dislikeCurrentAuthor()">✖</button>
     <button class="action-btn like-btn" onclick="likeCurrentAuthor()">❤</button>
   </div>
-
-  <div class="navigation-links">
-    <a href="{% url 'fun' %}" class="nav-link">🎮 Play Games</a>
-    <a href="{% url 'matches' %}" class="nav-link">💕 View Matches</a>
-  </div>
-<br>
-  <div class="no-more-cards" id="no-more-cards">
+    <div class="no-more-cards" id="no-more-cards">
     <h2>🎉 That's everyone!</h2>
     <p>Check back later for new people to connect with, or explore other features while you wait.</p>
   </div>
 </div>
-
+  <div class="navigation-links">
+    <a href="{% url 'fun' %}" class="nav-link">🎮 Play Games</a>
+    <a href="{% url 'matches' %}" class="nav-link">💕 View Matches</a>
+  </div>
+</div>
+<br>
 <footer class="footer">© MMU Connect</footer>
 
 <div class="match-modal" id="match-modal">
