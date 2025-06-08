@@ -7,11 +7,11 @@ from .views import ai_chat, ForceOTPLoginView
 from .two_factor_views import verify_2fa
 
 urlpatterns = [
-    path('', views.signup, name='signup'),  # Home route as signup
+    path('signup/', views.signup, name='signup'),  # Home route as signup
     path('login/', ForceOTPLoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('verify-2fa/', verify_2fa, name='verify_2fa'),
-    path('home/', views.home, name='home'),
+    path('', views.home, name='home'),
     path('about-us/', views.aboutus, name='about-us'),
     path('chat/', views.chat, name='chat'),
     path('contact/', views.contact, name='contact'),
@@ -30,12 +30,9 @@ urlpatterns = [
     path('people-who-liked-me/', views.people_who_liked_me, name='people_who_liked_me'),
     path('matches/', views.matches, name='matches'),
     path('fun/', views.fun, name='fun'),
-
-    # ✅ Password reset views
     path('password_reset/', 
          auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), 
          name='password_reset'),
-    
     path('password_reset/done/', 
          auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), 
          name='password_reset_done'),
@@ -47,6 +44,7 @@ urlpatterns = [
     path('reset/done/', 
          auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), 
          name='password_reset_complete'),
+     path('tweet_board/', views.tweet_board, name='tweet_board'),    
 ]
 
 if settings.DEBUG:
