@@ -8,132 +8,50 @@
   <link rel="icon" type="image/jpg" href="{% static 'img/logo.jpg' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <style>
-    button, .nav-links li a {
-  transition: all 0.3s ease;
-  cursor: pointer;
-  background-color: #6d44b8;
-  color: white;
-  border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
-}
+    input, textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid #ccc;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
 
-button:hover, button:focus, .nav-links li a:hover, .nav-links li a:focus {
-  background-color: #33004d;
-  color: #000;
-  transform: scale(1.05);
-  outline: none;
-}
-
-button:focus-visible {
-  outline: 3px solid #ffcc00;
-  outline-offset: 2px;
-}
-
-input, textarea {
-  width: 100%;
-  padding: 10px 14px;
-  border: 2px solid #ccc;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
-}
-
-input:focus, textarea:focus {
-  border-color: #ffcc00;
-  box-shadow: 0 0 10px #ffcc0055;
-  transform: scale(1.02);
-  outline: none;
-}
-
-    .navbar {
-  position: sticky;
-  top: 0;
-  background-color: #6d44b8;
-  color: white;
-  padding: 12px 20px;
-  z-index: 100;
-  box-shadow: none;
-  transition: box-shadow 0.3s ease, background-color 0.3s ease;
-}
-
-.navbar.scrolled {
-  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-  background-color: #593bb2;
-}
-
-.navbar a {
-  color: white;
-  font-weight: 600;
-  margin-right: 15px;
-}
-
-.navbar a:hover, .navbar a:focus {
-  color: #ffcc00;
-}
-
-    .nav-links li a {
-  position: relative;
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 16px;
-  padding-bottom: 4px;
-  transition: color 0.3s ease;
-}
-
-.nav-links li a::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 2px;
-  width: 100%;
-  background-color: #ffcc00;
-  transform: scaleX(0);
-  transform-origin: bottom right;
-  transition: transform 0.3s ease;
-}
-
-.nav-links li a:hover {
-  color: #ffcc00;
-}
-
-.nav-links li a:hover::after {
-  transform: scaleX(1);
-  transform-origin: bottom left;
-}
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      margin: 0;
-      background: #f9f7ff;  
-      color: #333;
+    input:focus, textarea:focus {
+      border-color: #ffcc00;
+      box-shadow: 0 0 10px #ffcc0055;
+      transform: scale(1.02);
+      outline: none;
     }
 
     .navbar {
-      padding: 21px 30px;  
+      background: rgba(109, 68, 184, 0.95);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 21px 30px;
       display: flex;
       justify-content: center;
       align-items: center;
-      background-color: #6d44b8;  
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
-      position: relative;
-      animation: fadeIn 1s ease forwards;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
     .url-bar {
       position: absolute;
-      top: 15px;
       left: 30px;
       font-size: 24px;
       font-weight: bold;
       color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
     .nav-links {
       display: flex;
-      gap: 20px;  
+      gap: 20px;
       list-style: none;
       padding: 0;
       margin: 0;
@@ -143,12 +61,90 @@ input:focus, textarea:focus {
       color: #ffffff;
       text-decoration: none;
       font-weight: bold;
-      font-size: 16px;  
-      transition: color 0.3s ease, background 0.3s ease; 
+      font-size: 16px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
     }
 
     .nav-links li a:hover {
       color: #ffcc00;
+      background: rgba(255,255,255,0.1);
+      transform: translateY(-2px);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      background: transparent !important;
+      border: none !important;
+      cursor: pointer;
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      padding: 0 !important;
+    }
+
+    .hamburger:hover {
+      background: transparent !important;
+      transform: none !important;
+    }
+
+    .hamburger-line {
+      width: 100%;
+      height: 3px;
+      background-color: white !important;
+      border-radius: 2px;
+      margin: 2px 0;
+      transition: all 0.3s ease;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+        position: relative;
+      }
+
+      .url-bar {
+        position: static;
+        font-size: 22px;
+        margin-bottom: 10px;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background: rgba(109, 68, 184, 0.95);
+        backdrop-filter: blur(10px);
+        position: absolute;
+        top: 100%;
+        left: 0;
+        padding: 15px 20px;
+        z-index: 999;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f9f7ff;  
+      color: #333;
     }
 
     .profile-icon {
@@ -161,7 +157,7 @@ input:focus, textarea:focus {
 
     .main {
       max-width: 700px;
-      margin: 60px auto 40px auto;
+      margin: 140px auto 40px auto;
       padding: 0 20px;
       text-align: center;
       animation: fadeIn 1.2s ease forwards;
@@ -218,10 +214,11 @@ input:focus, textarea:focus {
       box-shadow: 0 0 8px #8e60ff;
     }
 
+    /* Contact form specific button styling */
     .contact-form button {
-      background: #fff;
-      color: #6d44b8;
-      border: 2px solid #6d44b8;
+      background: #fff !important;
+      color: #6d44b8 !important;
+      border: 2px solid #6d44b8 !important;
       padding: 14px;
       font-size: 18px;
       border-radius: 8px;
@@ -231,13 +228,34 @@ input:focus, textarea:focus {
       box-shadow: 0 4px 12px rgba(109, 68, 184, 0.2);
       align-self: center;
       width: 180px;
+      transform: none !important;
     }
 
     .contact-form button:hover {
-      background-color: #6d44b8;
-      color: #ffcc00;
+      background-color: #6d44b8 !important;
+      color: #ffcc00 !important;
       box-shadow: 0 6px 14px rgba(141, 96, 255, 0.7);
-      border-color: #ffcc00;
+      border-color: #ffcc00 !important;
+      transform: none !important;
+    }
+
+    /* Modal button styling */
+    .modal-content button {
+      background-color: #6d44b8 !important;
+      color: white !important;
+      padding: 10px 20px;
+      margin: 10px 15px 0 15px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      border: none !important;
+      transform: none !important;
+    }
+
+    .modal-content button:hover {
+      background-color: #ffcc00 !important;
+      color: #000 !important;
+      transform: none !important;
     }
 
     .footer {
@@ -280,31 +298,9 @@ input:focus, textarea:focus {
       line-height: 1.4;
     }
 
-    .modal-content button {
-      padding: 10px 20px;
-      margin: 10px 15px 0 15px;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-        button {
-      background-color: #6d44b8;
-      color: white;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      font-size: 18px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      max-width: 200px;
-      align-self: center;
-    }
-
-    button:hover {
-      background-color: #ffcc00;
-      color: #000;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -312,7 +308,12 @@ input:focus, textarea:focus {
   
 <nav class="navbar">
   <div class="url-bar">MMU Connect</div>
-  <ul class="nav-links">
+  <button class="hamburger">
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+    <span class="hamburger-line"></span>
+  </button>
+  <ul class="nav-links" id="nav-links">
     <li><a href="{% url 'home' %}">Home</a></li>
     <li><a href="{% url 'feature' %}">Feature </a></li>
     <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
@@ -353,35 +354,55 @@ input:focus, textarea:focus {
   </div>
 
   <footer class="footer">© MMU Connect</footer>
+
+  <div id="logout-modal" class="modal">
+    <div class="modal-content">
+      <p>Are you sure you want to logout?</p>
+      <button onclick="submitLogout()">Yes, Logout</button>
+      <button onclick="closeLogoutModal()">Cancel</button>
+    </div>
+  </div>
+
   <script>
-      function openLogoutModal(event) {
-  event.preventDefault();
-  document.getElementById('logout-modal').style.display = 'flex';
-}
+    function openLogoutModal(event) {
+      event.preventDefault();
+      document.getElementById('logout-modal').style.display = 'flex';
+    }
 
-function closeLogoutModal() {
-  document.getElementById('logout-modal').style.display = 'none';
-}
+    function closeLogoutModal() {
+      document.getElementById('logout-modal').style.display = 'none';
+    }
 
-function submitLogout() {
-  document.getElementById('logout-form').submit();
-  window.addEventListener('scroll', function() {
-  const navbar = document.querySelector('.navbar');
-  if (window.scrollY > 10) {
-    navbar.classList.add('scrolled');
-  } else {
-    navbar.classList.remove('scrolled');
-  }
-});
+    function submitLogout() {
+      document.getElementById('logout-form').submit();
+    }
 
-}
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 10) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (hamburger && navLinks) {
+      hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+
+      document.addEventListener('click', function(event) {
+        if (!hamburger.contains(event.target) && !navLinks.contains(event.target)) {
+          navLinks.classList.remove('active');
+        }
+      });
+    }
+
+    window.openLogoutModal = openLogoutModal;
+    window.closeLogoutModal = closeLogoutModal;
   </script>
 </body>
-<div id="logout-modal" class="modal">
-  <div class="modal-content">
-    <p>Are you sure you want to logout?</p>
-    <button onclick="submitLogout()">Yes, Logout</button>
-    <button onclick="closeLogoutModal()">Cancel</button>
-  </div>
-</div>
 </html>

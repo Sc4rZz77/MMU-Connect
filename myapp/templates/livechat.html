@@ -23,7 +23,6 @@
       flex-direction: column;
     }
 
-    /* Updated Navbar with Hamburger */
     .navbar {
       background: rgba(109, 68, 184, 0.95);
       backdrop-filter: blur(10px);
@@ -109,7 +108,7 @@
       display: flex;
       flex: 1 1 auto;
       min-height: 0;
-      height: calc(100vh - 86px - 40px); /* minus navbar and footer */
+      height: calc(100vh - 86px - 40px); 
       background: #f6f6fa;
     }
 
@@ -124,7 +123,6 @@
       box-shadow: 2px 0 8px rgba(109,68,184,0.03);
     }
 
-    /* Dropdown header styling */
     .dropdown-header {
       display: flex;
       align-items: center;
@@ -476,7 +474,6 @@
       transform: translateY(0);
     }
 
-    /* Mobile Responsiveness */
     @media (max-width: 768px) {
       .navbar {
         flex-direction: column;
@@ -660,7 +657,6 @@
       }
     }
 
-    /* Empty state styling */
     .empty-state {
       padding: 3em 2em;
       color: #888;
@@ -679,7 +675,6 @@
       opacity: 0.5;
     }
 
-    /* Modal styles */
     .modal {
       display: none;
       position: fixed;
@@ -734,7 +729,6 @@
       color: white;
     }
 
-    /* Scrollbar styling */
     .chat-log::-webkit-scrollbar,
     .sidebar::-webkit-scrollbar {
       width: 6px;
@@ -863,7 +857,6 @@
     © MMU Connect
   </footer>
 
-  <!-- Logout Modal -->
   <div id="logout-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="logout-modal-title">
     <div class="modal-content">
       <p id="logout-modal-title">Are you sure you want to logout?</p>
@@ -878,14 +871,12 @@
   const chatPartner = "{{ chat_partner.username|default:'' }}";
   
   if (chatPartner) {
-    // Find the corresponding user button and simulate click
     const userButtons = document.querySelectorAll('.user-btn');
     userButtons.forEach(btn => {
       const username = btn.querySelector('.user-name').textContent.trim();
       if (username === chatPartner) {
         btn.classList.add('active');
         currentUserBtn = btn;
-        // Automatically establish connection
         openChat(chatPartner, btn);
         return;
       }
@@ -893,7 +884,6 @@
   }
 });
 
-    // Hamburger menu functionality
     const hamburger = document.getElementById('hamburger');
     const navLinks = document.getElementById('nav-links');
 
@@ -909,7 +899,6 @@
       });
     }
 
-    // Dropdown functionality for Active Chats
     function toggleActiveChats() {
       const userList = document.getElementById('user-list');
       const arrow = document.getElementById('dropdown-arrow');
@@ -922,7 +911,6 @@
     let isConnected = false;
     let currentUserBtn = null;
     const myUsername = "{{ request.user.username }}";
-    // Build a map of username to profile picture
     const userProfiles = JSON.parse(document.getElementById('user-profiles-data').textContent);
     const userProfilePics = {};
     userProfiles.forEach(function(user) {
@@ -931,7 +919,6 @@
     let chatPartner = null;
     let typingTimeout = null;
     let typingIndicator = null;
-    // Unread badge logic
     const unreadCounts = {};
     function incrementUnread(username) {
       if (!unreadCounts[username]) unreadCounts[username] = 0;
@@ -973,7 +960,6 @@
       chatPartner = username;
       document.getElementById('chat-with').innerText = 'Chat with ' + username;
       if (typingIndicator) typingIndicator.remove();
-      // Only clear chat log if not preloaded
       if (!window.chatHistoryLoaded) {
         document.getElementById('chat-log').innerHTML = '';
       }
@@ -992,10 +978,8 @@
         isConnected = true;
         setStatus(true);
         document.getElementById('chat-message-input').focus();
-        // Scroll to bottom on open
         document.getElementById('chat-log').scrollTop = document.getElementById('chat-log').scrollHeight;
         window.chatHistoryLoaded = false;
-        // Mark both users as online
         onlineUsers.add(myUsername);
         onlineUsers.add(username);
         updateSidebarStatus();
@@ -1046,7 +1030,6 @@
       chatSocket.onclose = function(e) {
         isConnected = false;
         setStatus(false, 'Connection closed');
-        // Mark chat partner as offline
         onlineUsers.delete(username);
         window.lastSeen[username] = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
         updateSidebarStatus();
@@ -1116,7 +1099,6 @@
         });
       clearUnread(username);
     }
-    // Emoji picker logic
     const emojiBtn = document.getElementById('emoji-btn');
     const emojiPicker = document.getElementById('emoji-picker');
     emojiBtn.addEventListener('click', function(e) {
@@ -1139,7 +1121,6 @@
       }
     });
     window.openChat = openChat;
-    // Logout modal controls
     function openLogoutModal(event) {
       event.preventDefault();
       document.getElementById('logout-modal').style.display = 'flex';
@@ -1150,7 +1131,6 @@
     function submitLogout() {
       document.getElementById('logout-form').submit();
     }
-    // --- Dynamic last seen/online ---
     const onlineUsers = new Set([myUsername]);
     function updateSidebarStatus() {
       document.querySelectorAll('.user-list li').forEach(li => {
@@ -1168,10 +1148,7 @@
       });
     }
     window.lastSeen = {};
-    // --- End dynamic last seen ---
-    // --- Dynamic last seen/online update on load ---
     updateSidebarStatus();
-    // --- End dynamic last seen/online ---
   </script>
   {% if not user_profiles %}
     <div style="padding: 2em; color: #888;">No matches yet. Like someone and get liked back to start chatting!</div>
