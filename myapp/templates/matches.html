@@ -8,227 +8,600 @@
   <link rel="icon" type="image/jpg" href="{% static 'img/logo.jpg' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   <style>
-    .nav-links li a {
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 16px;
-  transition: color 0.3s ease, border-bottom 0.3s ease;
-  border-bottom: 2px solid transparent;
-  padding-bottom: 4px;
-}
-
-.nav-links li a:hover {
-  color: #ffcc00;
-  border-bottom: 2px solid #ffcc00;
-}
-
-    body {
-      background-color: #ffffff;
-      font-family: 'Segoe UI', sans-serif;
+    * {
+      box-sizing: border-box;
     }
 
-    .match-card, .matched-card {
-  animation: fadeSlideUp 0.6s ease forwards;
-  opacity: 0;
-}
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
 
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-.match-card:hover, .matched-card:hover {
-  transform: translateY(-4px) scale(1.03);
-  box-shadow: 0 6px 20px rgba(87, 1, 246, 0.35);
-  transition: all 0.3s ease-in-out;
-}
+    .shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 20s infinite linear;
+    }
 
-#back-to-feature {
-  transform: translateY(-10px);
-  animation: slideInLeft 0.6s ease-out forwards;
-  opacity: 0;
-}
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
 
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-40px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
+    .nav-links li a {
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      border-bottom: 2px solid transparent;
+      padding: 8px 16px;
+      border-radius: 20px;
+    }
 
-#back-to-feature:hover {
-  transform: translateY(-4px) scale(1.02);
-}
+    .nav-links li a:hover {
+      background: rgba(255, 204, 0, 0.2);
+      color: #ffcc00;
+      transform: translateY(-2px);
+      border-bottom: 2px solid #ffcc00;
+    }
+
+    #back-to-feature {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      background: linear-gradient(135deg, #6d44b8 0%, #9b59b6 100%);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1em;
+      padding: 12px 20px;
+      border-radius: 50px;
+      box-shadow: 0 8px 25px rgba(109, 68, 184, 0.3);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      animation: slideInLeft 0.6s ease-out forwards;
+    }
+
+    #back-to-feature:hover {
+      background: linear-gradient(135deg, #ffcc00 0%, #ff9500 100%);
+      color: #333;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(255, 204, 0, 0.4);
+    }
+
+    @keyframes slideInLeft {
+      from {
+        transform: translateX(-40px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
     #matches-container {
       display: flex;
       flex-wrap: wrap;
-      gap: 2em;
+      gap: 30px;
       justify-content: center;
       align-items: flex-start;
-      padding: 2em;
+      padding: 100px 20px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
 
-    h2 {
+    .section {
+      flex: 1;
+      min-width: 350px;
+      max-width: 500px;
+    }
+
+    .section h3 {
       text-align: center;
-      margin-bottom: 2em;
-      color: #000000;
+      margin-bottom: 30px;
+      color: #fff;
+      font-size: 1.8em;
+      font-weight: 700;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .section h3::before {
+      content: '💕';
+      font-size: 1.2em;
+      animation: pulse 2s infinite;
+    }
+
+    .section:last-child h3::before {
+      content: '✨';
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
     }
 
     .match-card, .matched-card {
-      background: #d0b8fd;
-      border-radius: 18px;
-      padding: 2em 2.5em;
-      margin-bottom: 1.5em;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 30px;
+      margin-bottom: 25px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
-      transform: translateY(-5px);
-      box-shadow: 0 6px 20px rgba(109, 68, 184, 0.2)
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.4s ease;
+      animation: fadeSlideUp 0.6s ease forwards;
+      opacity: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .match-card::before, .matched-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .match-card:hover::before, .matched-card:hover::before {
+      left: 100%;
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .match-card:hover, .matched-card:hover {
-      box-shadow: 0 4px 16px rgb(87, 1, 246);
-      transition: all 0.6s ease;
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 30px 80px rgba(109, 68, 184, 0.4);
     }
 
     .match-card img, .matched-card img {
-      width: 90px;
-      height: 90px;
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
       object-fit: cover;
-      border: 3px solid #6d44b8;
-      margin-bottom: 1em;
-      box-shadow: 0 2px 8px #d1c4e9;
+      border: 4px solid #6d44b8;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 25px rgba(109, 68, 184, 0.3);
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    .match-card:hover img, .matched-card:hover img {
+      transform: scale(1.1);
+      box-shadow: 0 12px 35px rgba(109, 68, 184, 0.4);
+    }
+
+    .match-card h4, .matched-card h4 {
+      color: #6d44b8;
+      font-size: 1.3em;
+      font-weight: 700;
+      margin: 10px 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .match-card p, .matched-card p {
+      color: #666;
+      font-style: italic;
+      margin: 15px 0;
+      line-height: 1.5;
+      position: relative;
+      z-index: 1;
+    }
+
+    .match-card div:not([style]), .matched-card div:not([style]) {
+      color: #555;
+      margin: 15px 0;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    .match-card div:not([style]) strong, .matched-card div:not([style]) strong {
+      color: #6d44b8;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 20px;
+      position: relative;
+      z-index: 1;
     }
 
     .accept-btn, .decline-btn {
       border: none;
-      border-radius: 6px;
-      padding: 8px 18px;
+      border-radius: 25px;
+      padding: 12px 24px;
       font-weight: 700;
+      font-size: 0.9em;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      min-width: 90px;
     }
 
     .accept-btn {
-      background: #2ecc40;
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
       color: #fff;
+      box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
     }
 
     .accept-btn:hover {
-      background: #27ae60;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(39, 174, 96, 0.4);
     }
 
     .decline-btn {
-      background: #e74c3c;
+      background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
       color: #fff;
+      box-shadow: 0 6px 20px rgba(231, 76, 60, 0.3);
     }
 
     .decline-btn:hover {
-      background: #c0392b;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
     }
 
     .chat-btn {
-      margin-top: 1em;
-      background: #6d44b8;
+      margin-top: 20px;
+      background: linear-gradient(135deg, #6d44b8 0%, #9b59b6 100%);
       color: #fff;
-      padding: 0.7em 2em;
-      border-radius: 8px;
+      padding: 12px 30px;
+      border-radius: 25px;
       text-decoration: none;
-      font-weight: bold;
-      transition: background 0.2s;
+      font-weight: 700;
+      font-size: 1em;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(109, 68, 184, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .chat-btn::before {
+      content: '💬';
+      font-size: 1.1em;
     }
 
     .chat-btn:hover {
-      background: #502fa5;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(109, 68, 184, 0.4);
     }
 
-    #incoming-requests h3, #matched-users h3 {
+    .empty-state {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px 30px;
       text-align: center;
-      margin-bottom: 1em;
+      color: #666;
+      font-size: 1.1em;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    #incoming-requests h3 {
-      color: #000000;
+    .empty-state::before {
+      content: '🤔';
+      font-size: 3em;
+      display: block;
+      margin-bottom: 15px;
+      animation: bounce 2s infinite;
     }
 
-    #matched-users h3 {
-      color: #000000;
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-10px);
+      }
+      60% {
+        transform: translateY(-5px);
+      }
     }
 
-    .back-link {
+    .footer {
+      background: rgba(87, 59, 138, 0.9);
+      backdrop-filter: blur(10px);
       text-align: center;
-      margin-top: 2em;
+      padding: 20px;
+      color: #e0dfff;
+      margin-top: auto;
+      font-weight: 500;
     }
 
-    .back-link a {
-      color: #ededed;
-      text-decoration: underline;
-      font-weight: bold;
+    /* Match Animation */
+    .match-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 2000;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .match-content {
+      text-align: center;
+      background: white;
+      padding: 50px;
+      border-radius: 30px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+      animation: popIn 0.7s ease-out;
     }
 
     @keyframes popIn {
-      0% { transform: scale(0.7); opacity: 0; }
-      80% { transform: scale(1.1); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
+      0% { 
+        transform: scale(0.7);
+        opacity: 0;
+      }
+      80% { 
+        transform: scale(1.1);
+        opacity: 1;
+      }
+      100% { 
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
-    #back-to-feature {
-        position: absolute;
-        top: 32px;
-        left: 32px;
-        z-index: 1001;
-        background: #6d44b8;
-        color: #fff;
-        font-weight: 700;
-        font-size: 1.1em;
-        padding: 12px 22px 12px 16px;
-        border-radius: 12px 24px 24px 12px;
-        box-shadow: 0 4px 16px rgba(109,68,184,0.18);
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    .match-icon {
+      font-size: 4em;
+      margin-bottom: 20px;
+      animation: heartbeat 1s infinite;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% {
+        transform: scale(1);
       }
-      #back-to-feature:hover {
-        background: #ffcc00;
-        color: #6d44b8;
-        box-shadow: 0 8px 24px rgba(109,68,184,0.25);
+      50% {
+        transform: scale(1.2);
+      }
+    }
+
+    .match-title {
+      font-size: 2.5em;
+      color: #6d44b8;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .match-subtitle {
+      color: #666;
+      font-size: 1.1em;
+      margin-bottom: 20px;
+    }
+
+    /* Loading Animation */
+    .loading-btn {
+      position: relative;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .loading-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 16px;
+      height: 16px;
+      margin: -8px 0 0 -8px;
+      border: 2px solid transparent;
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      #back-to-feature {
+        top: 15px;
+        left: 15px;
+        padding: 10px 16px;
+        font-size: 0.9em;
       }
 
-      body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-}
+      #matches-container {
+        flex-direction: column;
+        gap: 20px;
+        padding: 80px 15px 20px;
+      }
+
+      .section {
+        min-width: auto;
+        max-width: none;
+        width: 100%;
+      }
+
+      .section h3 {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+      }
+
+      .match-card, .matched-card {
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 20px;
+      }
+
+      .match-card img, .matched-card img {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 15px;
+      }
+
+      .match-card h4, .matched-card h4 {
+        font-size: 1.2em;
+      }
+
+      .button-group {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+
+      .accept-btn, .decline-btn {
+        width: 100%;
+        padding: 12px 20px;
+      }
+
+      .chat-btn {
+        padding: 12px 24px;
+        font-size: 0.9em;
+      }
+
+      .match-content {
+        padding: 30px 20px;
+        margin: 20px;
+        border-radius: 20px;
+      }
+
+      .match-icon {
+        font-size: 3em;
+      }
+
+      .match-title {
+        font-size: 2em;
+      }
+
+      .match-subtitle {
+        font-size: 1em;
+      }
+
+      .empty-state {
+        padding: 30px 20px;
+        margin: 0 10px;
+      }
+
       .footer {
-        background: #573b8a;
-        text-align: center;
-        padding: 14px;
-        color: #e0dfff;
-        margin-top: auto;
+        padding: 15px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .section h3 {
+        font-size: 1.3em;
       }
 
+      .match-card, .matched-card {
+        padding: 15px;
+      }
+
+      .match-card img, .matched-card img {
+        width: 70px;
+        height: 70px;
+      }
+
+      .match-content {
+        padding: 25px 15px;
+      }
+
+      .match-title {
+        font-size: 1.8em;
+      }
+    }
+
+    /* Animation delays for staggered entrance */
+    .match-card:nth-child(2) { animation-delay: 0.1s; }
+    .match-card:nth-child(3) { animation-delay: 0.2s; }
+    .match-card:nth-child(4) { animation-delay: 0.3s; }
+    .matched-card:nth-child(2) { animation-delay: 0.1s; }
+    .matched-card:nth-child(3) { animation-delay: 0.2s; }
+    .matched-card:nth-child(4) { animation-delay: 0.3s; }
   </style>
 </head>
 <body>
-  <a href="{% url 'feature' %}" id="back-to-feature" title="Back to Feature">← Back to Feature</a>
+  <div class="floating-shapes"></div>
+  
+  <a href="{% url 'feature' %}" id="back-to-feature" title="Back to Feature">← Back</a>
+  
   <div id="matches-container">
-    <div id="incoming-requests" style="flex:1; min-width:320px; max-width:400px;">
+    <div class="section" id="incoming-requests">
       <h3>Incoming Match Requests</h3>
       {% if incoming_users %}
         {% for user in incoming_users %}
@@ -241,168 +614,222 @@
               <strong>Faculty:</strong> {{ author.faculty }}<br>
               <strong>Gender:</strong> {{ author.gender }}
             </div>
-            <div style="display:flex; gap:1em; margin-top:1em;">
-              <button class="accept-btn" data-author-id="{{ author.id }}">Accept</button>
-              <button class="decline-btn" data-author-id="{{ author.id }}">Decline</button>
+            <div class="button-group">
+              <button class="accept-btn" data-author-id="{{ author.id }}">✨ Accept</button>
+              <button class="decline-btn" data-author-id="{{ author.id }}">❌ Decline</button>
             </div>
           </div>
           {% endwith %}
         {% endfor %}
       {% else %}
-        <div style="color: #888; font-size: 1.1em; text-align:center;">No new match requests.</div>
+        <div class="empty-state">No new match requests.</div>
       {% endif %}
     </div>
 
-    <div id="matched-users" style="flex:1; min-width:320px; max-width:400px;">
+    <div class="section" id="matched-users">
       <h3>Matched Users</h3>
       {% if matched_users %}
         {% for user in matched_users %}
           {% with author=user.author %}
           <div class="matched-card" data-user-id="{{ user.id }}" data-username="{{ user.username }}">
             <img src="{{ author.profile_picture.url }}" alt="Profile Picture">
-            <h4 style="color: #6d44b8;">{{ author.first_name }} {{ author.last_name }}</h4>
+            <h4>{{ author.first_name }} {{ author.last_name }}</h4>
             <p><em>{{ author.self_bio }}</em></p>
             <div>
               <strong>Faculty:</strong> {{ author.faculty }}<br>
               <strong>Gender:</strong> {{ author.gender }}
             </div>
-            <a class="chat-btn" href="{% url 'livechat' %}?user={{ user.username }}">Chat</a>
+            <a class="chat-btn" href="{% url 'livechat' %}?user={{ user.username }}">Start Chat</a>
           </div>
           {% endwith %}
         {% endfor %}
       {% else %}
-        <div style="color: #888; font-size: 1.1em; text-align:center;">No matches yet. Keep liking!</div>
+        <div class="empty-state">No matches yet. Keep liking!</div>
       {% endif %}
     </div>
   </div>
-  <footer class="footer">© MMU Connect</footer>
+  
+  <footer class="footer">
+    <p>© 2025 MMU Connect • Find your perfect study buddy 💕</p>
+  </footer>
+
   <script>
-   
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
+    // Create floating shapes
+    function createFloatingShapes() {
+      const container = document.querySelector('.floating-shapes');
+      const shapes = 6;
+      
+      for (let i = 0; i < shapes; i++) {
+        const shape = document.createElement('div');
+        shape.className = 'shape';
+        shape.style.left = Math.random() * 100 + '%';
+        shape.style.width = shape.style.height = (Math.random() * 100 + 50) + 'px';
+        shape.style.animationDelay = Math.random() * 20 + 's';
+        shape.style.animationDuration = (Math.random() * 10 + 15) + 's';
+        container.appendChild(shape);
+      }
+    }
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
         }
+      }
+      return cookieValue;
     }
-    return cookieValue;
-}
 
-function animateOutAndRemove(card, callback) {
-    card.style.opacity = '0';
-    card.style.transform = 'translateX(60px)';
-    setTimeout(() => {
+    function animateOutAndRemove(card, callback) {
+      card.style.transition = 'all 0.4s ease';
+      card.style.opacity = '0';
+      card.style.transform = 'translateX(100px) scale(0.8)';
+      setTimeout(() => {
         card.remove();
         if (callback) callback();
-    }, 400);
-}
+      }, 400);
+    }
 
-function showMatchAnimation() {
-    let matchDiv = document.createElement('div');
-    matchDiv.style.position = 'fixed';
-    matchDiv.style.top = '0';
-    matchDiv.style.left = '0';
-    matchDiv.style.width = '100vw';
-    matchDiv.style.height = '100vh';
-    matchDiv.style.display = 'flex';
-    matchDiv.style.alignItems = 'center';
-    matchDiv.style.justifyContent = 'center';
-    matchDiv.style.background = 'rgba(255,255,255,0.85)';
-    matchDiv.style.zIndex = '2000';
-    matchDiv.innerHTML = `
-      <div style="text-align:center; animation: popIn 0.7s;">
-        <div style="font-size:4em;">💜</div>
-        <div style="font-size:2em; color:#6d44b8; font-weight:700; margin-top:0.3em;">It's a Match!</div>
-        <div style="color:#444; margin-top:0.5em;">You and this user have liked each other.</div>
-      </div>
-    `;
-    document.body.appendChild(matchDiv);
-    setTimeout(() => {
-      matchDiv.remove();
-    }, 1800);
-}
+    function showMatchAnimation() {
+      const matchDiv = document.createElement('div');
+      matchDiv.className = 'match-overlay';
+      matchDiv.innerHTML = `
+        <div class="match-content">
+          <div class="match-icon">💕</div>
+          <div class="match-title">It's a Match!</div>
+          <div class="match-subtitle">You and this user have liked each other.</div>
+          <div style="color: #6d44b8; font-weight: 600;">Start chatting now! 🎉</div>
+        </div>
+      `;
+      document.body.appendChild(matchDiv);
+      
+      setTimeout(() => {
+        matchDiv.style.opacity = '0';
+        setTimeout(() => {
+          matchDiv.remove();
+        }, 300);
+      }, 2500);
+    }
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.accept-btn').forEach(btn => {
+    function setLoadingState(button, isLoading) {
+      if (isLoading) {
+        button.classList.add('loading-btn');
+        button.textContent = '';
+      } else {
+        button.classList.remove('loading-btn');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      createFloatingShapes();
+      
+      // Accept button functionality
+      document.querySelectorAll('.accept-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const card = btn.closest('.match-card');
-            const authorId = btn.getAttribute('data-author-id');
-            if (!authorId || authorId.trim() === '') {
-                console.error('Author ID is missing or invalid');
-                alert('Author ID is missing. Please refresh and try again.');
-                return;  
+          e.preventDefault();
+          const card = btn.closest('.match-card');
+          const authorId = btn.getAttribute('data-author-id');
+          
+          if (!authorId || authorId.trim() === '') {
+            console.error('Author ID is missing or invalid');
+            alert('Author ID is missing. Please refresh and try again.');
+            return;  
+          }
+
+          setLoadingState(btn, true);
+          
+          fetch(`/like/${authorId}/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
             }
-            fetch(`/like/${authorId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                animateOutAndRemove(card, function() {
-                    const matchedDiv = document.getElementById('matched-users');
-                    card.classList.remove('match-card');
-                    card.classList.add('matched-card');
-                    const btns = card.querySelector('div[style*="display:flex"]');
-                    if (btns) btns.remove();
-                    const username = card.getAttribute('data-username');
-                    const chatBtn = document.createElement('a');
-                    chatBtn.href = `/livechat/?user=${username}`;
-                    chatBtn.textContent = 'Chat';
-                    chatBtn.className = 'chat-btn';
-                    card.appendChild(chatBtn);
-                    matchedDiv.appendChild(card);
-                    card.style.opacity = '1';
-                    card.style.transform = 'none';
-                    showMatchAnimation();
-                });
-            })
-            .catch(error => {
-                console.error('Error accepting request:', error);
-                alert('Failed to accept the request. Please check the console for details.');
+          })
+          .then(response => response.json())
+          .then(data => {
+            animateOutAndRemove(card, function() {
+              const matchedDiv = document.getElementById('matched-users');
+              const newCard = card.cloneNode(true);
+              newCard.classList.remove('match-card');
+              newCard.classList.add('matched-card');
+              
+              // Remove buttons and add chat button
+              const buttonGroup = newCard.querySelector('.button-group');
+              if (buttonGroup) buttonGroup.remove();
+              
+              const username = card.getAttribute('data-username');
+              const chatBtn = document.createElement('a');
+              chatBtn.href = `/livechat/?user=${username}`;
+              chatBtn.textContent = 'Start Chat';
+              chatBtn.className = 'chat-btn';
+              newCard.appendChild(chatBtn);
+              
+              // Insert after the h3 element
+              const h3 = matchedDiv.querySelector('h3');
+              if (h3.nextSibling) {
+                matchedDiv.insertBefore(newCard, h3.nextSibling);
+              } else {
+                matchedDiv.appendChild(newCard);
+              }
+              
+              // Remove empty state if exists
+              const emptyState = matchedDiv.querySelector('.empty-state');
+              if (emptyState) emptyState.remove();
+              
+              newCard.style.opacity = '1';
+              newCard.style.transform = 'none';
+              showMatchAnimation();
             });
+          })
+          .catch(error => {
+            console.error('Error accepting request:', error);
+            alert('Failed to accept the request. Please check the console for details.');
+            setLoadingState(btn, false);
+            btn.innerHTML = '✨ Accept';
+          });
         });
-    });
+      });
 
-    document.querySelectorAll('.decline-btn').forEach(btn => {
+      // Decline button functionality
+      document.querySelectorAll('.decline-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const card = btn.closest('.match-card');
-            const authorId = btn.getAttribute('data-author-id');
-            fetch(`/dislike/${authorId}/`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': getCookie('csrftoken'),
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => response.json())
-            .then(() => {
-                animateOutAndRemove(card);
-            })
-            .catch(error => {
-                console.error('Error declining request:', error);
-                alert('Failed to decline the request. Please check the console for details.');
-            });
+          e.preventDefault();
+          const card = btn.closest('.match-card');
+          const authorId = btn.getAttribute('data-author-id');
+          
+          setLoadingState(btn, true);
+          
+          fetch(`/dislike/${authorId}/`, {
+            method: 'POST',
+            headers: {
+              'X-CSRFToken': getCookie('csrftoken'),
+              'Content-Type': 'application/json'
+            }
+          })
+          .then(response => response.json())
+          .then(() => {
+            animateOutAndRemove(card);
+          })
+          .catch(error => {
+            console.error('Error declining request:', error);
+            alert('Failed to decline the request. Please check the console for details.');
+            setLoadingState(btn, false);
+            btn.innerHTML = '❌ Decline';
+          });
         });
-    });
-});
-  </script>
-  <script>
-  window.addEventListener('load', () => {
-    document.querySelectorAll('.match-card, .matched-card').forEach((card, i) => {
-      card.style.animationDelay = `${i * 100}ms`;
-    });
-  });
-</script>
+      });
 
+      // Add entrance animations with delays
+      const cards = document.querySelectorAll('.match-card, .matched-card');
+      cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+      });
+    });
+  </script>
 </body>
 </html>
