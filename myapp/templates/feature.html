@@ -257,34 +257,76 @@
       margin-top: auto;
     }
 
-    .match-modal {
+    .match-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: linear-gradient(135deg, rgba(255, 107, 107, 0.95), rgba(255, 142, 142, 0.95));
-      backdrop-filter: blur(20px);
-      display: none;
+      display: flex;
       align-items: center;
       justify-content: center;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
       z-index: 2000;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .match-content {
       text-align: center;
-      color: white;
+      background: white;
+      padding: 50px;
+      border-radius: 30px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+      animation: popIn 0.7s ease-out;
     }
 
-    .match-content h1 {
-      font-size: 64px;
+    @keyframes popIn {
+      0% { 
+        transform: scale(0.7);
+        opacity: 0;
+      }
+      80% { 
+        transform: scale(1.1);
+        opacity: 1;
+      }
+      100% { 
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .match-icon {
+      font-size: 4em;
       margin-bottom: 20px;
-      text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      animation: heartbeat 1s infinite;
     }
 
-    .match-content p {
-      font-size: 24px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    @keyframes heartbeat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.2);
+      }
+    }
+
+    .match-title {
+      font-size: 2.5em;
+      color: #6d44b8;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+
+    .match-subtitle {
+      color: #666;
+      font-size: 1.1em;
+      margin-bottom: 20px;
     }
 
     .modal {
@@ -368,7 +410,6 @@
       transition: all 0.3s ease;
     }
 
-    /* Mobile Responsiveness */
     @media (max-width: 768px) {
       .navbar {
         flex-direction: column;
@@ -423,12 +464,22 @@
         font-size: 20px;
       }
 
-      .match-content h1 {
-        font-size: 48px;
+      .match-content {
+        padding: 30px 20px;
+        margin: 20px;
+        border-radius: 20px;
       }
 
-      .match-content p {
-        font-size: 20px;
+      .match-icon {
+        font-size: 3em;
+      }
+
+      .match-title {
+        font-size: 2em;
+      }
+
+      .match-subtitle {
+        font-size: 1em;
       }
     }
   </style>
@@ -508,13 +559,6 @@
 <br>
 <footer class="footer">© MMU Connect</footer>
 
-<div class="match-modal" id="match-modal">
-  <div class="match-content">
-    <h1>💕 It's a Match!</h1>
-    <p>You both liked each other!</p>
-  </div>
-</div>
-
 <div id="logout-modal" class="modal">
   <div class="modal-content">
     <p>Are you sure you want to logout?</p>
@@ -529,14 +573,12 @@
     let cards = document.querySelectorAll('.author-card');
 
     function showNextCard() {
-      // Hide current card
       if (cards[currentIndex]) {
         cards[currentIndex].style.display = 'none';
       }
       
       currentIndex++;
       
-      // Show next card or no more cards message
       if (currentIndex < cards.length) {
         cards[currentIndex].style.display = 'block';
       } else {
@@ -593,13 +635,27 @@
     };
 
     function showMatchAnimation() {
-      const modal = document.getElementById('match-modal');
-      modal.style.display = 'flex';
+      const matchDiv = document.createElement('div');
+      matchDiv.className = 'match-overlay';
+      matchDiv.innerHTML = `
+        <div class="match-content">
+          <div class="match-icon">💕</div>
+          <div class="match-title">It's a Match!</div>
+          <div class="match-subtitle">You and this user have liked each other.</div>
+          <div style="color: #6d44b8; font-weight: 600;">Start chatting now! 🎉</div>
+        </div>
+      `;
+      document.body.appendChild(matchDiv);
       
       setTimeout(() => {
-        modal.style.display = 'none';
-      }, 3000);
+        matchDiv.style.opacity = '0';
+        setTimeout(() => {
+          matchDiv.remove();
+        }, 300);
+      }, 2500);
     }
+
+    window.showMatchAnimation = showMatchAnimation;
 
     if (cards.length > 0) {
       cards[0].style.display = 'block';

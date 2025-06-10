@@ -7,304 +7,658 @@
   <title>MMU Connect – Fun</title>
   <link rel="icon" type="image/jpg" href="{% static 'img/logo.jpg' %}">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     
     body {
       margin: 0;
       padding: 0;
+
       font-family: 'Segoe UI', sans-serif;
       background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
       color: #f8f8f8;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
+
+    .floating-shapes {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .shape {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
     .navbar {
-      background-color: #6d44b8;
-      padding: 21px 30px;
+      background: rgba(109, 68, 184, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 15px 20px;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
       position: relative;
       z-index: 10;
     }
+
     .url-bar {
       position: absolute;
-      top: 15px;
+      top: 50%;
       left: 30px;
-      font-size: 24px;
+      transform: translateY(-50%);
+      font-size: 20px;
       font-weight: bold;
       color: #fff;
     }
+
     .nav-links {
       list-style: none;
       display: flex;
-      gap: 20px;
+      gap: 30px;
       padding: 0;
       margin: 0;
     }
+
     .nav-links li a {
       color: #fff;
       text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s ease;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 20px;
     }
-    .nav-links li a:hover {
-      color: #ffcc00;
-    }
-   .main {
-  background: #9e3ff7;
-  max-width: 1100px;  
-  margin: 40px auto 0 auto;
-  padding: 40px;      
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1 1 auto;
-  min-height: 0;
-  gap: 32px;
-  position: relative;
-  z-index: 1;         
-  border-radius: 16px; 
-  box-shadow: 0 0 15px rgba(0,0,0,0.2); 
-}
 
-.quote-card {
-  max-width: 800px; 
-  background: white; 
-  padding: 20px;
-  position: relative;
-  z-index: 2;  
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
+    .nav-links li a:hover {
+      background: rgba(255, 204, 0, 0.2);
+      color: #ffcc00;
+      transform: translateY(-2px);
+    }
+
+    .main {
+      max-width: 1200px;  
+      margin: 20px auto;
+      padding: 20px;      
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      gap: 30px;
+      position: relative;
+      z-index: 1;
+    }
 
     .fun-card {
-      background: #ffffff;
-      border-radius: 20px;
-      box-shadow: 0 8px 32px rgba(109,68,184,0.10);
-      padding: 2.2em 1.5em 2em 1.5em;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      padding: 30px;
       width: 100%;
+      max-width: 500px;
       display: flex;
       flex-direction: column;
       align-items: center;
       margin: 0;
       position: relative;
-      color: #000;
+      color: #333;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s ease;
+      animation: slideInUp 0.8s ease-out;
     }
+
+    .fun-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+    }
+
+    .fun-card:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .fun-icon {
-      font-size: 2.2em;
-      margin-bottom: 0.2em;
-      color: #6d44b8;
+      font-size: 3em;
+      margin-bottom: 15px;
+      animation: bounce 2s infinite;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
     }
-    .quote-heading {
-      font-size: 1.3em;
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+      }
+      40% {
+        transform: translateY(-10px);
+      }
+      60% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .quote-heading, .scramble-heading {
+      font-size: 1.5em;
       font-weight: 700;
-      color: #000000;
-      margin-bottom: 0.7em;
+      color: #6d44b8;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
-      gap: 0.5em;
+      gap: 15px;
       justify-content: center;
+      flex-direction: column;
     }
+
     .quote-box {
-      background: #6d44b8;
+      background: linear-gradient(135deg, #6d44b8 0%, #9b59b6 100%);
       color: #ffffff;
-      border-radius: 15px;
-      font-size: 1.15rem;
+      border-radius: 20px;
+      font-size: 1.1rem;
       font-style: italic;
       text-align: center;
-      user-select: none;
-      padding: 18px 18px 10px 18px;
-      margin-bottom: 1em;
-      margin-top: -10px;
+      padding: 25px;
+      margin-bottom: 25px;
       width: 100%;
-      max-width: 350px;
-      margin-left: auto;
-      margin-right: auto;
-      min-height: 70px;
+      min-height: 120px;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 10px 30px rgba(109, 68, 184, 0.3);
+      position: relative;
+      overflow: hidden;
     }
+
+    .quote-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .quote-box:hover::before {
+      left: 100%;
+    }
+
+    .quote-text {
+      margin: 0;
+      line-height: 1.6;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
     .quote-btn {
-      background-color: #ffcc00;
+      background: linear-gradient(135deg, #ffcc00 0%, #ff9500 100%);
       border: none;
-      color: #000;
-      padding: 12px 25px;
-      border-radius: 12px;
+      color: #333;
+      padding: 15px 30px;
+      border-radius: 50px;
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 10px;
-      box-shadow: 0 2px 8px rgba(109,68,184,0.07);
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(255, 204, 0, 0.3);
+      position: relative;
+      overflow: hidden;
     }
+
     .quote-btn:hover {
-      background-color: #e6b800;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(255, 204, 0, 0.4);
     }
-    .scramble-heading {
-      font-size: 1.3em;
+
+    .quote-btn:active {
+      transform: translateY(-1px);
+    }
+
+    #scramble-game {
+      width: 100%;
+      background: rgba(246, 246, 250, 0.8);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+      color: #55369c;
+      backdrop-filter: blur(10px);
+    }
+
+    #scrambled-word {
+      font-size: 1.8em;
       font-weight: 700;
       color: #6d44b8;
-      margin-bottom: 0.7em;
+      margin-bottom: 20px;
+      letter-spacing: 3px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    .input-group {
       display: flex;
+      gap: 10px;
       align-items: center;
-      gap: 0.5em;
       justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
     }
-    #scramble-game {
-      margin-top: 0;
-      width: 100%;
-      max-width: 350px;
-      margin-left: auto;
-      margin-right: auto;
-      background: #f6f6fa;
-      padding: 15px;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(109,68,184,0.1);
-      color: #55369c;
-    }
-    #scrambled-word {
-      font-size: 1.2em;
-      font-weight: 600;
-      color: #55369c;
-      margin-bottom: 0.7em;
-      user-select: none;
-    }
+
     #user-guess {
-      padding: 10px 14px;
-      font-size: 1em;
-      border: 1.5px solid #6d44b8;
-      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 1.1em;
+      border: 2px solid #6d44b8;
+      border-radius: 25px;
       outline: none;
-      margin-right: 8px;
-      background: #fff;
-      margin-bottom: 8px;
-      width: 60%;
-      max-width: 180px;
-      color: #000;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      transition: all 0.3s ease;
+      min-width: 200px;
+      text-align: center;
+      font-weight: 600;
     }
+
+    #user-guess:focus {
+      border-color: #9b59b6;
+      box-shadow: 0 0 20px rgba(109, 68, 184, 0.3);
+      transform: scale(1.02);
+    }
+
     #scramble-game button {
-      background-color: #6d44b8;
+      background: linear-gradient(135deg, #6d44b8 0%, #9b59b6 100%);
       color: white;
-      padding: 10px 22px;
+      padding: 12px 25px;
       border: none;
-      border-radius: 8px;
+      border-radius: 25px;
       cursor: pointer;
       font-size: 1em;
       font-weight: 700;
-      transition: background 0.3s;
-      box-shadow: 0 2px 8px rgba(109,68,184,0.07);
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(109, 68, 184, 0.3);
+      min-width: 100px;
     }
+
     #scramble-game button:hover {
-      background-color: #000000;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(109, 68, 184, 0.4);
     }
+
     #scramble-feedback {
-      margin-top: 10px;
-      font-size: 1em;
+      margin-top: 15px;
+      font-size: 1.1em;
       font-weight: 600;
-      color: #6d44b8;
-      min-height: 24px;
+      min-height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
     }
+
     .footer {
-      background: #573b8a;
+      background: rgba(87, 59, 138, 0.9);
+      backdrop-filter: blur(10px);
       text-align: center;
-      padding: 14px;
+      padding: 20px;
       color: #e0dfff;
       margin-top: auto;
+      font-weight: 500;
     }
-    @media (max-width: 600px) {
-      .main { padding: 0 5px; }
-      .fun-card { max-width: 98vw; padding: 1.2em 0.5em; }
-      #back-to-feature { left: 10px; top: 10px; padding: 10px 14px 10px 10px; font-size: 1em; }
-    }
+
     #back-to-feature {
-      position: absolute;
-      top: 32px;
-      left: 32px;
+      position: fixed;
+      top: 20px;
+      left: 20px;
       z-index: 1001;
-      background: #6d44b8;
+      background: linear-gradient(135deg, #6d44b8 0%, #9b59b6 100%);
       color: #fff;
       font-weight: 700;
-      font-size: 1.1em;
-      padding: 12px 22px 12px 16px;
-      border-radius: 12px 24px 24px 12px;
-      box-shadow: 0 4px 16px rgba(109,68,184,0.18);
+      font-size: 1em;
+      padding: 12px 20px;
+      border-radius: 50px;
+      box-shadow: 0 8px 25px rgba(109, 68, 184, 0.3);
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
     }
+
     #back-to-feature:hover {
-      background: #ffcc00;
-      color: #6d44b8;
-      box-shadow: 0 8px 24px rgba(109,68,184,0.25);
+      background: linear-gradient(135deg, #ffcc00 0%, #ff9500 100%);
+      color: #333;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 35px rgba(255, 204, 0, 0.4);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .navbar {
+        padding: 10px 15px;
+      }
+      
+      .url-bar {
+        font-size: 16px;
+        left: 15px;
+      }
+      
+      .nav-links {
+        gap: 15px;
+      }
+      
+      .nav-links li a {
+        padding: 6px 12px;
+        font-size: 14px;
+      }
+      
+      .main {
+        margin: 10px;
+        padding: 15px;
+        gap: 20px;
+      }
+      
+      .fun-card {
+        padding: 20px 15px;
+        border-radius: 20px;
+      }
+      
+      .fun-icon {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+      
+      .quote-heading, .scramble-heading {
+        font-size: 1.3em;
+        margin-bottom: 15px;
+        gap: 10px;
+      }
+      
+      .quote-box {
+        padding: 20px 15px;
+        font-size: 1rem;
+        min-height: 100px;
+        border-radius: 16px;
+      }
+      
+      .quote-btn {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+      }
+      
+      #scramble-game {
+        padding: 20px 15px;
+      }
+      
+      #scrambled-word {
+        font-size: 1.5em;
+        letter-spacing: 2px;
+        margin-bottom: 15px;
+      }
+      
+      .input-group {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      #user-guess {
+        width: 100%;
+        min-width: auto;
+        max-width: 280px;
+        font-size: 1rem;
+        padding: 10px 14px;
+      }
+      
+      #scramble-game button {
+        width: 100%;
+        max-width: 280px;
+        padding: 12px 20px;
+      }
+      
+      #back-to-feature {
+        top: 15px;
+        left: 15px;
+        padding: 10px 16px;
+        font-size: 0.9em;
+      }
+      
+      .footer {
+        padding: 15px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .url-bar {
+        display: none;
+      }
+      
+      .navbar {
+        justify-content: center;
+      }
+      
+      .fun-card {
+        margin: 0 5px;
+      }
+      
+      .quote-box {
+        font-size: 0.9rem;
+        padding: 15px;
+      }
+      
+      #scrambled-word {
+        font-size: 1.3em;
+        letter-spacing: 1px;
+      }
+      
+      #user-guess, #scramble-game button {
+        max-width: 240px;
+      }
+    }
+
+    /* Success and Error Animations */
+    .success-animation {
+      animation: successPulse 0.6s ease-out;
+      color: #27ae60 !important;
+    }
+
+    .error-animation {
+      animation: errorShake 0.6s ease-out;
+      color: #e74c3c !important;
+    }
+
+    @keyframes successPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes errorShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* Loading animation */
+    .loading {
+      position: relative;
+    }
+
+    .loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      margin: auto;
+      border: 2px solid transparent;
+      border-top-color: #6d44b8;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
   </style>
 </head>
 <body>
-  <a href="{% url 'feature' %}" id="back-to-feature" title="Back to Feature">← Back to Feature</a>
+  <div class="floating-shapes"></div>
+  
+  <a href="{% url 'feature' %}" id="back-to-feature" title="Back to Feature">← Back</a>
+  
   <div class="main">
     <div class="fun-card">
-      <div class="quote-heading"><span class="fun-icon">💡</span>Quote Generator</div>
+      <div class="fun-icon">💡</div>
+      <div class="quote-heading">Daily Inspiration</div>
       <div class="quote-box">
-        <p class="quote-text" id="quote-text"></p>
+        <p class="quote-text" id="quote-text">Loading inspiring quote...</p>
       </div>
-      <button onclick="showNextQuote()" class="quote-btn">Next Quote</button>
+      <button onclick="showNextQuote()" class="quote-btn" id="quote-btn">
+        <span>✨ New Quote</span>
+      </button>
     </div>
+
     <div class="fun-card">
-      <div class="scramble-heading"><span class="fun-icon">🔤</span>Word Scramble</div>
+      <div class="fun-icon">🔤</div>
+      <div class="scramble-heading">Word Challenge</div>
       <div id="scramble-game">
-        <p id="scrambled-word"></p>
-        <input id="user-guess" type="text" placeholder="Your guess..." autocomplete="off" />
-        <button onclick="checkGuess()">Check</button>
+        <p id="scrambled-word">Loading...</p>
+        <div class="input-group">
+          <input id="user-guess" type="text" placeholder="Enter your guess..." autocomplete="off" />
+          <button onclick="checkGuess()" id="check-btn">Check</button>
+        </div>
         <p id="scramble-feedback"></p>
+        <button onclick="newScramble()" style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); margin-top: 10px;">🔄 New Word</button>
       </div>
     </div>
   </div>
-  <footer class="footer">© MMU Connect</footer>
+
+  <footer class="footer">
+    <p>© 2025 MMU Connect • Making learning fun and interactive ✨</p>
+  </footer>
+
   <script>
+    // Create floating shapes
+    function createFloatingShapes() {
+      const container = document.querySelector('.floating-shapes');
+      const shapes = 8;
+      
+      for (let i = 0; i < shapes; i++) {
+        const shape = document.createElement('div');
+        shape.className = 'shape';
+        shape.style.left = Math.random() * 100 + '%';
+        shape.style.width = shape.style.height = (Math.random() * 100 + 50) + 'px';
+        shape.style.animationDelay = Math.random() * 20 + 's';
+        shape.style.animationDuration = (Math.random() * 10 + 15) + 's';
+        container.appendChild(shape);
+      }
+    }
+
     const quotes = [
-      "Success doesn't come from what you do occasionally, it comes from what you do consistently.",
-      "Discipline is choosing between what you want now and what you want most.",
-      "Push yourself, because no one else is going to do it for you.",
-      "Study now, be proud later.",
-      "Don’t watch the clock; do what it does. Keep going.",
-      "Your future is created by what you do today, not tomorrow.",
-      "Great things never come from comfort zones.",
-      "Dream big. Work hard. Stay focused.",
-      "Believe you can and you’re halfway there.",
-      "Every accomplishment starts with the decision to try.",
-      "Focus on your goal. Don’t look in any direction but ahead.",
-      "Keep going. Everything you need will come to you.",
-      "Small steps every day lead to big results.",
-      "You don’t have to be great to start, but you have to start to be great.",
-      "Success is the sum of small efforts, repeated day in and day out.",
-      "Hard work beats talent when talent doesn’t work hard.",
-      "Stay positive, work hard, make it happen.",
-      "Failure is the opportunity to begin again more intelligently.",
-      "Be stronger than your excuses.",
-      "You’re capable of more than you know."
+      "Success doesn't come from what you do occasionally, it comes from what you do consistently. 🌟",
+      "Discipline is choosing between what you want now and what you want most. 💪",
+      "Push yourself, because no one else is going to do it for you. 🚀",
+      "Study now, be proud later. 📚",
+      "Don't watch the clock; do what it does. Keep going. ⏰",
+      "Your future is created by what you do today, not tomorrow. ✨",
+      "Great things never come from comfort zones. 🎯",
+      "Dream big. Work hard. Stay focused. 🌙",
+      "Believe you can and you're halfway there. 💫",
+      "Every accomplishment starts with the decision to try. 🎉",
+      "Focus on your goal. Don't look in any direction but ahead. 👁️",
+      "Keep going. Everything you need will come to you. 🌈",
+      "Small steps every day lead to big results. 👣",
+      "You don't have to be great to start, but you have to start to be great. 🎪",
+      "Success is the sum of small efforts, repeated day in and day out. 🔄",
+      "Hard work beats talent when talent doesn't work hard. 🏆",
+      "Stay positive, work hard, make it happen. ⚡",
+      "Failure is the opportunity to begin again more intelligently. 🧠",
+      "Be stronger than your excuses. 💎",
+      "You're capable of more than you know. 🌟"
     ];
 
     let currentQuoteIndex = Math.floor(Math.random() * quotes.length);
 
     function showQuote(index) {
-      document.getElementById("quote-text").textContent = quotes[index];
+      const quoteElement = document.getElementById("quote-text");
+      quoteElement.style.opacity = '0';
+      quoteElement.style.transform = 'translateY(20px)';
+      
+      setTimeout(() => {
+        quoteElement.textContent = quotes[index];
+        quoteElement.style.opacity = '1';
+        quoteElement.style.transform = 'translateY(0)';
+      }, 300);
     }
 
     function showNextQuote() {
-      currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
-      showQuote(currentQuoteIndex);
+      const btn = document.getElementById("quote-btn");
+      btn.style.transform = 'scale(0.95)';
+      
+      setTimeout(() => {
+        btn.style.transform = 'scale(1)';
+        currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+        showQuote(currentQuoteIndex);
+      }, 150);
     }
 
-   // script.js
-  const words = ["python", "django", "scramble", "student", "exam", "project", "coding", "keyboard", "monitor", "internet"];
-  let currentWord = "";
-  let scrambled = "";
+    const words = ["python", "django", "scramble", "student", "exam", "project", "coding", "keyboard", "monitor", "internet", "algorithm", "database", "programming", "software", "computer", "technology", "innovation", "creativity", "solution", "challenge"];
+    let currentWord = "";
+    let scrambled = "";
 
     function shuffle(str) {
       let arr = str.split('');
@@ -316,32 +670,69 @@
     }
 
     function newScramble() {
-      currentWord = words[Math.floor(Math.random() * words.length)];
-      scrambled = shuffle(currentWord);
-      while (scrambled === currentWord) {
+      const scrambledElement = document.getElementById("scrambled-word");
+      scrambledElement.classList.add('loading');
+      
+      setTimeout(() => {
+        currentWord = words[Math.floor(Math.random() * words.length)];
         scrambled = shuffle(currentWord);
-      }
-      document.getElementById("scrambled-word").textContent = scrambled;
-      document.getElementById("user-guess").value = "";
-      document.getElementById("scramble-feedback").textContent = "";
+        while (scrambled === currentWord) {
+          scrambled = shuffle(currentWord);
+        }
+        
+        scrambledElement.classList.remove('loading');
+        scrambledElement.textContent = scrambled.toUpperCase();
+        document.getElementById("user-guess").value = "";
+        document.getElementById("scramble-feedback").textContent = "";
+        document.getElementById("scramble-feedback").className = "";
+      }, 1000);
     }
 
     function checkGuess() {
       const guess = document.getElementById("user-guess").value.trim().toLowerCase();
       const feedback = document.getElementById("scramble-feedback");
+      const input = document.getElementById("user-guess");
+
+      if (!guess) {
+        feedback.textContent = "Please enter a guess! 🤔";
+        feedback.className = "error-animation";
+        input.focus();
+        return;
+      }
 
       if (guess === currentWord) {
-        feedback.textContent = "✅ Correct! Loading new word...";
-        feedback.style.color = "green";
-        setTimeout(newScramble, 1500);
+        feedback.textContent = "🎉 Awesome! You got it right!";
+        feedback.className = "success-animation";
+        input.style.borderColor = "#27ae60";
+        
+        setTimeout(() => {
+          newScramble();
+          input.style.borderColor = "#6d44b8";
+        }, 2000);
       } else {
-        feedback.textContent = "❌ Try again!";
-        feedback.style.color = "red";
+        feedback.textContent = "🤔 Not quite! Try again!";
+        feedback.className = "error-animation";
+        input.style.borderColor = "#e74c3c";
+        
+        setTimeout(() => {
+          input.style.borderColor = "#6d44b8";
+        }, 1000);
       }
     }
 
-    // On page load
-    document.addEventListener("DOMContentLoaded", () => {
+    // Add enter key support for word scramble
+    document.getElementById("user-guess").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        checkGuess();
+      }
+    });
+
+    // Add smooth transitions to quote and scramble text
+    document.getElementById("quote-text").style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+
+    // Initialize on page load
+    document.addEventListener("DOMContentLoaded", function() {
+      createFloatingShapes();
       showQuote(currentQuoteIndex);
       newScramble();
     });
