@@ -377,7 +377,6 @@
       font-weight: 500;
     }
 
-    /* Match Animation */
     .match-overlay {
       position: fixed;
       top: 0;
@@ -476,7 +475,6 @@
       100% { transform: rotate(360deg); }
     }
 
-    /* Mobile Responsive */
     @media (max-width: 768px) {
       #back-to-feature {
         top: 15px;
@@ -586,7 +584,6 @@
       }
     }
 
-    /* Animation delays for staggered entrance */
     .match-card:nth-child(2) { animation-delay: 0.1s; }
     .match-card:nth-child(3) { animation-delay: 0.2s; }
     .match-card:nth-child(4) { animation-delay: 0.3s; }
@@ -654,7 +651,6 @@
   </footer>
 
   <script>
-    // Create floating shapes
     function createFloatingShapes() {
       const container = document.querySelector('.floating-shapes');
       const shapes = 6;
@@ -728,7 +724,6 @@
     document.addEventListener('DOMContentLoaded', function() {
       createFloatingShapes();
       
-      // Accept button functionality
       document.querySelectorAll('.accept-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
           e.preventDefault();
@@ -758,7 +753,6 @@
               newCard.classList.remove('match-card');
               newCard.classList.add('matched-card');
               
-              // Remove buttons and add chat button
               const buttonGroup = newCard.querySelector('.button-group');
               if (buttonGroup) buttonGroup.remove();
               
@@ -769,7 +763,6 @@
               chatBtn.className = 'chat-btn';
               newCard.appendChild(chatBtn);
               
-              // Insert after the h3 element
               const h3 = matchedDiv.querySelector('h3');
               if (h3.nextSibling) {
                 matchedDiv.insertBefore(newCard, h3.nextSibling);
@@ -777,7 +770,6 @@
                 matchedDiv.appendChild(newCard);
               }
               
-              // Remove empty state if exists
               const emptyState = matchedDiv.querySelector('.empty-state');
               if (emptyState) emptyState.remove();
               
@@ -795,7 +787,6 @@
         });
       });
 
-      // Decline button functionality
       document.querySelectorAll('.decline-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
           e.preventDefault();
@@ -824,7 +815,6 @@
         });
       });
 
-      // Add entrance animations with delays
       const cards = document.querySelectorAll('.match-card, .matched-card');
       cards.forEach((card, index) => {
         card.style.animationDelay = `${index * 0.1}s`;
