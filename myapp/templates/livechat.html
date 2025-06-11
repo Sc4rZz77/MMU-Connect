@@ -767,7 +767,6 @@
       <li><a href="{% url 'about-us' %}">About Us</a></li>
       <li><a href="{% url 'chat' %}">Help</a></li>
       <li><a href="{% url 'contact' %}">Contact</a></li>
-      <li><a href="{% url 'tweet_board' %}">MoodBoard</a></li>
       {% if user.is_authenticated %}
         <li>
           <form id="logout-form" method="post" action="{% url 'logout' %}" style="display:none;">

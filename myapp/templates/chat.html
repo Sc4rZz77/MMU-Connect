@@ -664,7 +664,42 @@
   }
 });
 
+    const hamburger = document.querySelector('.hamburger');
+    const navLinks = document.querySelector('.nav-links');
 
+    if (hamburger && navLinks) {
+      hamburger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+
+      document.addEventListener('click', function(event) {
+        if (!hamburger.contains(event.target) && !navLinks.contains(event.target)) {
+          navLinks.classList.remove('active');
+        }
+      });
+    }
+
+ function openLogoutModal(event) {
+      event.preventDefault();
+      document.getElementById('logout-modal').style.display = 'flex';
+    }
+
+    function closeLogoutModal() {
+      document.getElementById('logout-modal').style.display = 'none';
+    }
+
+    function submitLogout() {
+      document.getElementById('logout-form').submit();
+    }
+
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 10) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
 </script>
 
 </body>
