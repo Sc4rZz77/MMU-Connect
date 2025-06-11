@@ -42,14 +42,14 @@
 
     body {
       margin: 0;
-<<<<<<< HEAD
+
       font-family: 'Segoe UI', sans-serif;
       background:  linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-=======
+
       padding: 0;
       font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #f9f7ff;
->>>>>>> 7faabe1a5d51b39f644ab573bcd86168c87f4ab5
+
       color: #333;
       min-height: 100vh;
       display: flex;
@@ -304,7 +304,6 @@
     <li><a href="{% url 'about-us' %}">About Us</a></li>
     <li><a href="{% url 'chat' %}">Help</a></li>
     <li><a href="{% url 'contact' %}">Contact</a></li>
-    <li><a href="{% url 'tweet_board' %}">MoodBoard</a></li>
 
     {% if user.is_authenticated %}
       <li>
