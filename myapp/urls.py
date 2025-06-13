@@ -44,7 +44,6 @@ urlpatterns = [
     path('reset/done/', 
          auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), 
          name='password_reset_complete'),
-     path('tweet_board/', views.tweet_board, name='tweet_board'),    
 ]
 
 if settings.DEBUG:
