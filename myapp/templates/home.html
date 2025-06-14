@@ -291,6 +291,91 @@
       background-color: #ffcc00;
       color: #000;
     }
+  
+    .parallax-card {
+  position: relative;
+  width: 280px;
+  height: 320px;
+  perspective: 1000px;
+  border-radius: 16px;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.section {
+  text-align: center; 
+  margin-bottom: 0px; 
+}
+
+.card-container {
+  display: flex; 
+  gap: 40px; 
+  justify-content: center; 
+  flex-wrap: wrap; 
+  margin-top: 30px;
+}
+
+
+.parallax-card-content {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #c9a4f0, #6000fb);
+  background-size: 200% 200%;
+  border-radius: 16px;
+  color: white;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  animation: gradient-animation 7s ease infinite;
+  transition: transform 0.5s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  padding: 24px;
+  text-align: center;
+}
+
+.parallax-card-icon {
+  font-size: 50px;
+  margin-bottom: 20px;
+  transform: translateZ(40px);
+}
+
+.parallax-card h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+  transform: translateZ(30px);
+}
+
+.parallax-card p {
+  font-size: 16px;
+  opacity: 0.9;
+  transform: translateZ(20px);
+}
+
+/* Parallax effect on mouse move */
+.parallax-card:hover {
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .parallax-card {
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+}
+
+/* JavaScript needed for the effect */
   </style>
 </head>
 <body>
@@ -337,23 +422,34 @@
     </div>
   </div>
 
-  <div class="section">
-    <h2>Why Choose MMU Connect?</h2>
-    <div class="features-summary">
-      <div class="feature-card">
+ <div class="section">
+  <h2>Why Choose MMU Connect?</h2>
+
+  <div class="card-container">
+    <div class="parallax-card">
+      <div class="parallax-card-content">
         <h3>🎯 Smart Matchmaking</h3>
         <p>Our algorithm pairs you with the best match based on your courses and interests.</p>
       </div>
-      <div class="feature-card">
+    </div>
+
+    <div class="parallax-card">
+      <div class="parallax-card-content">
         <h3>💬 Seamless Chat</h3>
         <p>Engage with study buddies or form groups with ease using our built-in chat system.</p>
       </div>
-      <div class="feature-card">
-        <h3>🎮Scramble Game</h3>
+    </div>
+
+    <div class="parallax-card">
+      <div class="parallax-card-content">
+        <h3>🎮 Scramble Game</h3>
         <p>Challenge your brain with a fun word scramble game while you wait for matches or take a break from swiping.</p>
       </div>
     </div>
   </div>
+
+</div>
+
 
   <button id="back-to-top" title="Back to top">↑</button>
 
@@ -420,6 +516,41 @@
         }
       });
     }
+  document.addEventListener('DOMContentLoaded', function() {
+  const cards = document.querySelectorAll('.parallax-card'); // Get all cards
+
+  cards.forEach(card => {
+    const content = card.querySelector('.parallax-card-content');
+
+    // Values for the parallax effect
+    const maxRotation = 12;
+
+    card.addEventListener('mousemove', function(e) {
+      const rect = card.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      const mouseX = e.clientX - centerX;
+      const mouseY = e.clientY - centerY;
+
+      const rotateY = (mouseX / (rect.width / 2)) * maxRotation;
+      const rotateX = -((mouseY / (rect.height / 2)) * maxRotation); // ✅ Corrected here
+
+      content.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    });
+
+    card.addEventListener('mouseleave', function() {
+      content.style.transform = 'rotateX(0) rotateY(0)';
+    });
+
+    card.addEventListener('mouseenter', function() {
+      setTimeout(() => {
+        content.style.transition = 'transform 0.1s ease';
+      }, 100);
+    });
+  });
+});
+
 
     window.openLogoutModal = openLogoutModal;
     window.closeLogoutModal = closeLogoutModal;
