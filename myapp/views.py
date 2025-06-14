@@ -32,17 +32,10 @@ import tenacity
 import requests
 from groq import Groq
 from django.shortcuts import render, redirect, get_object_or_404
-<<<<<<< HEAD
-from .models import Post
-from .forms import PostForm, ReplyForm
 from django.shortcuts import render, redirect
-from .models import Post
-from .forms import PostForm
 from django.views.decorators.http import require_GET
-=======
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
->>>>>>> a65767d0996a5671c2b7b7c5041e6a62c409132e
 
 User = get_user_model()
 client = InferenceClient()
