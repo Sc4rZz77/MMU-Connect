@@ -374,11 +374,28 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   }
 }
+.glowing-button {
+  padding: 12px 24px;
+  background: transparent;
+  color: #6733ce;
+  border: 2px solid #5c33c4;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 0 5px #3e1a81, 0 0 10px #5922b2;
+  transition: all 0.3s ease;
+}
 
-/* JavaScript needed for the effect */
+.glowing-button:hover {
+  background: #532aab;
+  color: #000;
+  box-shadow: 0 0 10px #7635e5, 0 0 20px #872dcd, 0 0 40px #54309c;
+}
   </style>
 </head>
 <body>
+  
   <nav class="navbar">
     <div class="url-bar">MMU Connect</div>
     <button class="hamburger">
@@ -407,7 +424,8 @@
   <div class="hero">
     <h1>Welcome to MMU Connect</h1>
     <p>Find your perfect study partner. Chat. Learn. Grow together at MMU.</p>
-    <a href="{% url 'feature' %}">Explore Features</a>
+   <a href="{% url 'feature' %}" class="glowing-button">Explore Features</a>
+
   </div>
   
   <div class="section">
