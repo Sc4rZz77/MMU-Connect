@@ -537,6 +537,14 @@
               <span>{{ author.gender }}</span>
             </div>
           </div>
+          <form method="post" action="{% url 'report_user' %}" style="margin-top: 12px;">
+  {% csrf_token %}
+  <input type="hidden" name="reported_username" value="{{ author.user.username }}">
+  <button type="submit" style="background:#ff4d4d; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;">
+    🚩 Report
+  </button>
+</form>
+
         </div>
       </div>
     {% endfor %}

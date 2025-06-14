@@ -5,6 +5,8 @@ from django.contrib.auth import views as auth_views
 from . import views
 from .views import ai_chat, ForceOTPLoginView
 from .two_factor_views import verify_2fa
+from myapp.views import report_user
+
 
 urlpatterns = [
     path('signup/', views.signup, name='signup'),  # Home route as signup
@@ -45,6 +47,7 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), 
          name='password_reset_complete'),
      path('tweet_board/', views.tweet_board, name='tweet_board'),    
+     path("report/", report_user, name="report_user"),
 ]
 
 if settings.DEBUG:

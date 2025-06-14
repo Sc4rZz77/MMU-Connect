@@ -39,6 +39,8 @@ from django.shortcuts import render, redirect
 from .models import Post
 from .forms import PostForm
 
+
+
 User = get_user_model()
 client = InferenceClient()
 
@@ -460,4 +462,24 @@ def delete_account(request):
         user.delete()   
         return redirect('home')  
     return redirect('edit_profile') 
+
+@login_required
+def report_user(request):
+    if request.method == 'POST':
+        reported_username = request.POST.get('reported_username')
+        reporter = request.user.username
+        subject = f"User Reported: {reported_username}"
+        message = f"{reporter} reported {reported_username} on MMU Connect."
+
+        send_mail(
+            subject,
+            message,
+            'no-reply@mmuconnect.com', 
+            ['scarmanthegamer@gmail.com'], 
+            fail_silently=False,
+        )
+
+        messages.success(request, "Your report has been submitted.")
+    return redirect('feature')
+
     
