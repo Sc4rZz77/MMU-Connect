@@ -46,9 +46,12 @@ urlpatterns = [
     path('reset/done/', 
          auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), 
          name='password_reset_complete'),
+<<<<<<< HEAD
      path('tweet_board/', views.tweet_board, name='tweet_board'),    
      path("report/", report_user, name="report_user"),
      path('search_usernames/', views.search_usernames, name='search_usernames'),
+=======
+>>>>>>> a65767d0996a5671c2b7b7c5041e6a62c409132e
 ]
 
 if settings.DEBUG:

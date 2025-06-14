@@ -3,7 +3,6 @@ from .models import Author
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import Post, Reply
 
 
 class AuthorForm(forms.ModelForm):
@@ -34,16 +33,3 @@ class SignupForm(UserCreationForm):
         for fieldname in ['username', 'password1', 'password2']:
             self.fields[fieldname].help_text = ''
 
-
-class PostForm(forms.ModelForm):
-    class Meta:
-        model = Post
-        fields = ['content']
-
-class ReplyForm(forms.ModelForm):
-    class Meta:
-        model = Reply
-        fields = ['content']
-        widgets = {
-            'content': forms.Textarea(attrs={'rows': 1, 'maxlength': 280, 'placeholder': 'Reply...'})
-        }

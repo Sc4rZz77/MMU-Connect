@@ -3,6 +3,7 @@ from django.db import models
 from cloudinary.models import CloudinaryField
 from django.db import models
 from django.contrib.auth.models import User
+from django.db import migrations
 
 class Author(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)  # Allow null if needed
@@ -52,20 +53,6 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
-    # add your fields here
-
-from django.db import models
-from django.contrib.auth.models import User
-
-class StudySession(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
-
-    def __str__(self):
-        return f"{self.title} ({self.start_time} - {self.end_time})"
 
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
@@ -88,23 +75,17 @@ class Dislike(models.Model):
     def __str__(self):
         return f"{self.disliker.username} disliked {self.disliked.username}"
 
-class Post(models.Model):
-    CATEGORY_CHOICES = [
-        ('mood', 'Mood'),
-        ('studies', 'Studies'),
+class Migration(migrations.Migration):
+
+    dependencies = [
+        ('myapp', 'previous_migration'),
     ]
 
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField(max_length=280)
-    category = models.CharField(max_length=10, choices=CATEGORY_CHOICES, default='mood')
-    created_at = models.DateTimeField(auto_now_add=True)
-
-class Reply(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='replies')
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField(max_length=280)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.user.username} replied"
+    operations = [
+        migrations.RenameField(
+            model_name='reply',
+            old_name='user',
+            new_name='author',
+        ),
+    ]
 

@@ -32,12 +32,17 @@ import tenacity
 import requests
 from groq import Groq
 from django.shortcuts import render, redirect, get_object_or_404
+<<<<<<< HEAD
 from .models import Post
 from .forms import PostForm, ReplyForm
 from django.shortcuts import render, redirect
 from .models import Post
 from .forms import PostForm
 from django.views.decorators.http import require_GET
+=======
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+>>>>>>> a65767d0996a5671c2b7b7c5041e6a62c409132e
 
 User = get_user_model()
 client = InferenceClient()
@@ -429,23 +434,6 @@ def is_match(user1, user2):
 def fun(request):
     return render(request, 'fun.html')
 
-#this is for testing the pushing purpose
-
-#test2
-
-def tweet_board(request):
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        if form.is_valid():
-            tweet = form.save(commit=False)
-            tweet.user = request.user  # assuming user is logged in
-            tweet.save()
-            return redirect('tweet_board')
-    else:
-        form = PostForm()
-    
-    posts = Post.objects.all().order_by('-created_at')
-    return render(request, 'tweet_board.html', {'form': form, 'posts': posts})
 
 
 
