@@ -496,7 +496,7 @@
   </button>
   <ul class="nav-links" id="nav-links">
     <li><a href="{% url 'home' %}">Home</a></li>
-    <li><a href="{% url 'feature' %}">Feature</a></li>
+    <li><a href="{% url 'feature' %}">Match</a></li>
     <li><a href="{% url 'edit_profile' %}">Edit Profile</a></li>
     <li><a href="{% url 'about-us' %}">About Us</a></li>
     <li><a href="{% url 'chat' %}">Help</a></li>
@@ -514,32 +514,6 @@
 </nav>
 <br>
 
-<div style="text-align: center; margin-bottom: 30px;">
-  <div id="search-container"
-       style="width: 300px; margin: auto; position: relative; z-index: 9999;">
-    <input type="text" id="userSearch"
-           placeholder="Search by username..."
-           style="padding: 10px; width: 100%; border-radius: 8px; border: 1px solid #ccc;">
-    <ul id="suggestions"
-        style="
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          position: absolute;
-          top: calc(100% + 2px);
-          left: 0;
-          right: 0;
-          background: white;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-          z-index: 10000;
-          display: none;
-          max-height: 200px;
-          overflow-y: auto;">
-    </ul>
-  </div>
-</div>
 
   <div id="card-container">
     {% for author in data %}
