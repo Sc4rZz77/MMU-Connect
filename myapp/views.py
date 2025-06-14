@@ -34,12 +34,10 @@ from groq import Groq
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post
 from .forms import PostForm, ReplyForm
-from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from .models import Post
 from .forms import PostForm
-
-
+from django.views.decorators.http import require_GET
 
 User = get_user_model()
 client = InferenceClient()
@@ -482,4 +480,16 @@ def report_user(request):
         messages.success(request, "Your report has been submitted.")
     return redirect('feature')
 
-    
+@login_required
+def search_usernames(request):
+    q = request.GET.get('q', '')
+    if not q:
+        return JsonResponse([], safe=False)
+    matches = User.objects.filter(username__icontains=q).values_list('username', flat=True)[:10]
+    return JsonResponse(list(matches), safe=False)   
+
+@require_GET
+def search_usernames(request):
+    q = request.GET.get('q', '')
+    users = User.objects.filter(username__icontains=q).values_list('username', flat=True)
+    return JsonResponse(list(users), safe=False)

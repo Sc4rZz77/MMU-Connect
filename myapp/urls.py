@@ -48,6 +48,7 @@ urlpatterns = [
          name='password_reset_complete'),
      path('tweet_board/', views.tweet_board, name='tweet_board'),    
      path("report/", report_user, name="report_user"),
+     path('search_usernames/', views.search_usernames, name='search_usernames'),
 ]
 
 if settings.DEBUG:

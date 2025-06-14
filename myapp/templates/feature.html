@@ -91,6 +91,8 @@
       margin-bottom: 40px;
       margin: 0 auto;
       align-self: center;
+      position: relative;
+      z-index: 1;
     }
 
     .card-image {
@@ -511,6 +513,34 @@
   </ul>
 </nav>
 <br>
+
+<div style="text-align: center; margin-bottom: 30px;">
+  <div id="search-container"
+       style="width: 300px; margin: auto; position: relative; z-index: 9999;">
+    <input type="text" id="userSearch"
+           placeholder="Search by username..."
+           style="padding: 10px; width: 100%; border-radius: 8px; border: 1px solid #ccc;">
+    <ul id="suggestions"
+        style="
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          position: absolute;
+          top: calc(100% + 2px);
+          left: 0;
+          right: 0;
+          background: white;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          z-index: 10000;
+          display: none;
+          max-height: 200px;
+          overflow-y: auto;">
+    </ul>
+  </div>
+</div>
+
   <div id="card-container">
     {% for author in data %}
       <div class="author-card" data-id="{{ author.id }}" style="display: none;">
@@ -576,6 +606,8 @@
 </div>
 
 <script>
+  let currentIndex = 0;
+let cards = document.querySelectorAll('.author-card');
   document.addEventListener("DOMContentLoaded", function () {
     let currentIndex = 0;
     let cards = document.querySelectorAll('.author-card');
@@ -600,6 +632,7 @@
     }
 
     window.likeCurrentAuthor = function() {
+      
       let authorId = getCurrentAuthorId();
       if (!authorId) return;
       
@@ -703,7 +736,57 @@
 
   window.openLogoutModal = openLogoutModal;
   window.closeLogoutModal = closeLogoutModal;
-</script>
+    const searchInput = document.getElementById('userSearch');
+  const suggestions = document.getElementById('suggestions');
 
+  searchInput.addEventListener('input', function () {
+    const query = this.value;
+    if (query.length < 1) {
+      suggestions.style.display = 'none';
+      return;
+    }
+
+    fetch(`/search_usernames/?q=${query}`)
+      .then(response => response.json())
+      .then(data => {
+        suggestions.innerHTML = '';
+        if (data.length === 0) {
+          suggestions.style.display = 'none';
+          return;
+        }
+
+        data.forEach(username => {
+          const li = document.createElement('li');
+          li.textContent = username;
+          li.style.padding = '8px 12px';
+          li.style.cursor = 'pointer';
+          li.addEventListener('click', () => {
+            searchInput.value = username;
+            suggestions.style.display = 'none';
+            filterCardsByUsername(username);
+          });
+          suggestions.appendChild(li);
+        });
+
+        suggestions.style.display = 'block';
+      });
+  });
+
+  function filterCardsByUsername(username) {
+  cards.forEach((card, index) => {
+    const name = card.querySelector('.card-name').textContent.trim().toLowerCase();
+    if (name.includes(username.toLowerCase())) {
+      card.style.display = 'block';
+      currentIndex = index;  
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  const found = [...cards].some(card => card.style.display === 'block');
+  document.getElementById('action-buttons').style.display = found ? 'flex' : 'none';
+  document.getElementById('no-more-cards').style.display = found ? 'none' : 'block';
+}
+</script>
 </body>
 </html>
