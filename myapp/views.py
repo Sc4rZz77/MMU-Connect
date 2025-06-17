@@ -57,7 +57,7 @@ def feature(request):
     if hasattr(request.user, 'author'):
         my_faculty = getattr(request.user.author, 'faculty', None)
     else:
-        my_faculty = None  # Or handle as needed, e.g., redirect or set a default
+        my_faculty = None 
     authors = Author.objects.exclude(user__in=list(liked_users) + list(disliked_users) + [request.user.id])
     if my_faculty:
         authors = authors.annotate(
@@ -82,7 +82,6 @@ def chat(request):
 @login_required
 @never_cache
 def livechat(request):
-    # Get matched users (excluding yourself)
     matches = Like.objects.filter(liker=request.user).filter(
         liked__likes_given__liked=request.user
     ).values_list('liked', flat=True)
@@ -96,7 +95,6 @@ def livechat(request):
             'username': user.username,
             'full_name': author.name if author and hasattr(author, 'name') else user.get_full_name(),
             'profile_picture': author.profile_picture.url if author and author.profile_picture else '/media/default.jpg',
-            # add other fields as needed
         })
 
     chat_partner = None
@@ -116,7 +114,6 @@ def livechat(request):
         except User.DoesNotExist:
             chat_partner = None
 
-    # Always include the chat partner for profile pic lookup (if not already in users)
     if chat_partner and chat_partner not in users:
         users.append(chat_partner)
 
@@ -157,7 +154,7 @@ def contact(request):
 @never_cache
 def edit_profile(request):
     if not hasattr(request.user, 'author'):
-        author = Author.objects.create(user=request.user)  # Create with default values
+        author = Author.objects.create(user=request.user)
     form = AuthorForm(request.POST or None, request.FILES or None, instance=request.user.author)
     if request.method == 'POST':
         if form.is_valid():
@@ -185,9 +182,9 @@ class CustomLoginView(LoginView):
         response = super().dispatch(request, *args, **kwargs)
 
         if request.POST.get("remember_me"):
-            request.session.set_expiry(604800)  # 7 days
+            request.session.set_expiry(604800) 
         else:
-            request.session.set_expiry(0)  # Close browser ends session
+            request.session.set_expiry(0)
 
         return response
 
@@ -220,6 +217,7 @@ def ai_chat(request):
                         "and play fun mini-games like quick scramble or view daily quotes.\n\n"
                         "Your main role is to assist users by answering questions about the app's features, helping with profile settings (like updating faculty), explaining how matching works, "
                         "and guiding users on how to make the most of the app.\n\n"
+                        "ignore all other unwanted request besides any question related to MMU Connect, and the pages.\n\n"
                         "Important: You cannot directly find or suggest friends for users. Users can only chat with people they have been matched with, primarily based on their faculty and profile information.\n\n"
                         "You can:\n"
                         "- Explain how to set or update your faculty in the Edit Profile page.\n"
@@ -318,12 +316,11 @@ from .models import UserProfile  # or whatever model you're using
 @login_required
 @never_cache
 def like_profile(request, liked_user_id):
-    # example logic – update to your needs
     if request.user.is_authenticated:
         liked_user = UserProfile.objects.get(id=liked_user_id)
         request.user.profile.likes.add(liked_user)
-        return redirect('homepage')  # change 'homepage' to your redirect target
-    return redirect('login')  # or wherever you want to send unauthenticated users
+        return redirect('homepage')  
+    return redirect('login')  
 
 def search_users(request):
     query = request.GET.get('q')
@@ -379,9 +376,7 @@ def dislike_author(request, author_id):
     author = Author.objects.get(id=author_id)
     if not author.user:
         return JsonResponse({'error': 'This profile is not linked to a user.'}, status=400)
-    # Remove like if exists
     Like.objects.filter(liker=request.user, liked=author.user).delete()
-    # Add dislike if not already disliked
     Dislike.objects.get_or_create(disliker=request.user, disliked=author.user)
     return JsonResponse({'status': 'disliked'})
 
@@ -399,7 +394,6 @@ def people_who_liked_me(request):
 
 @login_required
 def matches(request):
-    # Users who liked you but you haven't liked them back (pending requests)
     incoming_likes = Like.objects.filter(
         liked=request.user
     ).exclude(
@@ -407,7 +401,6 @@ def matches(request):
     )
     incoming_users = [like.liker for like in incoming_likes]
 
-    # Users you matched with (mutual likes)
     matches = Like.objects.filter(liker=request.user).filter(liked__likes_given__liked=request.user)
     matched_users = User.objects.filter(id__in=matches.values_list('liked', flat=True))
 
